@@ -11,7 +11,7 @@ export const InputPassword = ({ isError = false, ...props }: IInputShared) => {
 
   return (
     <InputRoot isError={isError}>
-      <InputField secureTextEntry={showPassword} {...props} />
+      <InputField secureTextEntry={!showPassword} {...props} />
       <Pressable onPress={() => setShowPassword((prev) => !prev)}>
         <InputIcon name={iconName} size={20} />
       </Pressable>
