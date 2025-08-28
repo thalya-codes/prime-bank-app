@@ -1,12 +1,13 @@
 import {
   Inter_400Regular,
   Inter_500Medium,
-  Inter_600SemiBold_Italic,
+  Inter_600SemiBold,
   Inter_700Bold,
   Inter_800ExtraBold,
   useFonts as useFontsInter,
 } from "@expo-google-fonts/inter";
 import {
+  Nunito_300Light,
   Nunito_400Regular,
   Nunito_500Medium,
   Nunito_600SemiBold,
@@ -23,6 +24,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [nunitoLoaded] = useFontsNunito({
+    Nunito_300Light,
     Nunito_400Regular,
     Nunito_500Medium,
     Nunito_600SemiBold,
@@ -32,7 +34,7 @@ export default function RootLayout() {
   const [interLoaded] = useFontsInter({
     Inter_400Regular,
     Inter_500Medium,
-    Inter_600SemiBold_Italic,
+    Inter_600SemiBold,
     Inter_700Bold,
     Inter_800ExtraBold,
   });
