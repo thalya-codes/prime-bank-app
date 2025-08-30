@@ -57,7 +57,7 @@ function SelectBase(
   };
 
   return (
-    <View className="w-full">
+    <View className="relative w-full">
       <TouchableOpacity
         className={`p-3 flex-row justify-between items-center bg-white border border-gray-300 ${disabled ? "opacity-50" : ""}`}
         onPress={toggleSelect}
@@ -72,8 +72,16 @@ function SelectBase(
       </TouchableOpacity>
 
       <Animated.View
-        style={{ height: animatedHeight, overflow: "hidden" }}
-        className="bg-white rounded-md shadow mt-1"
+        style={{
+          height: animatedHeight,
+          overflow: "hidden",
+          position: "absolute",
+          top: 52,
+          left: 0,
+          right: 0,
+          zIndex: 50,
+        }}
+        className="bg-white rounded-md shadow"
       >
         <ScrollView>
           {data.map((item) => (

@@ -4,7 +4,13 @@ import React, {
   useImperativeHandle,
   useState,
 } from "react";
-import { Animated, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  Animated,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import { useDropdownAnimation } from "@/hooks";
 import { MenuDropdownProps, MenuDropdownRef, Option } from "./types";
@@ -15,6 +21,7 @@ function MenuDropdownBase(
 ) {
   const { animatedHeight, open, close } = useDropdownAnimation(0, maxHeight);
   const [isOpen, setIsOpen] = useState(false);
+  const [buttonLayout, setButtonLayout] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
 
   useImperativeHandle(ref, () => ({
     open: () => {
@@ -44,33 +51,41 @@ function MenuDropdownBase(
   };
 
   return (
-    <View className="relative">
-      <TouchableOpacity onPress={toggleMenu}>
+    <View>
+      <TouchableOpacity
+        onPress={toggleMenu}
+        onLayout={(e) => setButtonLayout(e.nativeEvent.layout)}
+      >
         <Ionicons name="ellipsis-vertical" size={iconSize} color={iconColor} />
       </TouchableOpacity>
 
-      <Animated.View
-        style={{
-          height: animatedHeight,
-          overflow: "hidden",
-          position: "absolute",
-          top: iconSize + 8,
-          right: 0,
-        }}
-        className="bg-white rounded-md shadow-lg"
-      >
-        <ScrollView>
-          {data.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              className="p-3 border-b border-gray-200"
-              onPress={() => handlePress(item)}
-            >
-              <Text>{item.label}</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </Animated.View>
+      {isOpen && buttonLayout && (
+        <Animated.View
+          style={{
+            height: animatedHeight,
+            overflow: "hidden",
+            position: "absolute",
+            top: buttonLayout.y + buttonLayout.height + 4,
+            left: buttonLayout.x,
+            minWidth: 150,
+            maxHeight,
+            zIndex: 9999,
+          }}
+          className="bg-white rounded-md shadow-lg"
+        >
+          <ScrollView>
+            {data.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                className="p-3 border-b border-gray-200"
+                onPress={() => handlePress(item)}
+              >
+                <Text>{item.label}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </Animated.View>
+      )}
     </View>
   );
 }
