@@ -3,7 +3,9 @@ import { Image, Text, View } from "react-native";
 
 import { AvatarProps } from "./types";
 
-export function Avatar({ name, uri, size = 48 }: AvatarProps) {
+const mapSizes = {sm: 32, md: 40, lg: 48, xl: 56}
+
+export function Avatar({ name, uri, size = 'md' }: AvatarProps) {
   const getInitials = (name: string) => {
     if (!name) return "";
     const parts = name.trim().split(" ");
@@ -13,15 +15,16 @@ export function Avatar({ name, uri, size = 48 }: AvatarProps) {
   };
 
   const initials = getInitials(name);
+  const avatarSize = mapSizes[size]
 
   if (uri) {
     return (
       <Image
         source={{ uri }}
         style={{
-          width: size,
-          height: size,
-          borderRadius: size / 2,
+          width: avatarSize,
+          height: avatarSize,
+          borderRadius: avatarSize / 2,
         }}
       />
     );
@@ -29,14 +32,14 @@ export function Avatar({ name, uri, size = 48 }: AvatarProps) {
 
   return (
     <View
-      className="bg-gray-300 justify-center items-center"
+      className="bg-brand-100 justify-center items-center"
       style={{
-        width: size,
-        height: size,
-        borderRadius: size / 2,
+        width: avatarSize,
+        height: avatarSize,
+        borderRadius: avatarSize / 2,
       }}
     >
-      <Text className="font-bold text-white" style={{ fontSize: size * 0.4 }}>
+      <Text className="text-brand-800 inter-semi-bold" style={{ fontSize: avatarSize * 0.4 }}>
         {initials}
       </Text>
     </View>

@@ -80,7 +80,7 @@ function MenuDropdownBase(
                 className="p-3 border-b border-gray-200"
                 onPress={() => handlePress(item)}
               >
-                <Text>{item.label}</Text>
+                <Text className="font-nunito-regular">{item.label}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>

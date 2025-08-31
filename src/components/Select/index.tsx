@@ -62,8 +62,9 @@ function SelectBase(
         className={`p-3 flex-row justify-between items-center bg-white border border-gray-300 ${disabled ? "opacity-50" : ""}`}
         onPress={toggleSelect}
         activeOpacity={disabled ? 1 : 0.7}
+        disabled={disabled}
       >
-        <Text className="text-gray-700">{selectedLabel || placeholder}</Text>
+        <Text className={`${disabled ? 'text-neutral-400' : 'text-neutral-950'} font-nunito-regular`}>{selectedLabel || placeholder}</Text>
         <Animated.View
           style={{ transform: [{ rotate: isOpen ? "180deg" : "0deg" }] }}
         >
@@ -90,7 +91,7 @@ function SelectBase(
               className="p-3 border-b border-gray-200"
               onPress={() => handleSelect(item)}
             >
-              <Text>{item.label}</Text>
+              <Text className="font-nunito-regular">{item.label}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>

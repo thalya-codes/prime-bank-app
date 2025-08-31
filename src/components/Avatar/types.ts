@@ -1,5 +1,5 @@
 export interface AvatarProps {
   name: string;
   uri?: string;
-  size?: number;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
 }
