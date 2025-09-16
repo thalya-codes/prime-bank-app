@@ -4,7 +4,7 @@ import { Text, View } from "react-native";
 
 interface IPublicScreenLayout {
   title: string;
-  subTitle: string;
+  subTitle?: string;
   children: React.ReactNode;
   footer?: React.ReactNode;
 }
@@ -22,9 +22,11 @@ export const PublicScreenLayout = ({
         </View>
 
         <Text className='text-center font-inter-bold text-3xl'>{title}</Text>
-        <Text className='text-center font-inter-regular text-base'>
-          {subTitle}
-        </Text>
+        {subTitle && (
+          <Text className='text-center font-inter-regular text-base'>
+            {subTitle}
+          </Text>
+        )}
       </View>
 
       <Card className='gap-6'>{children}</Card>
