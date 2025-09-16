@@ -5,7 +5,7 @@ export const passwordSchema = yup.object({
   password: yup
     .string()
     .required("O campo é obrigatório!")
-    .min(6)
+    .min(6, 'A senha deve ter no mínimo 6 caracteres.')
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).*$/,
       "Sua senha não atende aos requisitos. Consulte o ícone i ao lado do campo para mais detalhes."
