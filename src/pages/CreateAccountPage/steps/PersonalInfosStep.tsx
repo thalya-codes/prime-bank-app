@@ -4,6 +4,7 @@ import { FormFieldMessage } from "@/components/FormField/FormFieldMessage";
 import { FormFieldRoot } from "@/components/FormField/FormFieldRoot";
 import { InputField, InputIcon, InputRoot } from "@/components/Input";
 import { PublicScreenLayout } from "@/layouts/PublicScreenLayout";
+import { cpfMask, phoneMask } from "@/utils/masks";
 import { Controller } from "react-hook-form";
 import { IPersonalInfosStep } from "../interfaces";
 
@@ -67,13 +68,14 @@ export const PersonalInfosStep = ({
       <Controller
         name='cpf'
         control={control}
-        render={({ field: { onChange, ...field } }) => (
+        render={({ field: { onChange, value, ...field } }) => (
           <FormFieldRoot>
             <FormFieldLabel>CPF</FormFieldLabel>
             <InputRoot>
               <InputField
                 keyboardType='number-pad'
                 placeholder='000.000.000-00'
+                value={cpfMask(value)}
                 onChangeText={onChange}
                 {...field}
               />
@@ -90,7 +92,7 @@ export const PersonalInfosStep = ({
       <Controller
         name='telephone'
         control={control}
-        render={({ field: { onChange, ...field } }) => (
+        render={({ field: { onChange, value, ...field } }) => (
           <FormFieldRoot>
             <FormFieldLabel>Telefone</FormFieldLabel>
             <InputRoot>
@@ -99,6 +101,7 @@ export const PersonalInfosStep = ({
                 keyboardType='number-pad'
                 placeholder='00 000000000'
                 onChangeText={onChange}
+                value={phoneMask(value)}
                 {...field}
               />
             </InputRoot>
