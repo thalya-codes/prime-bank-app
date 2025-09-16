@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { FieldError } from "react-hook-form";
 import { TextInputProps } from "react-native";
 
 export interface IInputShared extends TextInputProps {
@@ -11,5 +12,11 @@ export interface IInputRoot extends IInputShared {
 export interface IInputIcon {
   name: any;
   size?: number;
+}
+
+export interface IInputPassword extends IInputShared {
+  name: string;
+  control: any;
+  error: FieldError | undefined;
 }
 
