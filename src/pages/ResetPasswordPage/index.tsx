@@ -2,6 +2,8 @@ import { Button } from "@/components/Button";
 import { FormFieldLabel } from "@/components/FormField/FormFieldLabel";
 import { FormFieldRoot } from "@/components/FormField/FormFieldRoot";
 import { InputPassword } from "@/components/Input";
+import { PasswordTip } from "@/components/PasswordTip";
+import { PasswordTipContainer } from "@/components/PasswordTip/PasswordTipContainer";
 import { PublicScreenLayout } from "@/layouts/PublicScreenLayout";
 import { passwordAndConfirmPasswordSchema } from "@/utils/validations";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -30,7 +32,11 @@ export function ResetPasswordPage() {
   return (
     <PublicScreenLayout title='Redefinir senha'>
       <FormFieldRoot>
-        <FormFieldLabel>Nova senha</FormFieldLabel>
+        <PasswordTipContainer>
+          <FormFieldLabel>Nova senha</FormFieldLabel>
+          <PasswordTip />
+        </PasswordTipContainer>
+
         <InputPassword
           control={control}
           name='password'
@@ -47,7 +53,11 @@ export function ResetPasswordPage() {
         />
       </FormFieldRoot>
 
-      <Button text='Alterar' className='gap-2' onPress={handleSubmit(onrResetPassword)} />
+      <Button
+        text='Alterar'
+        className='gap-2'
+        onPress={handleSubmit(onrResetPassword)}
+      />
     </PublicScreenLayout>
   );
 }

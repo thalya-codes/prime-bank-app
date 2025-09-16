@@ -26,7 +26,7 @@ const createAccountSchema = yup
       .string()
       .required("O campo é obrigatório!")
       .matches(
-        /\d{2}\s\d{8,9}/,
+        /\d{2}\d{8,9}/,
         "Telefone inválido. Por favor, insira o número no formato 00 000000000."
       ),
 

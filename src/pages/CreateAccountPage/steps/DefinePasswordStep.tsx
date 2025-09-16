@@ -6,11 +6,13 @@ import { FormFieldLabel } from "@/components/FormField/FormFieldLabel";
 import { FormFieldMessage } from "@/components/FormField/FormFieldMessage";
 import { FormFieldRoot } from "@/components/FormField/FormFieldRoot";
 import { InputPassword } from "@/components/Input";
+import { PasswordTip } from "@/components/PasswordTip";
 import { PublicScreenLayout } from "@/layouts/PublicScreenLayout";
 import { Ionicons } from "@expo/vector-icons";
 import { Controller } from "react-hook-form";
 import { Text, View } from "react-native";
 import { IDefinePasswordStep } from "../interfaces";
+import { PasswordTipContainer } from "@/components/PasswordTip/PasswordTipContainer";
 
 export const DefinePasswordStep = ({
   control,
@@ -30,7 +32,10 @@ export const DefinePasswordStep = ({
       }
     >
       <FormFieldRoot>
-        <FormFieldLabel>Senha</FormFieldLabel>
+        <PasswordTipContainer className="flex-row items-center justify-between">
+          <FormFieldLabel>Senha</FormFieldLabel>
+          <PasswordTip />
+        </PasswordTipContainer>
 
         <InputPassword
           placeholder='Mínimo 6 caracteres'
