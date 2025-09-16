@@ -19,7 +19,9 @@ export const Button = ({
   children,
   variant = "primary",
   textClassName,
+  text,
   className,
+  isFullWidth = true,
   ...props
 }: IButton) => {
   const isSecondaryOrLink = variant === "secondary" || variant === "link";
@@ -28,7 +30,8 @@ export const Button = ({
     <TouchableOpacity
       activeOpacity={0.8}
       className={cn(
-        "flex-row items-center justify-center rounded-md w-full px-2 py-3 flex gap-2 ease-in-out",
+        isFullWidth && "w-full",
+        "flex-row items-center justify-center rounded-md px-2 py-3 flex gap-2 ease-in-out",
         bgByVariant[variant],
         className
       )}
@@ -43,8 +46,9 @@ export const Button = ({
           textClassName
         )}
       >
-        {children}
+        {text}
       </Text>
+      {children}
     </TouchableOpacity>
   );
 };
