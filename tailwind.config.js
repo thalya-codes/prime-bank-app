@@ -51,7 +51,8 @@ module.exports = {
         "inter-semi-bold": "Inter_600SemiBold",
         "inter-bold": "Inter_700Bold",
         "inter-extra-bold": "Inter_800ExtraBold",
-        
+        "inter-black": "Inter_900Black",
+
         "nunito-light": "Nunito_300Light",
         "nunito-regular": "Nunito_400Regular",
         "nunito-medium": "Nunito_500Medium",
@@ -59,8 +60,8 @@ module.exports = {
         "nunito-bold": "Nunito_700Bold",
       },
       borderRadius: {
-        md: '4px'
-      }
+        md: "4px",
+      },
     },
   },
   plugins: [],

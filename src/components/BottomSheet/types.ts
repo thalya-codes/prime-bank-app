@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 
 export type BottomSheetRef = {
   open: () => void;
@@ -7,4 +7,7 @@ export type BottomSheetRef = {
 
 export interface BottomSheetProps {
   children?: ReactNode;
+  visible: boolean;
+  setVisible: Dispatch<SetStateAction<boolean>>;
 }
+
