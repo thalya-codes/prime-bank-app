@@ -5,12 +5,13 @@ export type MenuDropdownRef = {
 
 export interface Option {
   label: string;
+  icon?: React.ReactNode;
+  color?: string;
   onPress: () => void;
 }
 
 export interface MenuDropdownProps {
   data: Option[];
   maxHeight?: number;
-  iconSize?: number;
-  iconColor?: string;
+  children: React.ReactNode;
 }

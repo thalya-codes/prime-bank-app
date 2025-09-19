@@ -14,9 +14,10 @@ import {
 
 import { useDropdownAnimation } from "@/hooks";
 import { MenuDropdownProps, MenuDropdownRef, Option } from "./types";
+import { cn } from "@/utils/twClassnamesResolver";
 
 function MenuDropdownBase(
-  { data, maxHeight = 200, iconSize = 24, iconColor = "black" }: MenuDropdownProps,
+  { data, maxHeight = 200, children }: MenuDropdownProps,
   ref: React.Ref<MenuDropdownRef>
 ) {
   const { animatedHeight, open, close } = useDropdownAnimation(0, maxHeight);
@@ -50,13 +51,15 @@ function MenuDropdownBase(
     setIsOpen(false);
   };
 
+   console.log("buttonLayout:", buttonLayout);
+
   return (
     <View>
       <TouchableOpacity
         onPress={toggleMenu}
         onLayout={(e) => setButtonLayout(e.nativeEvent.layout)}
       >
-        <Ionicons name="ellipsis-vertical" size={iconSize} color={iconColor} />
+       {children ? children : <Ionicons name="ellipsis-vertical" size={24} color="black" />}
       </TouchableOpacity>
 
       {isOpen && buttonLayout && (
@@ -66,7 +69,7 @@ function MenuDropdownBase(
             overflow: "hidden",
             position: "absolute",
             top: buttonLayout.y + buttonLayout.height + 4,
-            left: buttonLayout.x,
+            right: buttonLayout.x - 4,
             minWidth: 150,
             maxHeight,
             zIndex: 9999,
@@ -77,10 +80,11 @@ function MenuDropdownBase(
             {data.map((item, index) => (
               <TouchableOpacity
                 key={index}
-                className="p-3 border-b border-gray-200"
+                className="p-3 border-b border-gray-200 gap-2 flex-row items-center"
                 onPress={() => handlePress(item)}
               >
-                <Text className="font-nunito-regular">{item.label}</Text>
+                {item?.icon}
+                <Text className={cn("font-nunito-regular text-xl", item?.color || '')}>{item.label}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
