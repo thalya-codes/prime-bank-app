@@ -10,14 +10,17 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.thalya.steffany.prime-bank-app"
+      "bundleIdentifier": "com.techchallenge.prime-bank-app",
+      "googleServicesFile": "./ios/GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.techchallenge.primebankapp",
+      "googleServicesFile": "./android/google-services.json"
     },
     "web": {
       "bundler": "metro",
@@ -26,6 +29,17 @@
     },
     "plugins": [
       "expo-router",
+
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ],
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
       [
         "expo-splash-screen",
         {
@@ -41,3 +55,4 @@
     }
   }
 }
+
