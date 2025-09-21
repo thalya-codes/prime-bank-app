@@ -1,8 +1,9 @@
+import { currencyMask } from '@/utils/masks';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -385,17 +386,33 @@ export function TransactionsPage() {
     return date.toLocaleDateString('pt-BR');
   };
 
+  const handleAmountChange = (text: string) => {
+    const numeric = text.replace(/\D/g, "");
+    const numericValue = parseFloat(numeric) / 100;
+
+    setCurrentTransaction(prev => ({
+      ...prev,
+      amount: isNaN(numericValue) ? 0 : numericValue,
+    }));
+  }
+
+  const renderCategories = [
+    currentTransaction?.category,
+    ...MOCK_CATEGORIES.filter(cat => cat !== currentTransaction?.category),
+  ].filter(Boolean)
+
+
   const renderTransaction = ({ item }: { item: Transaction }) => (
     <TouchableOpacity
-      className="bg-white rounded-lg p-4 mb-3 shadow-sm"
+      className="bg-white rounded-lg p-5 mb-3 shadow-sm"
       onPress={() => openEditTransactionModal(item)}
     >
       <View className="flex-row justify-between items-center mb-1">
         <Text className="text-lg font-semibold flex-1">{item.description}</Text>
         <Text
-          className={`text-lg font-bold ${item.type === 'income' ? 'text-green-600' : 'text-red-600'}`}
+          className={`pr-5 text-lg font-bold ${item.type === 'income' ? 'text-green-600' : 'text-red-600'}`}
         >
-          {item.type === 'income' ? '+' : '-'}{formatCurrency(item.amount)}
+          {item.type === 'income' ? '+' : '-'}{currencyMask(item.amount)}
         </Text>
       </View>
 
@@ -406,7 +423,7 @@ export function TransactionsPage() {
             <Text className="text-xs">{item.category}</Text>
           </View>
         </View>
-        <Text className="text-sm text-gray-600">{formatDate(item.date)}</Text>
+        <Text className="pr-5 text-sm text-gray-600">{formatDate(item.date)}</Text>
       </View>
 
       {item.notes && (
@@ -672,16 +689,10 @@ export function TransactionsPage() {
                 <Text className="text-sm font-medium mb-1 text-gray-600">Valor (R$)</Text>
                 <TextInput
                   className={`border ${errors.amount ? 'border-red-500' : 'border-gray-300'} rounded-lg px-4 py-3`}
-                  placeholder="0,00"
+                  placeholder="R$ 0,00"
                   keyboardType="numeric"
-                  value={currentTransaction?.amount ? String(currentTransaction.amount) : ''}
-                  onChangeText={(text) => {
-                    const numericValue = parseFloat(text.replace(',', '.'));
-                    setCurrentTransaction(prev => ({
-                      ...prev,
-                      amount: isNaN(numericValue) ? 0 : numericValue
-                    }));
-                  }}
+                  value={currencyMask(currentTransaction?.amount || 0)}
+                  onChangeText={handleAmountChange}
                 />
                 {errors.amount && (
                   <Text className="text-red-500 text-xs mt-1">{errors.amount}</Text>
@@ -692,11 +703,7 @@ export function TransactionsPage() {
                 <Text className="text-sm font-medium mb-1 text-gray-600">Categoria</Text>
                 <View className="border border-gray-300 rounded-lg p-2">
                   <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    {MOCK_CATEGORIES.filter(cat =>
-                      currentTransaction?.type === 'income'
-                        ? ['Salário', 'Investimentos', 'Presentes', 'Freelance', 'Outros'].includes(cat)
-                        : !['Salário', 'Investimentos', 'Presentes', 'Freelance'].includes(cat)
-                    ).map(category => (
+                    {(renderCategories).map(category => (
                       <TouchableOpacity
                         key={category}
                         className={`py-2 px-4 rounded-full mr-2 ${currentTransaction?.category === category ? 'bg-blue-100 border border-blue-500' : 'bg-gray-200'}`}

@@ -11,3 +11,10 @@ export function phoneMask(value: string) {
     return cleanedValue.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
   }
 }
+
+export function currencyMask(amount: number, locale = 'pt-BR', currency = 'BRL') {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency,
+  }).format(amount);
+}
