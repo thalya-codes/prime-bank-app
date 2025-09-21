@@ -1,4 +1,4 @@
-import { Avatar, MenuDropdown } from "@/components";
+import { Avatar, MenuDropDown } from "@/components";
 import { Logo } from "@/components/Logo";
 import { FontAwesome } from "@expo/vector-icons";
 import { Text } from "@react-navigation/elements";
@@ -20,7 +20,7 @@ export const PrivateScreenHeaderLayout = () => {
           Prime Bank
         </Text>
       </View>
-      <MenuDropdown
+      <MenuDropDown
         data={[
           {
             label: "Sair",
@@ -34,7 +34,7 @@ export const PrivateScreenHeaderLayout = () => {
         maxHeight={40}
       >
         <Avatar name='Thalya Stéffany' />
-      </MenuDropdown>
+      </MenuDropDown>
     </SafeAreaView>
   );
 };
