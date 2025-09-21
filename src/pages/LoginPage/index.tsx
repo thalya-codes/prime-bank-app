@@ -105,7 +105,7 @@ export function LoginPage() {
       <Button
         variant='link'
         text='Esqueci minha senha'
-        onPress={() => router.push("/reset-password")}
+        onPress={() => router.push("/(auth)/forgot-password")}
       />
     </PublicScreenLayout>
   );
