@@ -100,4 +100,5 @@ function SelectBase(
   );
 }
 
-export const Select = forwardRef(SelectBase);
+const Select = forwardRef(SelectBase);
+export default Select

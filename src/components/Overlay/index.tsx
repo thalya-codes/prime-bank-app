@@ -1,6 +1,6 @@
 import { TouchableOpacity } from "react-native";
 
-export function Overlay({ onPress }: { onPress: () => void }) {
+function Overlay({ onPress }: { onPress: () => void }) {
   return (
     <TouchableOpacity
       className="flex-1"
@@ -10,3 +10,5 @@ export function Overlay({ onPress }: { onPress: () => void }) {
     />
   );
 }
+
+export default Overlay

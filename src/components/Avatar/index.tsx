@@ -1,11 +1,10 @@
-import React from "react";
 import { Image, Text, View } from "react-native";
 
 import { AvatarProps } from "./types";
 
 const mapSizes = {sm: 32, md: 40, lg: 48, xl: 56}
 
-export function Avatar({ name, uri, size = 'md' }: AvatarProps) {
+function Avatar({ name, uri, size = 'md' }: AvatarProps) {
   const getInitials = (name: string) => {
     if (!name) return "";
     const parts = name.trim().split(" ");
@@ -45,3 +44,5 @@ export function Avatar({ name, uri, size = 'md' }: AvatarProps) {
     </View>
   );
 }
+
+export default Avatar

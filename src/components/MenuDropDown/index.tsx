@@ -13,8 +13,8 @@ import {
 } from "react-native";
 
 import { useDropdownAnimation } from "@/hooks";
-import { MenuDropdownProps, MenuDropdownRef, Option } from "./types";
 import { cn } from "@/utils/twClassnamesResolver";
+import { MenuDropdownProps, MenuDropdownRef, Option } from "./types";
 
 function MenuDropdownBase(
   { data, maxHeight = 200, children }: MenuDropdownProps,
@@ -50,8 +50,6 @@ function MenuDropdownBase(
     close();
     setIsOpen(false);
   };
-
-   console.log("buttonLayout:", buttonLayout);
 
   return (
     <View>
@@ -94,4 +92,5 @@ function MenuDropdownBase(
   );
 }
 
-export const MenuDropdown = forwardRef(MenuDropdownBase);
+const MenuDropdown = forwardRef(MenuDropdownBase);
+export default MenuDropdown

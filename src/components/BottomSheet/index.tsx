@@ -1,7 +1,7 @@
 import React, { forwardRef, useImperativeHandle } from "react";
 import { Animated, Dimensions, Modal, ScrollView, View } from "react-native";
 
-import { Overlay } from "@/components";
+import Overlay from "@/components/Overlay";
 import { useBottomSheetAnimation } from "@/hooks";
 import { BottomSheetProps, BottomSheetRef } from "./types";
 
@@ -60,7 +60,8 @@ function BottomSheetBase(
   );
 }
 
-export const BottomSheet = forwardRef<BottomSheetRef, BottomSheetProps>(
+const BottomSheet = forwardRef<BottomSheetRef, BottomSheetProps>(
   BottomSheetBase
 );
 
+export default BottomSheet
