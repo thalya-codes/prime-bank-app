@@ -14,7 +14,7 @@ function BottomSheetBase(
   const MAX_HEIGHT = screenHeight * 0.85;
   const MIN_HEIGHT = screenHeight * 0.4;
 
-  const { animatedHeight, panResponder, open, close } = useBottomSheetAnimation(
+  const { open, close } = useBottomSheetAnimation(
     MIN_HEIGHT,
     MAX_HEIGHT,
     () => setVisible(false)
@@ -27,21 +27,20 @@ function BottomSheetBase(
 
   return (
     <Modal
-      animationType='slide'
+      animationType='fade'
       transparent
       visible={visible}
       onRequestClose={close}
     >
-      <View className='flex-1 justify-end'>
+      <View  className='flex-1 justify-end'>
         <View className='absolute top-0 left-0 right-0 bottom-0 bg-black/10'>
           <Overlay onPress={close} />
         </View>
 
         <Animated.View
-          {...panResponder.panHandlers}
+          // {...panResponder.panHandlers}
           className='w-full bg-white rounded-t-2xl p-4'
           style={{
-            height: animatedHeight,
             maxHeight: MAX_HEIGHT,
             minHeight: MIN_HEIGHT,
           }}
@@ -49,9 +48,9 @@ function BottomSheetBase(
           <View className='w-12 h-1.5 bg-gray-300 rounded-full self-center mb-3' />
 
           <ScrollView
-            showsVerticalScrollIndicator
+            showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: 40 }}
-          >
+            >
             {children}
           </ScrollView>
         </Animated.View>

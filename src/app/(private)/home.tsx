@@ -1,13 +1,11 @@
 import { HomePage } from "@/pages";
-import { View } from "react-native";
+import { SafeAreaView } from "react-native";
 
 export default function HomeScreen() {
   return (
-    <View className='flex-1'>
-      <View className='flex-1'>
+    <SafeAreaView className='flex-1'>
         <HomePage />
-      </View>
-    </View>
+    </SafeAreaView>
   );
 }
 

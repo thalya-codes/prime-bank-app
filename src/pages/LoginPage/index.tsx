@@ -1,4 +1,4 @@
-import { Button } from "@/components/Button";
+import { Button } from "@/components";
 import { CardHighlight } from "@/components/CardHighlight";
 import { FormFieldLabel } from "@/components/FormField/FormFieldLabel";
 import { FormFieldMessage } from "@/components/FormField/FormFieldMessage";
