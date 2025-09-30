@@ -12,7 +12,7 @@ export const PrivateScreenHeaderLayout = () => {
   return (
     <SafeAreaView
       edges={["top"]}
-      className='bg-white border-b flex-row items-center justify-between border-gray-200 pl-1 pr-4'
+      className='bg-white border-b flex-row items-center justify-between border-gray-200  px-4 h-16'
     >
       <View className='flex-row items-center gap-2 px-4 py-3'>
         <Logo size='xs' />
@@ -21,6 +21,7 @@ export const PrivateScreenHeaderLayout = () => {
         </Text>
       </View>
       <MenuDropdown
+
         data={[
           {
             label: "Sair",

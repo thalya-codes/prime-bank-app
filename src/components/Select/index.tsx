@@ -1,5 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
-import React, { forwardRef, useImperativeHandle, useState } from "react";
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import {
   Animated,
   ScrollView,
@@ -8,7 +13,6 @@ import {
   View,
 } from "react-native";
 
-import { useDropdownAnimation } from "@/hooks";
 import { Option, SelectProps, SelectRef } from "./types";
 
 function SelectBase(
@@ -22,19 +26,38 @@ function SelectBase(
   }: SelectProps,
   ref: React.Ref<SelectRef>
 ) {
-  const { animatedHeight, open, close } = useDropdownAnimation(0, maxHeight);
   const [isOpen, setIsOpen] = useState(false);
+  const animatedHeight = useRef(new Animated.Value(0)).current;
 
-  const selectedLabel = data.find((item) => item.value === value)?.label;
+  const selectedLabel = data.find(item => item.value === value)?.label;
+
+  const itemHeight = 56;
+  const realHeight = Math.min(data.length * itemHeight, maxHeight);
+
+  const openDropdown = () => {
+    Animated.timing(animatedHeight, {
+      toValue: realHeight,
+      duration: 200,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const closeDropdown = () => {
+    Animated.timing(animatedHeight, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: false,
+    }).start();
+  };
 
   useImperativeHandle(ref, () => ({
     open: () => {
       if (disabled) return;
-      open();
+      openDropdown();
       setIsOpen(true);
     },
     close: () => {
-      close();
+      closeDropdown();
       setIsOpen(false);
     },
   }));
@@ -42,29 +65,41 @@ function SelectBase(
   const toggleSelect = () => {
     if (disabled) return;
     if (isOpen) {
-      close();
+      closeDropdown();
       setIsOpen(false);
     } else {
-      open();
+      openDropdown();
       setIsOpen(true);
     }
   };
 
   const handleSelect = (item: Option) => {
     onChange?.(item.value);
-    close();
+    closeDropdown();
     setIsOpen(false);
   };
 
   return (
     <View className="relative w-full">
       <TouchableOpacity
-        className={`p-3 flex-row justify-between items-center bg-white border border-gray-300 ${disabled ? "opacity-50" : ""}`}
+        className={`p-3 flex-row justify-between items-center bg-white rounded-lg ${disabled ? "opacity-50" : ""}`}
         onPress={toggleSelect}
         activeOpacity={disabled ? 1 : 0.7}
         disabled={disabled}
+        style={{
+          borderRadius: 8,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 1 },
+          shadowOpacity: 0.05,
+          shadowRadius: 2,
+          elevation: 1,
+        }}
       >
-        <Text className={`${disabled ? 'text-neutral-400' : 'text-neutral-950'} font-nunito-regular`}>{selectedLabel || placeholder}</Text>
+        <Text
+          className={`${disabled ? "text-neutral-400" : "text-neutral-950"} font-nunito-regular`}
+        >
+          {selectedLabel || placeholder}
+        </Text>
         <Animated.View
           style={{ transform: [{ rotate: isOpen ? "180deg" : "0deg" }] }}
         >
@@ -77,21 +112,48 @@ function SelectBase(
           height: animatedHeight,
           overflow: "hidden",
           position: "absolute",
-          top: 52,
+          top: 48,
           left: 0,
           right: 0,
-          zIndex: 50,
+          zIndex: 9999,
+          elevation: 25,
+          backgroundColor: "white",
+          borderRadius: 12,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 8 },
+          shadowOpacity: 0.15,
+          shadowRadius: 16,
         }}
-        className="bg-white rounded-md shadow"
       >
-        <ScrollView>
-          {data.map((item) => (
+        <ScrollView
+          style={{
+            backgroundColor: "white",
+            borderRadius: 12,
+          }}
+          nestedScrollEnabled={true}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          {data.map((item, index) => (
             <TouchableOpacity
               key={item.value.toString()}
-              className="p-3 border-b border-gray-200"
+              className={`p-4 bg-white active:bg-gray-50 ${
+                index !== data.length - 1 ? "border-b border-gray-100" : ""
+              } ${index === 0 ? "rounded-t-xl" : ""} ${
+                index === data.length - 1 ? "rounded-b-xl" : ""
+              }`}
               onPress={() => handleSelect(item)}
+              style={{
+                backgroundColor: "white",
+                borderTopLeftRadius: index === 0 ? 12 : 0,
+                borderTopRightRadius: index === 0 ? 12 : 0,
+                borderBottomLeftRadius: index === data.length - 1 ? 12 : 0,
+                borderBottomRightRadius: index === data.length - 1 ? 12 : 0,
+              }}
             >
-              <Text className="font-nunito-regular">{item.label}</Text>
+              <Text className="font-nunito-regular text-neutral-900 text-base">
+                {item.label}
+              </Text>
             </TouchableOpacity>
           ))}
         </ScrollView>

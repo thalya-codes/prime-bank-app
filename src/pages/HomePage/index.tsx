@@ -5,6 +5,7 @@ import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { Select } from "@/components/Select";
 import { InputField } from "@/components/Input/InputField";
+import { currencyMask, currencyToNumber } from "@/utils/masks";
 
 interface TransactionType {
   value: string;
@@ -32,19 +33,25 @@ export function HomePage() {
 
   const handleTransactionSubmit = () => {
     if (!selectedTransactionType || !transactionValue) {
-      // Aqui você pode adicionar validação
       return;
     }
+    const numericValue = currencyToNumber(transactionValue);
 
     // Lógica para processar a transação
     console.log("Transação:", {
       type: selectedTransactionType,
-      value: transactionValue,
+      value: numericValue,
+      formattedValue: transactionValue,
     });
 
     // Limpar campos após conclusão
     setSelectedTransactionType("");
     setTransactionValue("");
+  };
+
+  const handleValueChange = (value: string) => {
+    const maskedValue = currencyMask(value);
+    setTransactionValue(maskedValue);
   };
 
   const toggleBalanceVisibility = () => {
@@ -95,26 +102,34 @@ export function HomePage() {
         </Card>
 
         {/* Seção Nova Transação */}
-        <Card className="shadow-black/20 py-3 min-h-[300px]">
+        <Card
+          className="shadow-black/20 py-3 min-h-[300px]"
+          style={{ overflow: "visible" }}
+        >
           <View className="flex-row items-center mb-6">
-            <Ionicons name="add" size={20} color="#28B2AA" />
+            <Ionicons name="add-sharp" size={24} color="#28B2AA" />
             <Text className="font-nunito-semi-bold text-lg text-neutral-900 ml-2">
               Nova transação
             </Text>
           </View>
 
-          <View className="flex-1">
+          <View className="flex-1" style={{ overflow: "visible" }}>
             {/* Campo Tipo de transação */}
-            <View className="mb-4">
+            <View className="mb-4" style={{ zIndex: 10, overflow: "visible" }}>
               <Text className="font-nunito-medium text-base text-neutral-900 mb-3">
                 Tipo de transação
               </Text>
-              <Select
-                data={TRANSACTION_TYPES}
-                value={selectedTransactionType}
-                onChange={value => setSelectedTransactionType(String(value))}
-                placeholder="Selecione o tipo"
-              />
+              <View
+                className="border border-neutral-300 rounded-md bg-white"
+                style={{ overflow: "visible" }}
+              >
+                <Select
+                  data={TRANSACTION_TYPES}
+                  value={selectedTransactionType}
+                  onChange={value => setSelectedTransactionType(String(value))}
+                  placeholder="Selecione o tipo"
+                />
+              </View>
             </View>
 
             {/* Campo Valor */}
@@ -124,9 +139,9 @@ export function HomePage() {
               </Text>
               <View className="border border-neutral-300 rounded-md bg-white">
                 <InputField
-                  placeholder="0,0"
+                  placeholder="0,00"
                   value={transactionValue}
-                  onChangeText={setTransactionValue}
+                  onChangeText={handleValueChange}
                   keyboardType="numeric"
                   className="px-3 py-3 font-nunito-regular text-base"
                 />
