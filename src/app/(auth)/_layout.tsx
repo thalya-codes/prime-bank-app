@@ -54,14 +54,7 @@ export default function RootLayout() {
   }
 
   return (
-    <Stack>
-      <Stack.Screen
-        name='index'
-        options={{
-          title: "Bem-vindo",
-          headerShown: false,
-        }}
-      />
+    <Stack initialRouteName="login">
       <Stack.Screen
         name='login'
         options={{
@@ -81,6 +74,18 @@ export default function RootLayout() {
         options={{
           title: "Transações",
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="forgot-password"
+        options={{
+          title: "Esqueci a Senha"
+        }}
+      />
+      <Stack.Screen
+        name="create-account"
+        options={{
+          title: "Criar conta"
         }}
       />
     </Stack>

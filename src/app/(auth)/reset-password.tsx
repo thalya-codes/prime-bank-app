@@ -1,11 +1,11 @@
 import { ResetPasswordPage } from "@/pages/ResetPasswordPage";
-import { View } from "react-native";
+import { SafeAreaView } from "react-native";
 
 export default function ResetPasswordScreen() {
   return (
-    <View className='flex-1 justify-center items-center bg-brand-100'>
+    <SafeAreaView className='flex-1 justify-center items-center bg-brand-100'>
       <ResetPasswordPage />
-    </View>
+    </SafeAreaView>
   );
 }
 

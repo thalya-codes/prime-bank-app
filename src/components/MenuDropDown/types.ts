@@ -13,5 +13,5 @@ export interface Option {
 export interface MenuDropdownProps {
   data: Option[];
   maxHeight?: number;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }

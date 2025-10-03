@@ -14,7 +14,7 @@ const textByVariant = {
   link: "text-brand-500",
 };
 
-export const Button = ({
+const Button = ({
   disabled = false,
   children,
   variant = "primary",
@@ -31,7 +31,7 @@ export const Button = ({
       activeOpacity={0.8}
       className={cn(
         isFullWidth && "w-full",
-        "flex-row items-center justify-center rounded-md px-2 py-3 flex gap-2 ease-in-out",
+        "flex-1 flex-row items-center justify-center rounded-md px-2 py-3 flex gap-2 ease-in-out",
         bgByVariant[variant],
         className
       )}
@@ -53,3 +53,4 @@ export const Button = ({
   );
 };
 
+export default Button

@@ -23,11 +23,12 @@ export const PersonalInfosStep = ({
         control={control}
         render={({ field: { onChange, ...field } }) => (
           <FormFieldRoot>
-            <FormFieldLabel>Nova completo</FormFieldLabel>
+            <FormFieldLabel>Nome completo</FormFieldLabel>
             <InputRoot>
               <InputIcon name='user' />
               <InputField
                 placeholder='Seu Nome'
+                autoCapitalize="words"
                 onChangeText={onChange}
                 {...field}
               />
@@ -52,6 +53,7 @@ export const PersonalInfosStep = ({
 
               <InputField
                 placeholder='email@email.com'
+                keyboardType="email-address"
                 onChangeText={onChange}
                 {...field}
               />

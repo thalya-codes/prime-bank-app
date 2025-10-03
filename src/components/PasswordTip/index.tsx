@@ -1,7 +1,7 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import { BottomSheet } from "../BottomSheet";
+import BottomSheet from "../BottomSheet";
 
 export const PasswordTip = () => {
   const [visible, setVisible] = useState(false);

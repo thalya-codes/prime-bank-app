@@ -1,4 +1,4 @@
-import { Button } from "@/components/Button";
+import { Button } from "@/components";
 import { CardHighlight } from "@/components/CardHighlight";
 import { FormFieldLabel } from "@/components/FormField/FormFieldLabel";
 import { FormFieldMessage } from "@/components/FormField/FormFieldMessage";
@@ -105,7 +105,7 @@ export function LoginPage() {
       <Button
         variant='link'
         text='Esqueci minha senha'
-        onPress={() => router.push("/reset-password")}
+        onPress={() => router.push("/(auth)/forgot-password")}
       />
     </PublicScreenLayout>
   );

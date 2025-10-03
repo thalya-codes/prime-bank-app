@@ -1,6 +1,6 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { Text, View } from "react-native";
-import { Card } from "../Card";
+import Card from "../Card";
 import { ICardHighlight } from "./interface";
 
 export const CardHighlight = ({

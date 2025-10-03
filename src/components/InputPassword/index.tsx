@@ -15,7 +15,7 @@ export const InputPassword = ({
   ...props
 }: IInputPassword) => {
   const [showPassword, setShowPassword] = useState(false);
-  const iconName = showPassword ? "eye-slash" : "eye";
+  const iconName = showPassword ? "eye" : "eye-slash";
 
   return (
     <Controller

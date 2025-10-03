@@ -13,7 +13,7 @@ const cardOutlineVariants = {
   white: "border border-neutral-200",
 };
 
-export const Card = ({
+const Card = ({
   color = "white",
   isOutlined = false,
   children,
@@ -35,3 +35,4 @@ export const Card = ({
   );
 };
 
+export default Card
