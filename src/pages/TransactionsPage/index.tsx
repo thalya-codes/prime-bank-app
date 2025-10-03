@@ -12,18 +12,11 @@ import {
   TransactionEdit,
   TransactionItem,
 } from "./components";
-
-// Tipos
-interface Transaction {
-  id: string;
-  description: string;
-  amount: number;
-  type: "income" | "expense";
-  category: string;
-  date: Date;
-  receiptUrl?: string;
-  notes?: string;
-}
+import {
+  MOCK_CATEGORIES,
+  MOCK_TRANSACTIONS,
+  Transaction,
+} from "./data";
 
 export enum FilterType {
   All = "all",
@@ -44,41 +37,10 @@ const filterType = Object.values(FilterType).map((item) => ({
 }));
 
 // Dados mock para testes (substituir pelo Firebase posteriormente)
-const MOCK_CATEGORIES = [
-  "Alimentação",
-  "Transporte",
-  "Lazer",
-  "Saúde",
-  "Educação",
-  "Moradia",
-  "Vestuário",
-  "Outros",
-  "Salário",
-  "Investimentos",
-  "Presentes",
-  "Freelance",
-];
-
 const filterCategories = MOCK_CATEGORIES.map((item) => ({
   label: item,
   value: item,
 }));
-
-const MOCK_TRANSACTIONS: Transaction[] = Array(20)
-  .fill(0)
-  .map((_, index) => ({
-    id: `transaction-${index}`,
-    description: `Transação ${index + 1}`,
-    amount: Math.random() * 1000,
-    type: Math.random() > 0.5 ? FilterType.Income : FilterType.Expense,
-    category:
-      MOCK_CATEGORIES[Math.floor(Math.random() * MOCK_CATEGORIES.length)],
-    date: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000),
-    notes:
-      Math.random() > 0.7
-        ? "Alguma observação sobre esta transação"
-        : undefined,
-  }));
 
 export function TransactionsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
