@@ -1,3 +1,4 @@
+import { AuthProvider } from "@/providers/AuthProvider";
 import {
   Inter_400Regular,
   Inter_500Medium,
@@ -17,6 +18,7 @@ import {
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import ToastManager from "toastify-react-native";
 import "../styles/global.css";
 
 // Prevent the splash screen from auto-hiding
@@ -54,36 +56,39 @@ export default function RootLayout() {
   }
 
   return (
-    <Stack>
-      <Stack.Screen
-        name='index'
-        options={{
-          title: "Bem-vindo",
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name='login'
-        options={{
-          title: "Login",
-          headerShown: true,
-        }}
-      />
-      <Stack.Screen
-        name='home'
-        options={{
-          title: "Home",
-          headerShown: true,
-        }}
-      />
-      <Stack.Screen
-        name='transactions'
-        options={{
-          title: "Transações",
-          headerShown: false,
-        }}
-      />
-    </Stack>
+    <AuthProvider>
+      <Stack>
+        <Stack.Screen
+          name='index'
+          options={{
+            title: "Bem-vindo",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name='login'
+          options={{
+            title: "Login",
+            headerShown: true,
+          }}
+        />
+        <Stack.Screen
+          name='home'
+          options={{
+            title: "Home",
+            headerShown: true,
+          }}
+        />
+        <Stack.Screen
+          name='transactions'
+          options={{
+            title: "Transações",
+            headerShown: false,
+          }}
+        />
+      </Stack>
+      <ToastManager />
+    </AuthProvider>
   );
 }
 
