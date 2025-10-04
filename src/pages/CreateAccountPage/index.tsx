@@ -1,6 +1,5 @@
 import { useAuth } from "@/hooks/useAuth";
 import {
-  cpfSchema,
   emailSchema,
   passwordAndConfirmPasswordSchema,
 } from "@/utils/validations";
@@ -41,7 +40,6 @@ const createAccountSchema = yup
       ),
   })
   .concat(passwordAndConfirmPasswordSchema)
-  .concat(cpfSchema)
   .concat(emailSchema);
 
 enum CREATE_ACCOUNT_STEPS {
@@ -63,7 +61,6 @@ export function CreateAccountPage() {
     defaultValues: {
       fullName: "",
       email: "",
-      cpf: "",
       telephone: "",
       password: "",
       confirmPassword: "",
@@ -76,7 +73,6 @@ export function CreateAccountPage() {
   const step1FieldNames: TCreateAccountFieldNames[] = [
     "fullName",
     "email",
-    "cpf",
     "telephone",
   ];
 
@@ -115,7 +111,6 @@ export function CreateAccountPage() {
         control={control}
         errors={{
           fullName: errors?.fullName,
-          cpf: errors?.cpf,
           email: errors?.email,
           telephone: errors?.telephone,
         }}

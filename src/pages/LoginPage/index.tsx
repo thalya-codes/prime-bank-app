@@ -5,9 +5,9 @@ import { FormFieldMessage } from "@/components/FormField/FormFieldMessage";
 import { FormFieldRoot } from "@/components/FormField/FormFieldRoot";
 import { InputField, InputIcon, InputRoot } from "@/components/Input";
 import { InputPassword } from "@/components/InputPassword";
-import { useAuth } from "@/hooks/useAuth";
+import { ICredentials, useAuth } from "@/hooks/useAuth";
 import { PublicScreenLayout } from "@/layouts/PublicScreenLayout";
-import { cpfOrEmailSchema } from "@/utils/validations";
+import { emailSchema } from "@/utils/validations";
 import { AntDesign } from "@expo/vector-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "expo-router";
@@ -21,7 +21,7 @@ const loginSchema = yup
   .object({
     password: yup.string().required("O campo é obrigatório!"),
   })
-  .concat(cpfOrEmailSchema);
+  .concat(emailSchema);
 
 export function LoginPage() {
   const router = useRouter();
@@ -32,16 +32,16 @@ export function LoginPage() {
     handleSubmit,
   } = useForm({
     defaultValues: {
-      cpfOrEmail: "",
+      email: "",
       password: "",
     },
     resolver: yupResolver(loginSchema),
     mode: "onBlur",
   });
 
-  const onLogin = async ({ cpfOrEmail, password }) => {
+  const onLogin = async (credentials: ICredentials) => {
     try {
-      await signIn({ email: cpfOrEmail, password });
+      await signIn(credentials);
       router.push("/home");
     } catch (error) {
       const errorMessage = handleAuthError(error);
@@ -85,18 +85,18 @@ export function LoginPage() {
       }
     >
       <Controller
-        name='cpfOrEmail'
+        name='email'
         control={control}
         render={({ field: { onChange, ...field } }) => (
           <FormFieldRoot>
-            <FormFieldLabel>Email ou CPF</FormFieldLabel>
+            <FormFieldLabel>Email</FormFieldLabel>
             <InputRoot>
               <InputIcon name='envelope-o' />
               <InputField onChangeText={onChange} {...field} />
             </InputRoot>
-            {errors?.cpfOrEmail && (
+            {errors?.email && (
               <FormFieldMessage isError>
-                {errors.cpfOrEmail.message}
+                {errors.email.message}
               </FormFieldMessage>
             )}
           </FormFieldRoot>

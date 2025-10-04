@@ -1,10 +1,9 @@
-import { Button } from "@/components/Button";
+import Button from "@/components/Button";
 import { FormFieldLabel } from "@/components/FormField/FormFieldLabel";
 import { FormFieldMessage } from "@/components/FormField/FormFieldMessage";
 import { FormFieldRoot } from "@/components/FormField/FormFieldRoot";
 import { InputField, InputIcon, InputRoot } from "@/components/Input";
 import { PublicScreenLayout } from "@/layouts/PublicScreenLayout";
-import { cpfMask, phoneMask } from "@/utils/masks";
 import { Controller } from "react-hook-form";
 import { IPersonalInfosStep } from "../interfaces";
 
@@ -28,7 +27,7 @@ export const PersonalInfosStep = ({
               <InputIcon name='user' />
               <InputField
                 placeholder='Seu Nome'
-                autoCapitalize="words"
+                autoCapitalize='words'
                 onChangeText={onChange}
                 {...field}
               />
@@ -53,7 +52,7 @@ export const PersonalInfosStep = ({
 
               <InputField
                 placeholder='email@email.com'
-                keyboardType="email-address"
+                keyboardType='email-address'
                 onChangeText={onChange}
                 {...field}
               />
@@ -61,30 +60,6 @@ export const PersonalInfosStep = ({
             {errors?.email && (
               <FormFieldMessage isError>
                 {errors?.email?.message}
-              </FormFieldMessage>
-            )}
-          </FormFieldRoot>
-        )}
-      />
-
-      <Controller
-        name='cpf'
-        control={control}
-        render={({ field: { onChange, value, ...field } }) => (
-          <FormFieldRoot>
-            <FormFieldLabel>CPF</FormFieldLabel>
-            <InputRoot>
-              <InputField
-                keyboardType='number-pad'
-                placeholder='000.000.000-00'
-                value={cpfMask(value)}
-                onChangeText={onChange}
-                {...field}
-              />
-            </InputRoot>
-            {errors?.cpf && (
-              <FormFieldMessage isError>
-                {errors?.cpf?.message}
               </FormFieldMessage>
             )}
           </FormFieldRoot>

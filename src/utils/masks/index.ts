@@ -1,7 +1,3 @@
-export function cpfMask(value: string) {
-  return value.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
-}
-
 export function phoneMask(value: string) {
   const cleanedValue = value.replace(/\D/g, "");
 
@@ -48,3 +44,4 @@ export const formatDateTime = (zuluDate: Date) => {
 
   return formatted;
 };
+
