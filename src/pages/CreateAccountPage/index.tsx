@@ -7,7 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import Toast from "react-native-toast-message";
+import { Toast } from "toastify-react-native";
 import * as yup from "yup";
 import { ICreateAccountFields, TCreateAccountFieldNames } from "./interfaces";
 import { DefinePasswordStep } from "./steps/DefinePasswordStep";
