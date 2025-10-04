@@ -7,6 +7,7 @@ import { InputField, InputIcon, InputRoot } from "@/components/Input";
 import { InputPassword } from "@/components/InputPassword";
 import { ICredentials, useAuth } from "@/hooks/useAuth";
 import { PublicScreenLayout } from "@/layouts/PublicScreenLayout";
+import { getToken } from "@/utils/auth/secureStore";
 import { emailSchema } from "@/utils/validations";
 import { AntDesign } from "@expo/vector-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -42,11 +43,13 @@ export function LoginPage() {
   const onLogin = async (credentials: ICredentials) => {
     try {
       await signIn(credentials);
+      const token = await getToken(process.env.EXPO_PUBLIC_TOKEN_KEY!);
+      console.log({ key: process.env.EXPO_PUBLIC_TOKEN_KEY, token });
       router.push("/home");
     } catch (error) {
       const errorMessage = handleAuthError(error);
       Toast.show({
-        type: 'error',
+        type: "error",
         autoHide: false,
         text1: errorMessage,
       });
@@ -117,11 +120,11 @@ export function LoginPage() {
         <AntDesign name='arrowright' size={20} color={"#fff"} />
       </Button>
 
-      <Button
+      {/* <Button
         variant='link'
         text='Esqueci minha senha'
         onPress={() => router.push("/(auth)/forgot-password")}
-      />
+      /> */}
     </PublicScreenLayout>
   );
 }
