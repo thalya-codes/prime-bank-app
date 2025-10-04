@@ -82,8 +82,8 @@ export function CreateAccountPage() {
       await createAccount({ email, password });
       const token = await getToken(process.env.EXPO_PUBLIC_TOKEN_KEY!);
       console.log({ key: process.env.EXPO_PUBLIC_TOKEN_KEY, token });
-      // reset();
-      // router.push("/login");
+      reset();
+      router.push("/login");
     } catch (error) {
       console.error(error);
       const errorMessage = handleAuthError(error);
