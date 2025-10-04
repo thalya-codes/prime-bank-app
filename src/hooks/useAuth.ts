@@ -25,9 +25,9 @@ export function useAuth() {
     SecureStore.setItem(process.env.EXPO_PUBLIC_TOKEN_KEY!, token);
   };
 
-  const resetPassword = async (newPassword: string) => {
-    await updatePassword(getAuth().currentUser!, newPassword);
-  };
+  // const resetPassword = async (newPassword: string) => {
+  //   await updatePassword(getAuth().currentUser!, newPassword);
+  // };
 
   const logout = async () => {
     await signOut(getAuth());
@@ -38,7 +38,7 @@ export function useAuth() {
     signIn,
     createAccount,
     logout,
-    resetPassword,
+    // resetPassword,
     handleAuthError,
   };
 }
