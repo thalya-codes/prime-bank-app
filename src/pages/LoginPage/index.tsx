@@ -45,7 +45,7 @@ export function LoginPage() {
       await signIn(credentials);
       const token = await getToken(process.env.EXPO_PUBLIC_TOKEN_KEY!);
       console.log({ key: process.env.EXPO_PUBLIC_TOKEN_KEY, token });
-      router.push("/home");
+      // router.push("/home");
     } catch (error) {
       const errorMessage = handleAuthError(error);
       Toast.show({

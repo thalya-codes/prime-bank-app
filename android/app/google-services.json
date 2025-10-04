@@ -1,48 +1,40 @@
 {
   "project_info": {
-    "project_number": "317191860359",
-    "project_id": "meu-app-f1c06",
-    "storage_bucket": "meu-app-f1c06.firebasestorage.app"
+    "project_number": "553317253715",
+    "project_id": "api-prime-bank",
+    "storage_bucket": "api-prime-bank.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:317191860359:android:390211f4419791593b0822",
+        "mobilesdk_app_id": "1:553317253715:android:3cb4a341745404613f7ca6",
         "android_client_info": {
-          "package_name": "com.primebank.techchallenge"
+          "package_name": "com.techchallenge.primebankapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "317191860359-mg8igu9kfgkk43eardrpb2743o5omlmm.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.primebank.techchallenge",
-            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
-          }
-        },
-        {
-          "client_id": "317191860359-js3vs3agcad8tk4md86d5r168k3ggiln.apps.googleusercontent.com",
+          "client_id": "553317253715-3jpjd6u8i7osba177h350955vutj8krs.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyByIeT1m2yePqWdjEzXraA8I3FjYAOWBD0"
+          "current_key": "AIzaSyCNrza35ePOBNYz-EdTVrhYMlItBHu6wP8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "317191860359-js3vs3agcad8tk4md86d5r168k3ggiln.apps.googleusercontent.com",
+              "client_id": "553317253715-3jpjd6u8i7osba177h350955vutj8krs.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "317191860359-7ed548nsie9q2q9mao59j310rktfeulg.apps.googleusercontent.com",
+              "client_id": "553317253715-304rtejodni69jkkgphur8ra1q5kb5qu.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.primebank.techchallenge"
+                "bundle_id": "com.techchallenge.prime-bank-app"
               }
             }
           ]

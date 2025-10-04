@@ -1,4 +1,5 @@
 import { useAuth } from "@/hooks/useAuth";
+import { getToken } from "@/utils/auth/secureStore";
 import {
   emailSchema,
   passwordAndConfirmPasswordSchema,
@@ -79,8 +80,10 @@ export function CreateAccountPage() {
   const onSubmit = async ({ email, password }: ICreateAccountFields) => {
     try {
       await createAccount({ email, password });
-      reset();
-      router.push("/login");
+      const token = await getToken(process.env.EXPO_PUBLIC_TOKEN_KEY!);
+      console.log({ key: process.env.EXPO_PUBLIC_TOKEN_KEY, token });
+      // reset();
+      // router.push("/login");
     } catch (error) {
       console.error(error);
       const errorMessage = handleAuthError(error);

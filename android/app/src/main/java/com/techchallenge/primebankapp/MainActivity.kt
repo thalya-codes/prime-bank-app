@@ -1,4 +1,4 @@
-package com.primebank.techchallenge
+package com.techchallenge.primebankapp
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

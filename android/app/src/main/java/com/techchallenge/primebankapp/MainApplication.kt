@@ -1,4 +1,4 @@
-package com.primebank.techchallenge
+package com.techchallenge.primebankapp
 
 import android.app.Application
 import android.content.res.Configuration
