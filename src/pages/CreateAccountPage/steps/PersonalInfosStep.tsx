@@ -101,7 +101,7 @@ export const PersonalInfosStep = ({
                 keyboardType='number-pad'
                 placeholder='00 000000000'
                 onChangeText={onChange}
-                value={phoneMask(value)}
+                value={value}
                 {...field}
               />
             </InputRoot>

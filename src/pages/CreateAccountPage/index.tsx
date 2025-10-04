@@ -1,3 +1,4 @@
+import { useAuth } from "@/hooks/useAuth";
 import {
   cpfSchema,
   emailSchema,
@@ -7,6 +8,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import Toast from "react-native-toast-message";
 import * as yup from "yup";
 import { ICreateAccountFields, TCreateAccountFieldNames } from "./interfaces";
 import { DefinePasswordStep } from "./steps/DefinePasswordStep";
@@ -49,6 +51,7 @@ enum CREATE_ACCOUNT_STEPS {
 export function CreateAccountPage() {
   const router = useRouter();
   const [step, setStep] = useState(CREATE_ACCOUNT_STEPS.PERSONAL_INFOS);
+  const { createAccount, handleAuthError } = useAuth();
 
   const {
     control,
@@ -77,10 +80,20 @@ export function CreateAccountPage() {
     "telephone",
   ];
 
-  const onSubmit = (data: ICreateAccountFields) => {
-    console.log(data);
-    reset();
-    router.push("/login");
+  const onSubmit = async ({ email, password }: ICreateAccountFields) => {
+    try {
+      await createAccount({ email, password });
+      reset();
+      router.push("/login");
+    } catch (error) {
+      console.error(error);
+      const errorMessage = handleAuthError(error);
+      Toast.show({
+        autoHide: false,
+        text1: errorMessage,
+      });
+    } finally {
+    }
   };
 
   const onNextStep = async () => {

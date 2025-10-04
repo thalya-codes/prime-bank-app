@@ -1,58 +1,45 @@
-import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
-import { FirebaseError } from "firebase/app";
-import { useCallback, useEffect, useState } from "react";
+import { handleAuthError } from "@/utils/handleAuthErrors";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  getIdToken,
+  signInWithEmailAndPassword,
+  signOut,
+  updatePassword,
+} from "@react-native-firebase/auth";
+import * as SecureStore from "expo-secure-store";
+
+export interface ICredentials {
+  email: string;
+  password: string;
+}
 
 export function useAuth() {
-  const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
-
-  const onAuthStateChanged = (user: FirebaseAuthTypes.User | null) => {
-    console.log("onAuthStateChanged", user);
-    setUser(user);
-    if (initializing) setInitializing(false);
+  const createAccount = async ({ email, password }: ICredentials) => {
+    await createUserWithEmailAndPassword(getAuth(), email, password);
   };
 
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber;
-  }, []);
+  const signIn = async ({ email, password }: ICredentials) => {
+    const res = await signInWithEmailAndPassword(getAuth(), email, password);
+    const token = await getIdToken(res.user);
+    SecureStore.setItem(process.env.EXPO_PUBLIC_TOKEN_KEY!, token);
+  };
 
-  const signUp = useCallback(async (email: string, password: string) => {
-    try {
-      await auth().createUserWithEmailAndPassword(email, password);
-      alert("Check your emails!");
-    } catch (e: any) {
-      const err = e as FirebaseError;
-      alert("Registration failed: " + err.message);
-    } finally {
-      //   setLoading(false);
-    }
-  }, []);
+  const resetPassword = async (newPassword: string) => {
+    await updatePassword(getAuth().currentUser!, newPassword);
+  };
 
-  const signIn = useCallback(async (email: string, password: string) => {
-    try {
-      await auth().signInWithEmailAndPassword(email, password);
-    } catch (e: any) {
-      const err = e as FirebaseError;
-      alert("Sign in failed: " + err.message);
-    } finally {
-      //   setLoading(false);
-    }
-  }, []);
-
-  const signOut = useCallback(async () => {
-    try {
-      await auth().signOut();
-    } catch (e: any) {
-      const err = e as FirebaseError;
-      alert("Sign in failed: " + err.message);
-    } finally {
-      //   setLoading(false);
-    }
-  }, []);
+  const logout = async () => {
+    await signOut(getAuth());
+    await SecureStore.deleteItemAsync(process.env.EXPO_PUBLIC_TOKEN_KEY!);
+  };
 
   return {
-    signUp
-  }
+    signIn,
+    createAccount,
+    logout,
+    resetPassword,
+    handleAuthError,
+  };
 }
 

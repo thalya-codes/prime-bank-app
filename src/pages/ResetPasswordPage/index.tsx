@@ -4,14 +4,18 @@ import { FormFieldRoot } from "@/components/FormField/FormFieldRoot";
 import { InputPassword } from "@/components/Input";
 import { PasswordTip } from "@/components/PasswordTip";
 import { PasswordTipContainer } from "@/components/PasswordTip/PasswordTipContainer";
+import { useAuth } from "@/hooks/useAuth";
 import { PublicScreenLayout } from "@/layouts/PublicScreenLayout";
 import { passwordAndConfirmPasswordSchema } from "@/utils/validations";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "expo-router";
 import { useForm } from "react-hook-form";
+import { Toast } from "toastify-react-native";
 
 export function ResetPasswordPage() {
   const router = useRouter();
+  const { resetPassword, handleAuthError } = useAuth();
+
   const {
     control,
     formState: { errors },
@@ -25,8 +29,23 @@ export function ResetPasswordPage() {
     resolver: yupResolver(passwordAndConfirmPasswordSchema),
   });
 
-  const onrResetPassword = () => {
-    router.push("/login");
+  const onrResetPassword = async ({
+    password,
+  }: {
+    password: string;
+    confirmPassword: string;
+  }) => {
+    try {
+      resetPassword(password);
+      router.push("/login");
+    } catch (error) {
+      const errorMessage = handleAuthError(error);
+      Toast.show({
+        autoHide: false,
+        text1: errorMessage,
+      });
+    } finally {
+    }
   };
 
   return (

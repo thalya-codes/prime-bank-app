@@ -1,14 +1,31 @@
 import { Avatar, MenuDropdown } from "@/components";
 import { Logo } from "@/components/Logo";
+import { useAuth } from "@/hooks/useAuth";
 import { FontAwesome } from "@expo/vector-icons";
 import { Text } from "@react-navigation/elements";
 import { useRouter } from "expo-router";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Toast } from "toastify-react-native";
 
 export const PrivateScreenHeaderLayout = () => {
   const router = useRouter();
-  
+  const { logout, handleAuthError } = useAuth();
+
+  const signOut = async () => {
+    try {
+      await logout();
+      router.push("/login");
+    } catch (error) {
+      const errorMessage = handleAuthError(error);
+      Toast.show({
+        autoHide: false,
+        text1: errorMessage,
+      });
+    } finally {
+    }
+  };
+
   return (
     <SafeAreaView
       edges={["top"]}
@@ -28,7 +45,7 @@ export const PrivateScreenHeaderLayout = () => {
             icon: (
               <FontAwesome name='arrow-right' size={16} color={"#256365"} />
             ),
-            onPress: () => router.push("/login"),
+            onPress: signOut,
           },
         ]}
         maxHeight={40}

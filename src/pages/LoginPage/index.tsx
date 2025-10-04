@@ -5,6 +5,7 @@ import { FormFieldMessage } from "@/components/FormField/FormFieldMessage";
 import { FormFieldRoot } from "@/components/FormField/FormFieldRoot";
 import { InputField, InputIcon, InputRoot } from "@/components/Input";
 import { InputPassword } from "@/components/InputPassword";
+import { useAuth } from "@/hooks/useAuth";
 import { PublicScreenLayout } from "@/layouts/PublicScreenLayout";
 import { cpfOrEmailSchema } from "@/utils/validations";
 import { AntDesign } from "@expo/vector-icons";
@@ -12,6 +13,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { Text, View } from "react-native";
+// import Toast from "react-native-toast-message";
+import { Toast } from "toastify-react-native";
 import * as yup from "yup";
 
 const loginSchema = yup
@@ -22,6 +25,7 @@ const loginSchema = yup
 
 export function LoginPage() {
   const router = useRouter();
+  const { signIn, handleAuthError } = useAuth();
   const {
     control,
     formState: { errors },
@@ -35,9 +39,19 @@ export function LoginPage() {
     mode: "onBlur",
   });
 
-  const onLogin = () => {
+  const onLogin = async ({ cpfOrEmail, password }) => {
+    try {
+      await signIn({ email: cpfOrEmail, password });
+      router.push("/home");
+    } catch (error) {
+      const errorMessage = handleAuthError(error);
+      Toast.show({
+        autoHide: false,
+        text1: errorMessage,
+      });
+    } finally {
+    }
     // @ts-ignore - Ignorando erros de tipo para fins de demonstração
-    router.push("home");
   };
 
   return (
