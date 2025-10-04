@@ -46,6 +46,7 @@ export function LoginPage() {
     } catch (error) {
       const errorMessage = handleAuthError(error);
       Toast.show({
+        type: 'error',
         autoHide: false,
         text1: errorMessage,
       });

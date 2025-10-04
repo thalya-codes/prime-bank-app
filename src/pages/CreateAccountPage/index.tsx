@@ -85,6 +85,7 @@ export function CreateAccountPage() {
       console.error(error);
       const errorMessage = handleAuthError(error);
       Toast.show({
+        type: "error",
         autoHide: false,
         text1: errorMessage,
       });
