@@ -2,7 +2,7 @@ import { Control, FieldError } from "react-hook-form";
 
 export type TCreateAccountControl = Control<ICreateAccountFields>;
 
-export type TCreateAccountFieldNames = 'fullName' | 'email' | 'cpf' | 'telephone'
+export type TCreateAccountFieldNames = "fullName" | "email" | "telephone";
 
 export interface ICreateAccountSharedProps<IErrors> {
   control: TCreateAccountControl;
@@ -12,7 +12,6 @@ export interface ICreateAccountSharedProps<IErrors> {
 export interface ICreateAccountFieldsStep1 {
   fullName: string;
   email: string;
-  cpf: string;
   telephone: string;
 }
 
@@ -29,7 +28,6 @@ export interface IPersonalInfosStep
   extends ICreateAccountSharedProps<{
     fullName: FieldError | undefined;
     email: FieldError | undefined;
-    cpf: FieldError | undefined;
     telephone: FieldError | undefined;
   }> {
   onNextStep: () => void;

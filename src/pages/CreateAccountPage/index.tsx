@@ -1,5 +1,5 @@
+import { useAuth } from "@/hooks/useAuth";
 import {
-  cpfSchema,
   emailSchema,
   passwordAndConfirmPasswordSchema,
 } from "@/utils/validations";
@@ -7,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { Toast } from "toastify-react-native";
 import * as yup from "yup";
 import { ICreateAccountFields, TCreateAccountFieldNames } from "./interfaces";
 import { DefinePasswordStep } from "./steps/DefinePasswordStep";
@@ -39,7 +40,6 @@ const createAccountSchema = yup
       ),
   })
   .concat(passwordAndConfirmPasswordSchema)
-  .concat(cpfSchema)
   .concat(emailSchema);
 
 enum CREATE_ACCOUNT_STEPS {
@@ -49,6 +49,7 @@ enum CREATE_ACCOUNT_STEPS {
 export function CreateAccountPage() {
   const router = useRouter();
   const [step, setStep] = useState(CREATE_ACCOUNT_STEPS.PERSONAL_INFOS);
+  const { createAccount, handleAuthError } = useAuth();
 
   const {
     control,
@@ -60,7 +61,6 @@ export function CreateAccountPage() {
     defaultValues: {
       fullName: "",
       email: "",
-      cpf: "",
       telephone: "",
       password: "",
       confirmPassword: "",
@@ -73,14 +73,24 @@ export function CreateAccountPage() {
   const step1FieldNames: TCreateAccountFieldNames[] = [
     "fullName",
     "email",
-    "cpf",
     "telephone",
   ];
 
-  const onSubmit = (data: ICreateAccountFields) => {
-    console.log(data);
-    reset();
-    router.push("/login");
+  const onSubmit = async ({ email, password }: ICreateAccountFields) => {
+    try {
+      await createAccount({ email, password });
+      reset();
+      router.push("/login");
+    } catch (error) {
+      console.error(error);
+      const errorMessage = handleAuthError(error);
+      Toast.show({
+        type: "error",
+        autoHide: false,
+        text1: errorMessage,
+      });
+    } finally {
+    }
   };
 
   const onNextStep = async () => {
@@ -102,7 +112,6 @@ export function CreateAccountPage() {
         control={control}
         errors={{
           fullName: errors?.fullName,
-          cpf: errors?.cpf,
           email: errors?.email,
           telephone: errors?.telephone,
         }}

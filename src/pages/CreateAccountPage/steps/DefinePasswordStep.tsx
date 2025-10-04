@@ -1,4 +1,4 @@
-import { Button } from "@/components/Button";
+import Button from "@/components/Button";
 import { CardHighlight } from "@/components/CardHighlight";
 import { Checkbox } from "@/components/Checkbox/Checkbox";
 import { CheckboxLabel } from "@/components/Checkbox/CheckboxLabel";
@@ -7,12 +7,12 @@ import { FormFieldMessage } from "@/components/FormField/FormFieldMessage";
 import { FormFieldRoot } from "@/components/FormField/FormFieldRoot";
 import { InputPassword } from "@/components/Input";
 import { PasswordTip } from "@/components/PasswordTip";
+import { PasswordTipContainer } from "@/components/PasswordTip/PasswordTipContainer";
 import { PublicScreenLayout } from "@/layouts/PublicScreenLayout";
 import { Ionicons } from "@expo/vector-icons";
 import { Controller } from "react-hook-form";
 import { Text, View } from "react-native";
 import { IDefinePasswordStep } from "../interfaces";
-import { PasswordTipContainer } from "@/components/PasswordTip/PasswordTipContainer";
 
 export const DefinePasswordStep = ({
   control,
@@ -32,7 +32,7 @@ export const DefinePasswordStep = ({
       }
     >
       <FormFieldRoot>
-        <PasswordTipContainer className="flex-row items-center justify-between">
+        <PasswordTipContainer className='flex-row items-center justify-between'>
           <FormFieldLabel>Senha</FormFieldLabel>
           <PasswordTip />
         </PasswordTipContainer>

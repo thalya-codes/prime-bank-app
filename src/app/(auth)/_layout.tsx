@@ -1,3 +1,4 @@
+import { AuthProvider } from "@/providers/AuthProvider";
 import {
   Inter_400Regular,
   Inter_500Medium,
@@ -17,6 +18,7 @@ import {
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import ToastManager from "toastify-react-native";
 import "../styles/global.css";
 
 // Prevent the splash screen from auto-hiding
@@ -54,41 +56,44 @@ export default function RootLayout() {
   }
 
   return (
-    <Stack initialRouteName="login">
-      <Stack.Screen
-        name='login'
-        options={{
-          title: "Login",
-          headerShown: true,
-        }}
-      />
-      <Stack.Screen
-        name='home'
-        options={{
-          title: "Home",
-          headerShown: true,
-        }}
-      />
-      <Stack.Screen
-        name='transactions'
-        options={{
-          title: "Transações",
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="forgot-password"
-        options={{
-          title: "Esqueci a Senha"
-        }}
-      />
-      <Stack.Screen
-        name="create-account"
-        options={{
-          title: "Criar conta"
-        }}
-      />
-    </Stack>
+    <AuthProvider>
+      <Stack initialRouteName='login'>
+        <Stack.Screen
+          name='login'
+          options={{
+            title: "Login",
+            headerShown: true,
+          }}
+        />
+        <Stack.Screen
+          name='home'
+          options={{
+            title: "Home",
+            headerShown: true,
+          }}
+        />
+        <Stack.Screen
+          name='transactions'
+          options={{
+            title: "Transações",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name='forgot-password'
+          options={{
+            title: "Esqueci a Senha",
+          }}
+        />
+        <Stack.Screen
+          name='create-account'
+          options={{
+            title: "Criar conta",
+          }}
+        />
+      </Stack>
+      <ToastManager />
+    </AuthProvider>
   );
 }
 

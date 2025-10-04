@@ -1,43 +1,61 @@
-import { Button } from "@/components";
+import Button from "@/components/Button";
 import { CardHighlight } from "@/components/CardHighlight";
 import { FormFieldLabel } from "@/components/FormField/FormFieldLabel";
 import { FormFieldMessage } from "@/components/FormField/FormFieldMessage";
 import { FormFieldRoot } from "@/components/FormField/FormFieldRoot";
 import { InputField, InputIcon, InputRoot } from "@/components/Input";
 import { InputPassword } from "@/components/InputPassword";
+import { ICredentials, useAuth } from "@/hooks/useAuth";
 import { PublicScreenLayout } from "@/layouts/PublicScreenLayout";
-import { cpfOrEmailSchema } from "@/utils/validations";
+import { getToken } from "@/utils/auth/secureStore";
+import { emailSchema } from "@/utils/validations";
 import { AntDesign } from "@expo/vector-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { Text, View } from "react-native";
+// import Toast from "react-native-toast-message";
+import { Toast } from "toastify-react-native";
 import * as yup from "yup";
 
 const loginSchema = yup
   .object({
     password: yup.string().required("O campo é obrigatório!"),
   })
-  .concat(cpfOrEmailSchema);
+  .concat(emailSchema);
 
 export function LoginPage() {
   const router = useRouter();
+  const { signIn, handleAuthError } = useAuth();
   const {
     control,
     formState: { errors },
     handleSubmit,
   } = useForm({
     defaultValues: {
-      cpfOrEmail: "",
+      email: "",
       password: "",
     },
     resolver: yupResolver(loginSchema),
     mode: "onBlur",
   });
 
-  const onLogin = () => {
+  const onLogin = async (credentials: ICredentials) => {
+    try {
+      await signIn(credentials);
+      const token = await getToken(process.env.EXPO_PUBLIC_TOKEN_KEY!);
+      console.log({ key: process.env.EXPO_PUBLIC_TOKEN_KEY, token });
+      router.push("/home");
+    } catch (error) {
+      const errorMessage = handleAuthError(error);
+      Toast.show({
+        type: "error",
+        autoHide: false,
+        text1: errorMessage,
+      });
+    } finally {
+    }
     // @ts-ignore - Ignorando erros de tipo para fins de demonstração
-    router.push("home");
   };
 
   return (
@@ -71,18 +89,18 @@ export function LoginPage() {
       }
     >
       <Controller
-        name='cpfOrEmail'
+        name='email'
         control={control}
         render={({ field: { onChange, ...field } }) => (
           <FormFieldRoot>
-            <FormFieldLabel>Email ou CPF</FormFieldLabel>
+            <FormFieldLabel>Email</FormFieldLabel>
             <InputRoot>
               <InputIcon name='envelope-o' />
               <InputField onChangeText={onChange} {...field} />
             </InputRoot>
-            {errors?.cpfOrEmail && (
+            {errors?.email && (
               <FormFieldMessage isError>
-                {errors.cpfOrEmail.message}
+                {errors.email.message}
               </FormFieldMessage>
             )}
           </FormFieldRoot>
@@ -102,11 +120,11 @@ export function LoginPage() {
         <AntDesign name='arrowright' size={20} color={"#fff"} />
       </Button>
 
-      <Button
+      {/* <Button
         variant='link'
         text='Esqueci minha senha'
         onPress={() => router.push("/(auth)/forgot-password")}
-      />
+      /> */}
     </PublicScreenLayout>
   );
 }
