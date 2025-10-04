@@ -21,6 +21,7 @@ import { Tabs } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { Text } from "react-native";
+import ToastManager from "toastify-react-native";
 import "../styles/global.css";
 
 // Prevent the splash screen from auto-hiding
@@ -109,6 +110,7 @@ export default function RootLayout() {
           }}
         />
       </Tabs>
+      <ToastManager />
     </AuthProvider>
   );
 }
