@@ -59,6 +59,7 @@ export default function RootLayout() {
   }
 
   return (
+
     <AuthProvider>
       <Tabs
         screenOptions={{

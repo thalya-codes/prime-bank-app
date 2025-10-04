@@ -64,8 +64,8 @@ export function LoginPage() {
       subTitle='Acesse sua conta Prime Bank'
       footer={
         <View className='gap-8'>
-          <View className='flex-row items-center gap-1 w-full justify-center'>
-            <Text className='font-nunito-regular text-neutral-800 text-xl'>
+          <View className='flex-row items-center justify-center w-full gap-1'>
+            <Text className='text-xl font-nunito-regular text-neutral-800'>
               Não tem uma conta?
             </Text>
             <Button
