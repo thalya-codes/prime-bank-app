@@ -1,3 +1,4 @@
+import { deleteToken, saveToken } from "@/utils/auth/secureStore";
 import { handleAuthError } from "@/utils/handleAuthErrors";
 import {
   createUserWithEmailAndPassword,
@@ -5,9 +6,7 @@ import {
   getIdToken,
   signInWithEmailAndPassword,
   signOut,
-  updatePassword,
 } from "@react-native-firebase/auth";
-import * as SecureStore from "expo-secure-store";
 
 export interface ICredentials {
   email: string;
@@ -22,7 +21,7 @@ export function useAuth() {
   const signIn = async ({ email, password }: ICredentials) => {
     const res = await signInWithEmailAndPassword(getAuth(), email, password);
     const token = await getIdToken(res.user);
-    SecureStore.setItem(process.env.EXPO_PUBLIC_TOKEN_KEY!, token);
+    await saveToken(process.env.EXPO_PUBLIC_TOKEN_KEY!, token);
   };
 
   // const resetPassword = async (newPassword: string) => {
@@ -31,7 +30,7 @@ export function useAuth() {
 
   const logout = async () => {
     await signOut(getAuth());
-    await SecureStore.deleteItemAsync(process.env.EXPO_PUBLIC_TOKEN_KEY!);
+    await deleteToken(process.env.EXPO_PUBLIC_TOKEN_KEY!);
   };
 
   return {
