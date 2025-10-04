@@ -18,7 +18,6 @@ import {
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import ToastManager from "toastify-react-native";
 import "../styles/global.css";
 
 // Prevent the splash screen from auto-hiding
@@ -57,14 +56,7 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <Stack>
-        <Stack.Screen
-          name='index'
-          options={{
-            title: "Bem-vindo",
-            headerShown: false,
-          }}
-        />
+      <Stack initialRouteName='login'>
         <Stack.Screen
           name='login'
           options={{
@@ -86,8 +78,19 @@ export default function RootLayout() {
             headerShown: false,
           }}
         />
+        <Stack.Screen
+          name='forgot-password'
+          options={{
+            title: "Esqueci a Senha",
+          }}
+        />
+        <Stack.Screen
+          name='create-account'
+          options={{
+            title: "Criar conta",
+          }}
+        />
       </Stack>
-      <ToastManager />
     </AuthProvider>
   );
 }

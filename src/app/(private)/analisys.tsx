@@ -1,10 +1,11 @@
-import { TransactionsPage } from "@/pages";
+
+import { AnalysisPage } from "@/pages";
 import { SafeAreaView } from "react-native";
 
-export default function TransactionsScreen() {
+export default function AnalysisScreen() {
   return (
     <SafeAreaView className='flex-1'>
-        <TransactionsPage />
+      <AnalysisPage />
     </SafeAreaView>
   );
 }

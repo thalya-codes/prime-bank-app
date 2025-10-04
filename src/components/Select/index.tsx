@@ -64,7 +64,7 @@ function SelectBase(
         activeOpacity={disabled ? 1 : 0.7}
         disabled={disabled}
       >
-        <Text className={`${disabled ? 'text-neutral-400' : 'text-neutral-950'} font-nunito-regular`}>{selectedLabel || placeholder}</Text>
+        <Text className={`${disabled ? 'text-neutral-300' : 'text-neutral-950'} font-nunito-regular ${!value ? 'text-neutral-300' : 'text-neutral-950'}`}>{selectedLabel || placeholder}</Text>
         <Animated.View
           style={{ transform: [{ rotate: isOpen ? "180deg" : "0deg" }] }}
         >
@@ -84,11 +84,11 @@ function SelectBase(
         }}
         className="bg-white rounded-md shadow"
       >
-        <ScrollView>
+        <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
           {data.map((item) => (
             <TouchableOpacity
               key={item.value.toString()}
-              className="p-3 border-b border-gray-200"
+              className="p-3 border-b border-r border-l border-gray-200"
               onPress={() => handleSelect(item)}
             >
               <Text className="font-nunito-regular">{item.label}</Text>
@@ -100,4 +100,5 @@ function SelectBase(
   );
 }
 
-export const Select = forwardRef(SelectBase);
+const Select = forwardRef(SelectBase);
+export default Select

@@ -1,11 +1,10 @@
-import { Avatar, MenuDropdown } from "@/components";
+import { Avatar, MenuDropDown } from "@/components";
 import { Logo } from "@/components/Logo";
 import { useAuth } from "@/hooks/useAuth";
 import { FontAwesome } from "@expo/vector-icons";
 import { Text } from "@react-navigation/elements";
 import { useRouter } from "expo-router";
 import { View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Toast } from "toastify-react-native";
 
 export const PrivateScreenHeaderLayout = () => {
@@ -27,17 +26,14 @@ export const PrivateScreenHeaderLayout = () => {
   };
 
   return (
-    <SafeAreaView
-      edges={["top"]}
-      className='bg-white border-b flex-row items-center justify-between border-gray-200 pl-1 pr-4'
-    >
+    <View className='bg-white border-b flex-row items-center justify-between border-gray-200 pl-1 pr-4'>
       <View className='flex-row items-center gap-2 px-4 py-3'>
         <Logo size='xs' />
         <Text className='font-inter-semi-bold text-neutral-900 text-xl'>
           Prime Bank
         </Text>
       </View>
-      <MenuDropdown
+      <MenuDropDown
         data={[
           {
             label: "Sair",
@@ -51,8 +47,8 @@ export const PrivateScreenHeaderLayout = () => {
         maxHeight={40}
       >
         <Avatar name='Thalya Stéffany' />
-      </MenuDropdown>
-    </SafeAreaView>
+      </MenuDropDown>
+    </View>
   );
 };
 

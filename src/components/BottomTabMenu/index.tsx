@@ -1,9 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { usePathname, useRouter } from 'expo-router';
-import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
-export function BottomTabMenu() {
+function BottomTabMenu() {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -64,3 +63,5 @@ export function BottomTabMenu() {
     </View>
   );
 }
+
+export default BottomTabMenu

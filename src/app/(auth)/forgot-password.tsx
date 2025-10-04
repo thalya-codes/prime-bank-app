@@ -1,10 +1,10 @@
-import { CreateAccountPage } from "@/pages/CreateAccountPage";
+import { ResetPasswordPage } from "@/pages";
 import { SafeAreaView } from "react-native";
 
-export default function CreatAccountScreen() {
+export default function ForgotPasswordScreen() {
   return (
     <SafeAreaView className='flex-1 justify-center items-center bg-brand-100'>
-      <CreateAccountPage />
+      <ResetPasswordPage/>
     </SafeAreaView>
   );
 }
