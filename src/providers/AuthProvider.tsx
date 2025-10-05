@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import useAuthStore from "@/store/useAuthStore";
 import { getAuth, onAuthStateChanged } from "@react-native-firebase/auth";
 import { createContext, ReactNode, useEffect, useState } from "react";
 
@@ -11,6 +12,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Handle user state changes
   function handleAuthStateChanged(user: any) {
     console.log({ user });
+    useAuthStore.setState({ email: user?.email });
     setUser(user);
     if (initializing) setInitializing(false);
   }

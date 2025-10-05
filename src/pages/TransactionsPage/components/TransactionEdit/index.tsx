@@ -12,7 +12,7 @@ import {
 
 import { Badge, BottomSheet } from "@/components";
 import { currencyMask, formatDate } from "@/utils/masks";
-import { FilterType } from "../..";
+import { FilterType } from "../../types";
 
 function TransactionEdit({
   modalVisible,

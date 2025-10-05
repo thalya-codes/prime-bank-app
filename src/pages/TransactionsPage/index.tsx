@@ -17,19 +17,7 @@ import {
   MOCK_TRANSACTIONS,
   Transaction,
 } from "./data";
-
-export enum FilterType {
-  All = "all",
-  Income = "income",
-  Expense = "expense",
-}
-
-interface FilterOptions {
-  startDate: Date | null;
-  endDate: Date | null;
-  category: string;
-  type: FilterType;
-}
+import { FilterOptions, FilterType } from "./types";
 
 const filterType = Object.values(FilterType).map((item) => ({
   label: item.charAt(0).toUpperCase() + item.slice(1),
@@ -399,11 +387,11 @@ export function TransactionsPage() {
       />
 
       {/* Lista de transações */}
-      <Card className="border border-gray-300 mx-5 my-3 px-4">
-        <View className="flex-row justify-between items-center mb-6">
+      <Card className="px-4 mx-5 my-3 border border-gray-300">
+        <View className="flex-row items-center justify-between mb-6">
           <Text className="text-xl font-nunito-semi-bold">Extratos</Text>
           <TouchableOpacity
-            className="border rounded p-2 border-gray-300"
+            className="p-2 border border-gray-300 rounded"
             onPress={() => setShowFilters(!showFilters)}
           >
             <Ionicons name="funnel-outline" size={24} color="black" />

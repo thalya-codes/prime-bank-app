@@ -1,19 +1,28 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Text, View } from "react-native";
-import { FilterType } from "../..";
+import { FilterType } from "../../types";
 
-function EmptyList(filters: any) {
+interface EmptyListProps {
+  filters: {
+    type: FilterType;
+    category: string;
+    startDate: Date | null;
+    endDate: Date | null;
+  };
+}
+
+function EmptyList({ filters }: EmptyListProps) {
   return (
-    <View className="flex-1 justify-center items-center py-12">
+    <View className="items-center justify-center flex-1 py-12">
       <Ionicons name="receipt-outline" size={64} color="#CBD5E1" />
-      <Text className="text-lg text-gray-400 mt-4 text-center">
+      <Text className="mt-4 text-lg text-center text-gray-400">
         Nenhuma transação encontrada
       </Text>
-      <Text className="text-sm text-gray-400 mt-2 text-center">
+      <Text className="mt-2 text-sm text-center text-gray-400">
         {filters.category ||
-        filters.type !== FilterType.All ||
-        filters.startDate ||
-        filters.endDate
+          filters.type !== FilterType.All ||
+          filters.startDate ||
+          filters.endDate
           ? "Tente ajustar os filtros"
           : "Adicione sua primeira transação tocando no botão +"}
       </Text>

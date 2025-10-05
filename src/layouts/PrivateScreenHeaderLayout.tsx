@@ -1,17 +1,21 @@
 import { Avatar, MenuDropDown } from "@/components";
 import { Logo } from "@/components/Logo";
 import { useAuth } from "@/hooks/useAuth";
+import useAuthStore from "@/store/useAuthStore";
 import { FontAwesome } from "@expo/vector-icons";
 import { Text } from "@react-navigation/elements";
 import { useRouter } from "expo-router";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Toast } from "toastify-react-native";
+import { shallow } from "zustand/shallow";
 
 export const PrivateScreenHeaderLayout = () => {
   const router = useRouter();
   const { logout, handleAuthError } = useAuth();
-
+  const { email } = useAuthStore(
+    (state) => ({ email: state.email }), shallow
+  );
   const signOut = async () => {
     try {
       await logout();
@@ -48,7 +52,7 @@ export const PrivateScreenHeaderLayout = () => {
           ]}
           maxHeight={40}
         >
-          <Avatar name='Thalya Stéffany' />
+          <Avatar name={email ?? "Usuário Desconhecido"} />
         </MenuDropDown>
       </View>
     </SafeAreaView>
