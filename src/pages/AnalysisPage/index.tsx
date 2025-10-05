@@ -16,12 +16,17 @@ import Svg, {
 } from "react-native-svg";
 
 import { Card } from "@/components";
+import { transactionQueries } from "@/features/transactions";
+import { useTransactionsFilters } from "@/store";
 import { currencyMask } from "@/utils/masks";
 import { cn } from "@/utils/twClassnamesResolver";
+import { useQuery } from "@tanstack/react-query";
+import { shallow } from "zustand/shallow";
 import {
   MOCK_TRANSACTIONS,
   TransactionMovement,
 } from "../TransactionsPage/data";
+
 
 type AnalysisMode = "summary" | "detailed";
 
@@ -69,10 +74,19 @@ export function AnalysisPage() {
   const [mode, setMode] = useState<AnalysisMode>("summary");
   const { width } = useWindowDimensions();
 
-  /*   const {
-      data: transactionsData,
-      isLoading: isLoadingTransactionsList,
-    } = useQuery(transactionQueries.list()); */
+  const { transactionFilter, setTransactionFilter, resetTransactionFilter } = useTransactionsFilters(
+    (state) => ({
+      transactionFilter: state.filters,
+      setTransactionFilter: state.setFilters,
+      resetTransactionFilter: state.resetFilters,
+    }),
+    shallow,
+  )
+
+  const {
+    data: transactionsData,
+    isLoading: isLoadingTransactionsList,
+  } = useQuery(transactionQueries.list(transactionFilter));
 
 
   const chartWidth = Math.max(Math.min(width - 80, 360), 220);

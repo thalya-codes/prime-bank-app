@@ -65,5 +65,5 @@ export const resetTransactionsFilters =
 
 export {
   TransactionsFilterStore,
-  TransactionsFilterStore as useTransactionsFilters,
+  transactionsFilterStore as useTransactionsFilters,
 };
