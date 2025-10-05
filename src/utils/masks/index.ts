@@ -45,3 +45,23 @@ export const formatDateTime = (zuluDate: Date) => {
   return formatted;
 };
 
+export function currencyMasks(value: string): string {
+  const cleanedValue = value.replace(/\D/g, "");
+
+  if (!cleanedValue) return "";
+  const numberValue = parseInt(cleanedValue, 10) / 100;
+
+  return numberValue.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
+export function removeCurrencyMasks(value: string): string {
+  return value.replace(/\D/g, "");
+}
+
+export function currencyToNumbers(value: string): number {
+  const cleanedValue = value.replace(/\D/g, "");
+  return parseInt(cleanedValue, 10) / 100;
+}

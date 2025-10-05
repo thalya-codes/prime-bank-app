@@ -1,34 +1,167 @@
-import { Logo } from '@/components/Logo';
-import { useRouter } from 'expo-router';
-import { Text, TouchableOpacity, View } from 'react-native';
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { Card } from "@/components/Card";
+import { Button } from "@/components/Button";
+import { Select } from "@/components/Select";
+import { InputField } from "@/components/Input/InputField";
+import { currencyMask, currencyToNumber } from "@/utils/masks";
+
+interface TransactionType {
+  value: string;
+  label: string;
+}
+
+const TRANSACTION_TYPES: TransactionType[] = [
+  { value: "receita", label: "Receita" },
+  { value: "despesa", label: "Despesa" },
+  { value: "transferencia", label: "Transferência" },
+];
 
 export function HomePage() {
-  const router = useRouter();
+  const [selectedTransactionType, setSelectedTransactionType] =
+    useState<string>("");
+  const [transactionValue, setTransactionValue] = useState<string>("");
+  const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(true);
+
+  const currentDate = new Date().toLocaleDateString("pt-BR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
+  const handleTransactionSubmit = () => {
+    if (!selectedTransactionType || !transactionValue) {
+      return;
+    }
+    const numericValue = currencyToNumber(transactionValue);
+
+    // Lógica para processar a transação
+    console.log("Transação:", {
+      type: selectedTransactionType,
+      value: numericValue,
+      formattedValue: transactionValue,
+    });
+
+    // Limpar campos após conclusão
+    setSelectedTransactionType("");
+    setTransactionValue("");
+  };
+
+  const handleValueChange = (value: string) => {
+    const maskedValue = currencyMask(value);
+    setTransactionValue(maskedValue);
+  };
+
+  const toggleBalanceVisibility = () => {
+    setIsBalanceVisible(!isBalanceVisible);
+  };
 
   return (
-    <View className="flex-1 justify-center items-center bg-white p-4">
-      <Text className="text-2xl font-bold text-blue-700 mb-6">Página Inicial</Text>
-      <Text className="text-lg text-gray-600 mb-8">Bem-vindo ao Prime Bank App</Text>
-      <Logo />
-      {/* <TouchableOpacity
-        onPress={() => {
-          // @ts-ignore - Ignorando erros de tipo para fins de demonstração
-          router.push("transactions");
-        }}
-        className="bg-blue-500 py-3 px-6 rounded-md mb-4"
-      >
-        <Text className="text-white font-bold">Ver Transações</Text>
-      </TouchableOpacity>
+    <ScrollView
+      className="flex-1 bg-neutral-50"
+      contentContainerStyle={{ flexGrow: 1 }}
+      showsVerticalScrollIndicator={false}
+    >
+      <View className="px-4 py-6 pb-12">
+        {/* Header com saudação */}
+        <Card
+          color="light-green"
+          className="mb-6 border border-brand-400 shadow-black/30
+          py-4
+          "
+        >
+          <Text className="font-nunito-medium text-lg text-brand-700 mb-1">
+            Olá, Joana!👋
+          </Text>
+          <Text className="font-nunito-regular text-sm text-brand-600">
+            {currentDate}
+          </Text>
+        </Card>
 
-      <TouchableOpacity
-        onPress={() => {
-          // @ts-ignore - Ignorando erros de tipo para fins de demonstração
-          router.back();
-        }}
-        className="bg-gray-500 py-3 px-6 rounded-md"
-      >
-        <Text className="text-white font-bold">Voltar</Text>
-      </TouchableOpacity> */}
-    </View>
+        {/* Card do saldo */}
+        <Card color="strong-green" className="mb-6 shadow-black/30">
+          <View className="flex-row justify-between items-center">
+            <View>
+              <Text className="font-nunito-regular text-sm text-neutral-0 mb-2">
+                Saldo disponível ——
+              </Text>
+              <Text className="font-nunito-bold text-3xl text-neutral-0">
+                {isBalanceVisible ? "R$ 3800,52" : "R$ ****,**"}
+              </Text>
+            </View>
+            <TouchableOpacity onPress={toggleBalanceVisibility}>
+              <Ionicons
+                name={isBalanceVisible ? "eye" : "eye-off"}
+                size={24}
+                color="white"
+              />
+            </TouchableOpacity>
+          </View>
+        </Card>
+
+        {/* Seção Nova Transação */}
+        <Card
+          className="shadow-black/20 py-3 min-h-[300px]"
+          style={{ overflow: "visible" }}
+        >
+          <View className="flex-row items-center mb-6">
+            <Ionicons name="add-sharp" size={24} color="#28B2AA" />
+            <Text className="font-nunito-semi-bold text-lg text-neutral-900 ml-2">
+              Nova transação
+            </Text>
+          </View>
+
+          <View className="flex-1" style={{ overflow: "visible" }}>
+            {/* Campo Tipo de transação */}
+            <View className="mb-4" style={{ zIndex: 10, overflow: "visible" }}>
+              <Text className="font-nunito-medium text-base text-neutral-900 mb-3">
+                Tipo de transação
+              </Text>
+              <View
+                className="border border-neutral-300 rounded-md bg-white"
+                style={{ overflow: "visible" }}
+              >
+                <Select
+                  data={TRANSACTION_TYPES}
+                  value={selectedTransactionType}
+                  onChange={value => setSelectedTransactionType(String(value))}
+                  placeholder="Selecione o tipo"
+                />
+              </View>
+            </View>
+
+            {/* Campo Valor */}
+            <View className="mb-8">
+              <Text className="font-nunito-medium text-base text-neutral-900 mb-3">
+                Valor(R$)
+              </Text>
+              <View className="border border-neutral-300 rounded-md bg-white">
+                <InputField
+                  placeholder="0,00"
+                  value={transactionValue}
+                  onChangeText={handleValueChange}
+                  keyboardType="numeric"
+                  className="px-3 py-3 font-nunito-regular text-base"
+                />
+              </View>
+            </View>
+
+            {/* Botão Concluir */}
+            <View className="mt-auto">
+              <Button
+                text="Concluir transação"
+                variant="primary"
+                onPress={handleTransactionSubmit}
+                className="flex-row items-center justify-center"
+              >
+                <Ionicons name="checkmark" size={20} color="white" />
+              </Button>
+            </View>
+          </View>
+        </Card>
+      </View>
+    </ScrollView>
   );
 }

@@ -55,8 +55,9 @@ function MenuDropdownBase(
   return (
     <View>
       <TouchableOpacity
+        className="pr-3.5"
         onPress={toggleMenu}
-        onLayout={(e) => setButtonLayout(e.nativeEvent.layout)}
+        onLayout={e => setButtonLayout(e.nativeEvent.layout)}
       >
         {children ? (
           children
@@ -66,36 +67,82 @@ function MenuDropdownBase(
       </TouchableOpacity>
 
       {isOpen && buttonLayout && (
-          <Animated.View
-            style={{
-              height: animatedHeight,
-              top: buttonLayout.y + buttonLayout.height + 4,
-              right: buttonLayout.x - 4,
-              minWidth: 150,
-              maxHeight,
-            }}
-            className="bg-white rounded-md shadow-lg absolute overflow-hidden"
-          >
-            <ScrollView>
-              {data.map((item, index) => (
-                <TouchableOpacity
-                  key={index}
-                  className="p-3 border-b border-gray-200 gap-2 flex-row items-center bg-white"
-                  onPress={() => handlePress(item)}
-                >
-                  {item?.icon ? item.icon : <></>}
-                  <Text
-                    className={cn(
-                      "font-nunito-regular text-xl",
-                      item?.color || ""
-                    )}
+        /* <<<<<<< HEAD
+                  <Animated.View
+                    style={{
+                      height: animatedHeight,
+                      top: buttonLayout.y + buttonLayout.height + 4,
+                      right: buttonLayout.x - 4,
+                      minWidth: 150,
+                      maxHeight,
+                    }}
+                    className="absolute overflow-hidden bg-white rounded-md shadow-lg"
                   >
-                    {item.label}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </Animated.View>
+                    <ScrollView>
+                      {data.map((item, index) => (
+                        <TouchableOpacity
+                          key={index}
+                          className="flex-row items-center gap-2 p-3 bg-white border-b border-gray-200"
+                          onPress={() => handlePress(item)}
+                        >
+                          {item?.icon ? item.icon : <></>}
+                          <Text
+                            className={cn(
+                              "font-nunito-regular text-xl",
+                              item?.color || ""
+                            )}
+                          >
+                            {item.label}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </ScrollView>
+                  </Animated.View>
+        ======= */
+        <Animated.View
+          style={{
+            height: animatedHeight,
+            overflow: "hidden",
+            position: "absolute",
+            top: buttonLayout.y + buttonLayout.height + 4,
+            right: 20,
+            minWidth: 150,
+            maxHeight,
+            zIndex: 9999,
+            elevation: 10,
+            backgroundColor: "white",
+            borderRadius: 8,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.4,
+            shadowRadius: 8,
+          }}
+        >
+          <ScrollView
+            style={{ backgroundColor: "white" }}
+            showsVerticalScrollIndicator={false}
+          >
+            {data.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                className="flex-row items-center gap-2 p-2 bg-white border-b border-gray-200 active:bg-gray-50"
+                onPress={() => handlePress(item)}
+                style={{ backgroundColor: "white" }}
+              >
+                {item?.icon}
+                <Text
+                  className={cn(
+                    "font-nunito-regular text-base  ",
+                    item?.color || "text-neutral-900"
+                  )}
+                >
+                  {item.label}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </Animated.View>
+        /* >>>>>>> 70333587a7aa1b97691e657755c583069dbdcee4 */
       )}
     </View>
   );
