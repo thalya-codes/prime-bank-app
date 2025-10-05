@@ -1,12 +1,6 @@
 export interface TransactionsData {
   id: string;
-  fromAccountId: string;
-  toAccountId: string;
   amount: number;
-  date: string;
-  anexo: null;
-  urlAnexo: null;
-  associatedUser: string;
   type: string;
   createdAt: string;
 }

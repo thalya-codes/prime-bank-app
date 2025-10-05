@@ -23,9 +23,9 @@ function TransactionItem({
               color={`${item.type === "income" ? "#16A34A" : "#DC2626"}`}
             />
           </Badge>
-          <Text className="text-lg font-nunito-semi-bold">{item.category}</Text>
+          <Text className="text-lg font-nunito-semi-bold">{item.type}</Text>
         </View>
-
+ 
         <MenuDropDown
           data={[
             {
@@ -48,12 +48,12 @@ function TransactionItem({
         style={{ zIndex: -1 }}
       >
         <Text className="text-sm text-gray-600">
-          {formatDateTime(item.date)}
+          {formatDateTime(item.createdAt)}
         </Text>
         <View className="flex justify-between items-center">
           <Badge color="bg-gray-200 mb-2">
             <Text className="text-l font-nunito-semi-bold mx-2">
-              {formatMonthDate(item.date)}
+              {formatMonthDate(item.createdAt)}
             </Text>
           </Badge>
 
@@ -66,13 +66,7 @@ function TransactionItem({
         </View>
       </View>
 
-      {item.notes && (
-        <Text className="text-sm text-gray-500 mt-1" numberOfLines={1}>
-          {item.notes}
-        </Text>
-      )}
-
-      {item.receiptUrl && (
+      {item.urlAnexo && (
         <View className="flex-row items-center mt-2">
           <Ionicons name="receipt-outline" size={16} color="#666" />
           <Text className="text-xs text-gray-600 ml-1">

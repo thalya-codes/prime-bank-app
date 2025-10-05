@@ -9,7 +9,7 @@ export interface Transaction {
   category: string;
   date: Date;
   receiptUrl?: string;
-  notes?: string;
+  notes?: string; 
   movement: TransactionMovement;
 }
 
