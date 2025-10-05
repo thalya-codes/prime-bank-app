@@ -22,6 +22,8 @@
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.6",
+    "@tanstack/react-query": "^5.90.2",
+    "axios": "^1.12.2",
     "babel-plugin-react-compiler": "^19.0.0-beta-ebf51a3-20250411",
     "clsx": "^2.1.1",
     "expo": "~53.0.23",

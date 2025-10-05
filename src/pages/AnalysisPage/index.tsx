@@ -69,6 +69,12 @@ export function AnalysisPage() {
   const [mode, setMode] = useState<AnalysisMode>("summary");
   const { width } = useWindowDimensions();
 
+  /*   const {
+      data: transactionsData,
+      isLoading: isLoadingTransactionsList,
+    } = useQuery(transactionQueries.list()); */
+
+
   const chartWidth = Math.max(Math.min(width - 80, 360), 220);
 
   const transactions = useMemo(() => MOCK_TRANSACTIONS.slice(), []);

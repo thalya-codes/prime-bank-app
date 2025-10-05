@@ -1,5 +1,6 @@
 import { PrivateScreenHeaderLayout } from "@/layouts/PrivateScreenHeaderLayout";
 import { AuthProvider } from "@/providers/AuthProvider";
+import { queryClient } from "@/services/query-client";
 import {
   Inter_400Regular,
   Inter_500Medium,
@@ -17,6 +18,7 @@ import {
   useFonts as useFontsNunito,
 } from "@expo-google-fonts/nunito";
 import { FontAwesome } from "@expo/vector-icons";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { Tabs } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
@@ -61,57 +63,59 @@ export default function RootLayout() {
   return (
 
     <AuthProvider>
-      <Tabs
-        screenOptions={{
-          tabBarActiveTintColor: "#24797A",
-          tabBarInactiveTintColor: "#28B2AA",
-          headerShown: true,
-          header: () => <PrivateScreenHeaderLayout />,
-        }}
-      >
-        <Tabs.Screen
-          name='home'
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <FontAwesome name='home' color={color} size={size} />
-            ),
-            tabBarLabel: ({ color }) => (
-              <Text style={{ color, fontFamily: "Nunito_600SemiBold" }}>
-                Início
-              </Text>
-            ),
-            title: "Início",
+      <QueryClientProvider client={queryClient}>
+        <Tabs
+          screenOptions={{
+            tabBarActiveTintColor: "#24797A",
+            tabBarInactiveTintColor: "#28B2AA",
+            headerShown: true,
+            header: () => <PrivateScreenHeaderLayout />,
           }}
-        />
-        <Tabs.Screen
-          name='transactions'
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <FontAwesome name='exchange' color={color} size={size} />
-            ),
-            tabBarLabel: ({ color }) => (
-              <Text style={{ color, fontFamily: "Nunito_600SemiBold" }}>
-                Extrato
-              </Text>
-            ),
-          }}
-        />
+        >
+          <Tabs.Screen
+            name='home'
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <FontAwesome name='home' color={color} size={size} />
+              ),
+              tabBarLabel: ({ color }) => (
+                <Text style={{ color, fontFamily: "Nunito_600SemiBold" }}>
+                  Início
+                </Text>
+              ),
+              title: "Início",
+            }}
+          />
+          <Tabs.Screen
+            name='transactions'
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <FontAwesome name='exchange' color={color} size={size} />
+              ),
+              tabBarLabel: ({ color }) => (
+                <Text style={{ color, fontFamily: "Nunito_600SemiBold" }}>
+                  Extrato
+                </Text>
+              ),
+            }}
+          />
 
-        <Tabs.Screen
-          name='analysis'
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <FontAwesome name='bar-chart' color={color} size={size} />
-            ),
-            tabBarLabel: ({ color }) => (
-              <Text style={{ color, fontFamily: "Nunito_600SemiBold" }}>
-                Análise
-              </Text>
-            ),
-          }}
-        />
-      </Tabs>
-      <ToastManager />
+          <Tabs.Screen
+            name='analysis'
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <FontAwesome name='bar-chart' color={color} size={size} />
+              ),
+              tabBarLabel: ({ color }) => (
+                <Text style={{ color, fontFamily: "Nunito_600SemiBold" }}>
+                  Análise
+                </Text>
+              ),
+            }}
+          />
+        </Tabs>
+        <ToastManager />
+      </QueryClientProvider>
     </AuthProvider>
   );
 }
