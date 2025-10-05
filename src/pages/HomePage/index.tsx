@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { Card } from "@/components/Card";
-import { Button } from "@/components/Button";
-import { Select } from "@/components/Select";
+import Button from "@/components/Button";
+import Card from "@/components/Card";
 import { InputField } from "@/components/Input/InputField";
-import { currencyMask, currencyToNumber } from "@/utils/masks";
+import Select from "@/components/Select";
+import { currencyMasks, currencyToNumbers } from "@/utils/masks";
+import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 interface TransactionType {
   value: string;
@@ -35,7 +35,7 @@ export function HomePage() {
     if (!selectedTransactionType || !transactionValue) {
       return;
     }
-    const numericValue = currencyToNumber(transactionValue);
+    const numericValue = currencyToNumbers(transactionValue);
 
     // Lógica para processar a transação
     console.log("Transação:", {
@@ -50,7 +50,7 @@ export function HomePage() {
   };
 
   const handleValueChange = (value: string) => {
-    const maskedValue = currencyMask(value);
+    const maskedValue = currencyMasks(value);
     setTransactionValue(maskedValue);
   };
 
@@ -68,26 +68,24 @@ export function HomePage() {
         {/* Header com saudação */}
         <Card
           color="light-green"
-          className="mb-6 border border-brand-400 shadow-black/30
-          py-4
-          "
+          className="py-4 mb-6 border border-brand-400 shadow-black/30 "
         >
-          <Text className="font-nunito-medium text-lg text-brand-700 mb-1">
+          <Text className="mb-1 text-lg font-nunito-medium text-brand-700">
             Olá, Joana!👋
           </Text>
-          <Text className="font-nunito-regular text-sm text-brand-600">
+          <Text className="text-sm font-nunito-regular text-brand-600">
             {currentDate}
           </Text>
         </Card>
 
         {/* Card do saldo */}
         <Card color="strong-green" className="mb-6 shadow-black/30">
-          <View className="flex-row justify-between items-center">
+          <View className="flex-row items-center justify-between">
             <View>
-              <Text className="font-nunito-regular text-sm text-neutral-0 mb-2">
+              <Text className="mb-2 text-sm font-nunito-regular text-neutral-0">
                 Saldo disponível ——
               </Text>
-              <Text className="font-nunito-bold text-3xl text-neutral-0">
+              <Text className="text-3xl font-nunito-bold text-neutral-0">
                 {isBalanceVisible ? "R$ 3800,52" : "R$ ****,**"}
               </Text>
             </View>
@@ -108,7 +106,7 @@ export function HomePage() {
         >
           <View className="flex-row items-center mb-6">
             <Ionicons name="add-sharp" size={24} color="#28B2AA" />
-            <Text className="font-nunito-semi-bold text-lg text-neutral-900 ml-2">
+            <Text className="ml-2 text-lg font-nunito-semi-bold text-neutral-900">
               Nova transação
             </Text>
           </View>
@@ -116,11 +114,11 @@ export function HomePage() {
           <View className="flex-1" style={{ overflow: "visible" }}>
             {/* Campo Tipo de transação */}
             <View className="mb-4" style={{ zIndex: 10, overflow: "visible" }}>
-              <Text className="font-nunito-medium text-base text-neutral-900 mb-3">
+              <Text className="mb-3 text-base font-nunito-medium text-neutral-900">
                 Tipo de transação
               </Text>
               <View
-                className="border border-neutral-300 rounded-md bg-white"
+                className="bg-white border rounded-md border-neutral-300"
                 style={{ overflow: "visible" }}
               >
                 <Select
@@ -134,16 +132,16 @@ export function HomePage() {
 
             {/* Campo Valor */}
             <View className="mb-8">
-              <Text className="font-nunito-medium text-base text-neutral-900 mb-3">
+              <Text className="mb-3 text-base font-nunito-medium text-neutral-900">
                 Valor(R$)
               </Text>
-              <View className="border border-neutral-300 rounded-md bg-white">
+              <View className="bg-white border rounded-md border-neutral-300">
                 <InputField
                   placeholder="0,00"
                   value={transactionValue}
                   onChangeText={handleValueChange}
                   keyboardType="numeric"
-                  className="px-3 py-3 font-nunito-regular text-base"
+                  className="px-3 py-3 text-base font-nunito-regular"
                 />
               </View>
             </View>

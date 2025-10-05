@@ -1,12 +1,20 @@
 export interface TransactionsData {
-  fromAccountId: number;
-  toAccountId: number;
+  id: string;
+  fromAccountId: string;
+  toAccountId: string;
   amount: number;
   date: string;
-  anexo: string;
-  urlAnexo: string;
+  anexo: null;
+  urlAnexo: null;
   associatedUser: string;
-  type: "sended" | "received";
+  type: string;
   createdAt: string;
-  name: string;
+}
+
+export interface TransactionFormData {
+  id?: string;
+  fromAccountId: string;
+  toAccountId: string;
+  amount: number;
+  anexo: string;
 }
