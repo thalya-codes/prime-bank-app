@@ -17,7 +17,9 @@ import Svg, {
 
 import { Card } from "@/components";
 import { transactionQueries } from "@/features/transactions";
+import { userQueries } from "@/features/user";
 import { useTransactionsFilters } from "@/store";
+import useAuthStore from "@/store/useAuthStore";
 import { currencyMask } from "@/utils/masks";
 import { cn } from "@/utils/twClassnamesResolver";
 import { useQuery } from "@tanstack/react-query";
@@ -83,11 +85,24 @@ export function AnalysisPage() {
     shallow,
   )
 
+  const { uid } = useAuthStore(
+    (state) => ({
+      uid: state.uid,
+    }),
+    shallow,
+  )
+
   const {
     data: transactionsData,
     isLoading: isLoadingTransactionsList,
   } = useQuery(transactionQueries.list(transactionFilter));
 
+  const {
+    data: userData,
+    isLoading: isLoadingUserData,
+  } = useQuery(userQueries.detail(uid));
+
+  console.log({ userData, isLoadingUserData });
 
   const chartWidth = Math.max(Math.min(width - 80, 360), 220);
 

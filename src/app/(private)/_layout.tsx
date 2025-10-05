@@ -26,6 +26,10 @@ import { Text } from "react-native";
 import ToastManager from "toastify-react-native";
 import "../styles/global.css";
 
+if (__DEV__) {
+  require("../../../Reactotron");
+}
+
 // Prevent the splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
 
