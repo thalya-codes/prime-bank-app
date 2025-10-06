@@ -5,3 +5,10 @@ export interface UserData {
   acceptTermAndPolice: boolean;
   createdAt: string;
 }
+export interface CreateUserData {
+  fullName: string;
+  email: string;
+  telephone: string;
+  password: string;
+  acceptTermAndPolice: boolean;
+}

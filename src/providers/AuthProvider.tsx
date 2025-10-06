@@ -11,7 +11,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // Handle user state changes
   function handleAuthStateChanged(user: any) {
-    console.log({ user });
     useAuthStore.setState({ email: user?.email, uid: user?.uid });
     setUser(user);
     if (initializing) setInitializing(false);

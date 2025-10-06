@@ -17,8 +17,6 @@ export const userQueries = {
 
 async function fetchUserDetails(userId?: string) {
   const response = await api.get<UserData>(`/users/${userId}`);
-
-  console.log("teste:", response.data);
-
+  console.log("fetchUserDetails response:", response);
   return response.data;
 }

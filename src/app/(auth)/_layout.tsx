@@ -1,4 +1,5 @@
 import { AuthProvider } from "@/providers/AuthProvider";
+import { queryClient } from "@/services/query-client";
 import {
   Inter_400Regular,
   Inter_500Medium,
@@ -15,6 +16,7 @@ import {
   Nunito_700Bold,
   useFonts as useFontsNunito,
 } from "@expo-google-fonts/nunito";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
@@ -57,42 +59,44 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <Stack initialRouteName='login'>
-        <Stack.Screen
-          name='login'
-          options={{
-            title: "Login",
-            headerShown: true,
-          }}
-        />
-        <Stack.Screen
-          name='home'
-          options={{
-            title: "Home",
-            headerShown: true,
-          }}
-        />
-        <Stack.Screen
-          name='transactions'
-          options={{
-            title: "Transações",
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name='forgot-password'
-          options={{
-            title: "Esqueci a Senha",
-          }}
-        />
-        <Stack.Screen
-          name='create-account'
-          options={{
-            title: "Criar conta",
-          }}
-        />
-      </Stack>
-      <ToastManager />
+      <QueryClientProvider client={queryClient}>
+        <Stack initialRouteName='login'>
+          <Stack.Screen
+            name='login'
+            options={{
+              title: "Login",
+              headerShown: true,
+            }}
+          />
+          <Stack.Screen
+            name='home'
+            options={{
+              title: "Home",
+              headerShown: true,
+            }}
+          />
+          <Stack.Screen
+            name='transactions'
+            options={{
+              title: "Transações",
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name='forgot-password'
+            options={{
+              title: "Esqueci a Senha",
+            }}
+          />
+          <Stack.Screen
+            name='create-account'
+            options={{
+              title: "Criar conta",
+            }}
+          />
+        </Stack>
+        <ToastManager />
+      </QueryClientProvider>
     </AuthProvider>
   );
 }

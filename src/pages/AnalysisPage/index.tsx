@@ -102,8 +102,6 @@ export function AnalysisPage() {
     isLoading: isLoadingUserData,
   } = useQuery(userQueries.detail(uid));
 
-  console.log({ userData, isLoadingUserData });
-
   const chartWidth = Math.max(Math.min(width - 80, 360), 220);
 
   const transactions = useMemo(() => MOCK_TRANSACTIONS.slice(), []);
@@ -224,6 +222,7 @@ export function AnalysisPage() {
         <Text className="mt-1 text-sm text-gray-500">
           Escolha o modo para visualizar seus dados.
         </Text>
+        <Text className="mt-1 text-sm text-gray-500">{userData?.name}</Text>
         <View className="flex-row gap-3 p-1 mt-6 bg-white rounded-full shadow-sm">
           {MODE_KEYS.map((currentMode) => {
             const isActive = mode === currentMode;

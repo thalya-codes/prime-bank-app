@@ -1,5 +1,6 @@
+import { CreateUserData } from "@/features/user";
+import { useCreateUserMutation } from "@/features/user/mutations";
 import { useAuth } from "@/hooks/useAuth";
-import { getToken } from "@/utils/auth/secureStore";
 import {
   emailSchema,
   passwordAndConfirmPasswordSchema,
@@ -50,8 +51,8 @@ enum CREATE_ACCOUNT_STEPS {
 export function CreateAccountPage() {
   const router = useRouter();
   const [step, setStep] = useState(CREATE_ACCOUNT_STEPS.PERSONAL_INFOS);
-  const { createAccount, handleAuthError } = useAuth();
-
+  const { handleAuthError } = useAuth();
+  const createUserMutation = useCreateUserMutation();
   const {
     control,
     handleSubmit,
@@ -78,10 +79,17 @@ export function CreateAccountPage() {
   ];
 
   const onSubmit = async ({ email, password }: ICreateAccountFields) => {
+    const userData: CreateUserData = {
+      fullName: control._formValues.fullName,
+      email: control._formValues.email,
+      telephone: control._formValues.telephone,
+      password: control._formValues.password,
+      acceptTermAndPolice: control._formValues.acceptTermAndPolice,
+    }
+
     try {
-      await createAccount({ email, password });
-      const token = await getToken(process.env.EXPO_PUBLIC_TOKEN_KEY!);
-      console.log({ key: process.env.EXPO_PUBLIC_TOKEN_KEY, token });
+      await createUserMutation.mutateAsync(userData);
+
       reset();
       router.push("/login");
     } catch (error) {
