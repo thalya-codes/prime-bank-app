@@ -16,12 +16,14 @@ import Svg, {
 } from "react-native-svg";
 
 import { Card } from "@/components";
+import { IAnalyticsResponseKpis, useGetAnalytics } from "@/features/analytics/queries";
 import { currencyMask } from "@/utils/masks";
 import { cn } from "@/utils/twClassnamesResolver";
 import {
   MOCK_TRANSACTIONS,
   TransactionMovement,
 } from "../TransactionsPage/data";
+import { PieDistributionChart } from "./PieChart";
 
 type AnalysisMode = "summary" | "detailed";
 
@@ -69,11 +71,11 @@ export function AnalysisPage() {
   const [mode, setMode] = useState<AnalysisMode>("summary");
   const { width } = useWindowDimensions();
 
+  const {data} = useGetAnalytics()
   /*   const {
       data: transactionsData,
       isLoading: isLoadingTransactionsList,
     } = useQuery(transactionQueries.list()); */
-
 
   const chartWidth = Math.max(Math.min(width - 80, 360), 220);
 
@@ -148,15 +150,17 @@ export function AnalysisPage() {
     });
 
     return Array.from(monthMap.values())
-      .sort((first, second) => first.monthStart.getTime() - second.monthStart.getTime())
+      .sort(
+        (first, second) =>
+          first.monthStart.getTime() - second.monthStart.getTime()
+      )
       .slice(-6);
   }, [transactions]);
 
   const pieDistribution = useMemo<PieSlice[]>(() => {
     const totals: Record<TransactionMovement, number> = {
-      deposit: 0,
-      payment: 0,
-      transfer: 0,
+      received: 0,
+      sended: 0,
     };
 
     transactions.forEach((transaction) => {
@@ -165,9 +169,9 @@ export function AnalysisPage() {
 
     return (Object.keys(totals) as TransactionMovement[]).map((movement) => {
       const label =
-        movement === "deposit"
+        movement === "received"
           ? "Depósitos"
-          : movement === "payment"
+          : movement === "sended"
             ? "Pagamentos"
             : "Transferências";
 
@@ -186,16 +190,17 @@ export function AnalysisPage() {
     ];
   }, [summaryMetrics.totalExpense, summaryMetrics.totalIncome]);
 
+  console.warn('HEY', data?.kpis)
   return (
-    <View className="flex-1 px-5 pt-5 pb-8 bg-gray-100">
-      <Card className="border border-[#D4DAE3]">
-        <Text className="text-2xl text-gray-900 font-nunito-semi-bold">
+    <View className='flex-1 px-5 pt-5 pb-8 bg-gray-100'>
+      <Card className='border border-[#D4DAE3]'>
+        <Text className='text-2xl text-gray-900 font-nunito-semi-bold'>
           Análise financeira
         </Text>
-        <Text className="mt-1 text-sm text-gray-500">
+        <Text className='mt-1 text-sm text-gray-500'>
           Escolha o modo para visualizar seus dados.
         </Text>
-        <View className="flex-row gap-3 p-1 mt-6 bg-white rounded-full shadow-sm">
+        <View className='flex-row gap-3 p-1 mt-6 bg-white rounded-full shadow-sm'>
           {MODE_KEYS.map((currentMode) => {
             const isActive = mode === currentMode;
             return (
@@ -222,9 +227,8 @@ export function AnalysisPage() {
         </View>
       </Card>
 
-
       {mode === "summary" ? (
-        <SummaryView metrics={summaryMetrics} />
+        <SummaryView metrics={data?.kpis!} />
       ) : (
         <DetailedView
           monthlyFlow={monthlyFlow}
@@ -237,25 +241,25 @@ export function AnalysisPage() {
   );
 }
 
-function SummaryView({ metrics }: { metrics: SummaryMetrics }) {
+function SummaryView({ metrics }: { metrics: IAnalyticsResponseKpis }) {
   return (
-    <View className="gap-3 mt-8 space-y-3">
-      <Card className="border border-[#D4DAE3]">
-        <Text className="text-sm text-gray-500">Total de transações</Text>
-        <Text className="mt-2 text-3xl text-gray-900 font-nunito-bold">
+    <View className='gap-3 mt-8 space-y-3'>
+      <Card className='border border-[#D4DAE3]'>
+        <Text className='text-sm text-gray-500'>Total de transações</Text>
+        <Text className='mt-2 text-3xl text-gray-900 font-nunito-bold'>
           {metrics.totalTransactions}
         </Text>
       </Card>
-      <Card className="border border-[#D4DAE3]">
-        <Text className="text-sm text-gray-500">Receitas</Text>
-        <Text className="mt-2 text-3xl text-green-600 font-nunito-bold">
-          {currencyMask(metrics.totalIncome)}
+      <Card className='border border-[#D4DAE3]'>
+        <Text className='text-sm text-gray-500'>Transações recebidas</Text>
+        <Text className='mt-2 text-3xl text-green-600 font-nunito-bold'>
+          {currencyMask(metrics.receivedAmount)}
         </Text>
       </Card>
-      <Card className="border border-[#D4DAE3]">
-        <Text className="text-sm text-gray-500">Despesas</Text>
-        <Text className="mt-2 text-3xl text-red-600 font-nunito-bold">
-          {currencyMask(metrics.totalExpense)}
+      <Card className='border border-[#D4DAE3]'>
+        <Text className='text-sm text-gray-500'>Transações realizadas</Text>
+        <Text className='mt-2 text-3xl text-red-600 font-nunito-bold'>
+          {currencyMask(metrics.totalAmountMoved)}
         </Text>
       </Card>
     </View>
@@ -273,34 +277,54 @@ function DetailedView({
   incomeVsExpense: BarItem[];
   chartWidth: number;
 }) {
+  const { data } = useGetAnalytics();
+
+  const distributionByType = data?.charts?.distributionByType!;
+  const formattedDistributionByType: PieSlice[] = [
+    {
+      label: distributionByType ? distributionByType[0]?.name : "",
+      movement: "received",
+      value: distributionByType ? distributionByType[0]?.count : 0,
+    },
+    {
+      label: distributionByType ? distributionByType[1]?.name : "",
+      movement: "sended",
+      value: distributionByType ? distributionByType[1]?.count : 0,
+    },
+  ];
+
   return (
     <ScrollView
-      className="mt-6"
+      className='mt-6'
       contentContainerStyle={{ paddingBottom: 32 }}
       showsVerticalScrollIndicator={false}
     >
-      <Card className="mb-4 border border-gray-200">
-        <Text className="mb-4 text-base text-gray-800 font-nunito-semi-bold">
+      {/* <Card className='mb-4 border border-gray-200'>
+        <Text className='mb-4 text-base text-gray-800 font-nunito-semi-bold'>
           Fluxo financeiro mensal
         </Text>
-        <MonthlyFlowChart data={monthlyFlow} width={chartWidth} height={200} />
-      </Card>
-
-      <Card className="mb-4 border border-gray-200">
-        <Text className="mb-4 text-base text-gray-800 font-nunito-semi-bold">
-          Distribuição por tipo de transação
-        </Text>
-        <PieDistributionChart data={pieDistribution} size={chartWidth} />
-      </Card>
-
-      <Card className="border border-gray-200">
-        <Text className="mb-4 text-base text-gray-800 font-nunito-semi-bold">
-          Receitas x Despesas
-        </Text>
-        <IncomeVsExpenseChart
-          data={incomeVsExpense}
+        <MonthlyFlowChart
+          data={[
+            {
+              expense: data?.charts?.monthlyFlowData?.expense,
+              income: data?.charts?.monthlyFlowData?.income,
+              label: data?.charts?.monthlyFlowData?.label,
+              monthStart: data?.charts?.monthlyFlowData?.monthStart,
+              total: 200,
+            },
+          ]}
           width={chartWidth}
           height={200}
+        />
+      </Card> */}
+
+      <Card className='mb-4 border border-gray-200'>
+        <Text className='mb-4 text-base text-gray-800 font-nunito-semi-bold'>
+          Distribuição por tipo de transação
+        </Text>
+        <PieDistributionChart
+          data={formattedDistributionByType}
+          size={chartWidth}
         />
       </Card>
     </ScrollView>
@@ -318,7 +342,7 @@ function MonthlyFlowChart({
 }) {
   if (!data.length) {
     return (
-      <Text className="text-sm text-gray-500">
+      <Text className='text-sm text-gray-500'>
         Ainda não há dados suficientes para gerar o gráfico.
       </Text>
     );
@@ -339,8 +363,7 @@ function MonthlyFlowChart({
     const normalized = (item.total - minValue) / range;
     const y = baselineY - normalized * usableHeight;
     const x =
-      horizontalPadding +
-      (data.length > 1 ? stepX * index : usableWidth / 2);
+      horizontalPadding + (data.length > 1 ? stepX * index : usableWidth / 2);
 
     return { x, y, label: item.label };
   });
@@ -374,7 +397,7 @@ function MonthlyFlowChart({
             strokeWidth={1}
           />
 
-          <Path d={pathD} stroke="#2563EB" strokeWidth={2} fill="none" />
+          <Path d={pathD} stroke='#2563EB' strokeWidth={2} fill='none' />
 
           {points.map((point, index) => (
             <Circle
@@ -382,7 +405,7 @@ function MonthlyFlowChart({
               cx={point.x}
               cy={point.y}
               r={4}
-              fill="#2563EB"
+              fill='#2563EB'
             />
           ))}
 
@@ -392,98 +415,15 @@ function MonthlyFlowChart({
               x={point.x}
               y={baselineY + 12}
               fontSize={10}
-              fill="#4B5563"
-              alignmentBaseline="hanging"
-              textAnchor="middle"
+              fill='#4B5563'
+              alignmentBaseline='hanging'
+              textAnchor='middle'
             >
               {point.label}
             </SvgText>
           ))}
         </G>
       </Svg>
-    </View>
-  );
-}
-
-function PieDistributionChart({
-  data,
-  size,
-}: {
-  data: PieSlice[];
-  size: number;
-}) {
-  const radius = size / 3;
-  const center = radius;
-  const filtered = data.filter((item) => item.value > 0);
-  const total = filtered.reduce((accumulator, item) => accumulator + item.value, 0);
-
-  if (!total) {
-    return (
-      <Text className="text-sm text-gray-500">
-        Ainda não há volume registrado para exibir a distribuição.
-      </Text>
-    );
-  }
-
-  let startAngle = 0;
-
-  const slices = filtered.map((slice) => {
-    const angle = (slice.value / total) * 360;
-    const endAngle = startAngle + angle;
-    const path = describePieSlice(center, center, radius, startAngle, endAngle);
-    const labelAngle = startAngle + angle / 2;
-    const percentage = ((slice.value / total) * 100).toFixed(1);
-    startAngle = endAngle;
-
-    const labelPosition = polarToCartesian(
-      center,
-      center,
-      radius * 0.7,
-      labelAngle
-    );
-
-    return {
-      movement: slice.movement,
-      path,
-      label: slice.label,
-      percentage,
-      color: PIE_COLORS[slice.movement],
-      labelPosition,
-    };
-  });
-
-  return (
-    <View className="flex-row items-center justify-between">
-      <Svg width={radius * 2} height={radius * 2}>
-        {slices.map((slice) => (
-          <Path key={slice.movement} d={slice.path} fill={slice.color} />
-        ))}
-        {slices.map((slice) => (
-          <SvgText
-            key={slice.movement + "-label"}
-            x={slice.labelPosition.x}
-            y={slice.labelPosition.y}
-            fill="#FFFFFF"
-            fontSize={12}
-            fontWeight="600"
-            textAnchor="middle"
-          >
-            {slice.percentage + "%"}
-          </SvgText>
-        ))}
-      </Svg>
-
-      <View className="flex-1 ml-4">
-        {data.map((slice) => (
-          <View className="flex-row items-center mb-2" key={slice.movement}>
-            <View
-              className="w-3 h-3 mr-2 rounded-full"
-              style={{ backgroundColor: PIE_COLORS[slice.movement] }}
-            />
-            <Text className="text-sm text-gray-700">{slice.label}</Text>
-          </View>
-        ))}
-      </View>
     </View>
   );
 }
@@ -497,7 +437,10 @@ function IncomeVsExpenseChart({
   width: number;
   height: number;
 }) {
-  const maxValue = Math.max.apply(null, data.map((item) => item.value).concat(1));
+  const maxValue = Math.max.apply(
+    null,
+    data.map((item) => item.value).concat(1)
+  );
   const barWidth = width / (data.length * 2);
   const bottomOffset = 16;
 
@@ -513,20 +456,28 @@ function IncomeVsExpenseChart({
       />
 
       {data.map((item, index) => {
-        const barHeight = ((item.value || 0) / maxValue) * (height - bottomOffset - 16);
+        const barHeight =
+          ((item.value || 0) / maxValue) * (height - bottomOffset - 16);
         const x = barWidth + index * barWidth * 2;
         const y = height - bottomOffset - barHeight;
         const fill = index === 0 ? "#16A34A" : "#DC2626";
 
         return (
           <G key={item.label}>
-            <Rect x={x} y={y} width={barWidth} height={barHeight} rx={6} fill={fill} />
+            <Rect
+              x={x}
+              y={y}
+              width={barWidth}
+              height={barHeight}
+              rx={6}
+              fill={fill}
+            />
             <SvgText
               x={x + barWidth / 2}
               y={height - bottomOffset + 12}
               fontSize={12}
-              fill="#4B5563"
-              textAnchor="middle"
+              fill='#4B5563'
+              textAnchor='middle'
             >
               {item.label}
             </SvgText>
@@ -534,8 +485,8 @@ function IncomeVsExpenseChart({
               x={x + barWidth / 2}
               y={y - 6}
               fontSize={12}
-              fill="#111827"
-              textAnchor="middle"
+              fill='#111827'
+              textAnchor='middle'
             >
               {currencyMask(item.value)}
             </SvgText>
@@ -589,3 +540,4 @@ function describePieSlice(
     "Z",
   ].join(" ");
 }
+
