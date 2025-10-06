@@ -2,27 +2,34 @@ import Button from "@/components/Button";
 import Card from "@/components/Card";
 import { InputField } from "@/components/Input/InputField";
 import Select from "@/components/Select";
-import { currencyMasks, currencyToNumbers } from "@/utils/masks";
+import { TransactionType } from "@/features/transactions/types";
+import { useTransactionForm } from "@/hooks";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
-interface TransactionType {
-  value: string;
+interface TransactionTypeOption {
+  value: TransactionType;
   label: string;
 }
 
-const TRANSACTION_TYPES: TransactionType[] = [
+const TRANSACTION_TYPES: TransactionTypeOption[] = [
   { value: "receita", label: "Receita" },
   { value: "despesa", label: "Despesa" },
   { value: "transferencia", label: "Transferência" },
 ];
 
 export function HomePage() {
-  const [selectedTransactionType, setSelectedTransactionType] =
-    useState<string>("");
-  const [transactionValue, setTransactionValue] = useState<string>("");
   const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(true);
+
+  const {
+    selectedTransactionType,
+    setSelectedTransactionType,
+    transactionValue,
+    handleValueChange,
+    handleTransactionSubmit,
+    isLoading,
+  } = useTransactionForm();
 
   const currentDate = new Date().toLocaleDateString("pt-BR", {
     weekday: "long",
@@ -30,29 +37,6 @@ export function HomePage() {
     month: "long",
     year: "numeric",
   });
-
-  const handleTransactionSubmit = () => {
-    if (!selectedTransactionType || !transactionValue) {
-      return;
-    }
-    const numericValue = currencyToNumbers(transactionValue);
-
-    // Lógica para processar a transação
-    console.log("Transação:", {
-      type: selectedTransactionType,
-      value: numericValue,
-      formattedValue: transactionValue,
-    });
-
-    // Limpar campos após conclusão
-    setSelectedTransactionType("");
-    setTransactionValue("");
-  };
-
-  const handleValueChange = (value: string) => {
-    const maskedValue = currencyMasks(value);
-    setTransactionValue(maskedValue);
-  };
 
   const toggleBalanceVisibility = () => {
     setIsBalanceVisible(!isBalanceVisible);
@@ -124,7 +108,9 @@ export function HomePage() {
                 <Select
                   data={TRANSACTION_TYPES}
                   value={selectedTransactionType}
-                  onChange={value => setSelectedTransactionType(String(value))}
+                  onChange={value =>
+                    setSelectedTransactionType(value as TransactionType)
+                  }
                   placeholder="Selecione o tipo"
                 />
               </View>
@@ -149,12 +135,17 @@ export function HomePage() {
             {/* Botão Concluir */}
             <View className="mt-auto">
               <Button
-                text="Concluir transação"
+                text={isLoading ? "Processando..." : "Concluir transação"}
                 variant="primary"
                 onPress={handleTransactionSubmit}
                 className="flex-row items-center justify-center"
+                disabled={isLoading}
               >
-                <Ionicons name="checkmark" size={20} color="white" />
+                <Ionicons
+                  name={isLoading ? "hourglass" : "checkmark"}
+                  size={20}
+                  color="white"
+                />
               </Button>
             </View>
           </View>

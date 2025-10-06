@@ -16,5 +16,14 @@ export interface TransactionFormData {
   fromAccountId: string;
   toAccountId: string;
   amount: number;
-  anexo: string;
+  anexo?: string;
 }
+
+export interface CreateTransactionData {
+  fromAccountId: string;
+  toAccountId: string;
+  amount: number;
+  anexo?: string;
+}
+
+export type TransactionType = "receita" | "despesa" | "transferencia";
