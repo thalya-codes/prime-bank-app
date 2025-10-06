@@ -5,8 +5,8 @@ import { createWithEqualityFn } from "zustand/traditional";
 export interface TransactionsFilters {
   itemsPerPage?: number;
   lastItemId?: number;
-  minAmount?: number;
-  maxAmount?: number;
+  type?: string;
+  category?: string;
   month?: string;
 }
 
@@ -19,8 +19,8 @@ interface TransactionsFilterStore {
 const INITIAL_STATE: TransactionsFilters = {
   itemsPerPage: 10,
   lastItemId: undefined,
-  minAmount: undefined,
-  maxAmount: undefined,
+  type: undefined,
+  category: undefined,
   month: undefined,
 };
 

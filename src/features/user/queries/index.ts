@@ -1,22 +1,31 @@
-import { keepPreviousData, queryOptions } from "@tanstack/react-query";
-
 import { api } from "@/services/api";
-import { UserData } from "../types";
+import { useQuery } from "@tanstack/react-query";
 
-export const userQueries = {
-  all: () => ["users"],
-  details: () => [...userQueries.all(), "user-detail"],
-  detail: (userId: string | undefined) =>
-    queryOptions({
-      queryKey: [...userQueries.details(), userId],
-      queryFn: () => fetchUserDetails(userId),
-      enabled: !!userId,
-      placeholderData: keepPreviousData,
-    }),
-};
-
-async function fetchUserDetails(userId?: string) {
-  const response = await api.get<UserData>(`/users/${userId}`);
-  console.log("fetchUserDetails response:", response);
-  return response.data;
+interface IUser {
+  acceptTermAndPolice: boolean;
+  createdAt: string;
+  email: string;
+  fileName: string;
+  fileUrl: string;
+  fullName: string;
+  telephone: string;
+  updatedAt: {
+    _seconds: number;
+    _nanoseconds: number;
+  };
 }
+
+export async function fetchUser(): Promise<IUser> {
+  const user = await api.get(`user`);
+  return user.data;
+}
+
+export const useGetUser = () => {
+  return useQuery({
+    queryKey: ["user"],
+    queryFn: async () => {
+      const user = await api.get(`user`);
+      return user.data;
+    },
+  });
+};

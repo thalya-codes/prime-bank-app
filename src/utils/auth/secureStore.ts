@@ -34,6 +34,7 @@ export async function deleteToken(key: string) {
     await SecureStore.deleteItemAsync(key);
     useAuthStore.setState({ token: undefined });
     api.defaults.headers.common.Authorization = `Bearer ${undefined}`;
+    console.log("Token deleted successfully!");
   } catch (error) {
     console.error("Error deleting token:", error);
   }

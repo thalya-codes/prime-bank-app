@@ -1,7 +1,10 @@
+import {
+  TCreateUser,
+  useCreateUserMutation,
+} from "@/features/user/mutations/create-user-mutation";
 import { deleteToken, saveToken } from "@/utils/auth/secureStore";
 import { handleAuthError } from "@/utils/handleAuthErrors";
 import {
-  createUserWithEmailAndPassword,
   getAuth,
   getIdToken,
   signInWithEmailAndPassword,
@@ -14,9 +17,9 @@ export interface ICredentials {
 }
 
 export function useAuth() {
-  const createAccount = async ({ email, password }: ICredentials) => {
-    await createUserWithEmailAndPassword(getAuth(), email, password);
-  };
+  const { mutateAsync: createNewUser } = useCreateUserMutation();
+
+
 
   const signIn = async ({ email, password }: ICredentials) => {
     const res = await signInWithEmailAndPassword(getAuth(), email, password);
@@ -35,7 +38,7 @@ export function useAuth() {
 
   return {
     signIn,
-    createAccount,
+    createNewUser,
     logout,
     // resetPassword,
     handleAuthError,

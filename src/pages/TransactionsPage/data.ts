@@ -1,5 +1,5 @@
 export type TransactionType = "income" | "expense";
-export type TransactionMovement = "deposit" | "payment" | "transfer";
+export type TransactionMovement = "sended" | "received";
 
 export interface Transaction {
   id: string;
@@ -56,9 +56,7 @@ export const generateMockTransactions = (count = 20): Transaction[] =>
         amount: Math.random() * 1000,
         type,
         category,
-        date: new Date(
-          Date.now() - Math.random() * 180 * 24 * 60 * 60 * 1000
-        ),
+        date: new Date(Date.now() - Math.random() * 180 * 24 * 60 * 60 * 1000),
         notes:
           Math.random() > 0.7
             ? "Alguma observação sobre esta transação"
@@ -68,3 +66,4 @@ export const generateMockTransactions = (count = 20): Transaction[] =>
     });
 
 export const MOCK_TRANSACTIONS = generateMockTransactions();
+
