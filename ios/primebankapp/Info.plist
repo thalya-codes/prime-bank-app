@@ -37,12 +37,6 @@
           <string>com.googleusercontent.apps.553317253715-304rtejodni69jkkgphur8ra1q5kb5qu</string>
         </array>
       </dict>
-      <dict>
-        <key>CFBundleURLSchemes</key>
-        <array>
-          <string>exp+primebank-app</string>
-        </array>
-      </dict>
     </array>
     <key>CFBundleVersion</key>
     <string>1</string>

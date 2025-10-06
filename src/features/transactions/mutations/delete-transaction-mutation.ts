@@ -7,7 +7,7 @@ export const useDeleteTransactionMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id: number) => {
+    mutationFn: async (id: string) => {
       return api.delete(`/transactions/${id}`);
     },
     onSettled: () =>

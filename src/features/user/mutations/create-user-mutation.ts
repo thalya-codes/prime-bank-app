@@ -1,22 +1,21 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
-import axios from "axios";
-import { userQueries } from "../queries";
-import { CreateUserData } from "../types";
+import { ICreateAccountFields } from "@/pages/CreateAccountPage/interfaces";
+import { api } from "@/services/api";
+
+export type TCreateUser = Omit<ICreateAccountFields, "confirmPassword">;
+
+export interface ICreateUserResponse {
+  message: string;
+  userId: string;
+  bankAccountId: string;
+  bankAccountNumber: string;
+}
 
 export const useCreateUserMutation = () => {
-  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (data: CreateUserData) => {
-      return axios.post(`https://app-fx66cx7g3q-uc.a.run.app/users`, {
-        fullName: data.fullName,
-        email: data.email,
-        telephone: data.telephone,
-        password: data.password,
-        acceptTermAndPolice: data.acceptTermAndPolice,
-      });
+    mutationFn: async (data: TCreateUser): Promise<ICreateUserResponse[]> => {
+      return api.post(`users`, data);
     },
-    onSettled: () =>
-      queryClient.invalidateQueries({ queryKey: userQueries.all() }),
   });
 };
