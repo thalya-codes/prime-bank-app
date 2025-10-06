@@ -3,10 +3,10 @@ import { useQuery } from "@tanstack/react-query";
 
 export interface IAnalyticsResponseKpis {
   totalTransactions: number;
-    totalAmountMoved: number;
-    receivedAmount: number;
-    sendedAmount: number;
-    currentBalance: number;
+  totalAmountMoved: number;
+  receivedAmount: number;
+  sendedAmount: number;
+  currentBalance: number;
 }
 export interface IAnalyticsResponse {
   kpis: IAnalyticsResponseKpis;

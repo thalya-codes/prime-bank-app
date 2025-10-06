@@ -249,19 +249,19 @@ function SummaryView({ metrics }: { metrics: IAnalyticsResponseKpis }) {
       <Card className='border border-[#D4DAE3]'>
         <Text className='text-sm text-gray-500'>Total de transações</Text>
         <Text className='mt-2 text-3xl text-gray-900 font-nunito-bold'>
-          {metrics.totalTransactions}
+          {metrics?.totalTransactions}
         </Text>
       </Card>
       <Card className='border border-[#D4DAE3]'>
         <Text className='text-sm text-gray-500'>Transações recebidas</Text>
         <Text className='mt-2 text-3xl text-green-600 font-nunito-bold'>
-          {currencyMask(metrics.receivedAmount)}
+          {currencyMask(metrics?.receivedAmount)}
         </Text>
       </Card>
       <Card className='border border-[#D4DAE3]'>
         <Text className='text-sm text-gray-500'>Transações realizadas</Text>
         <Text className='mt-2 text-3xl text-red-600 font-nunito-bold'>
-          {currencyMask(metrics.totalAmountMoved)}
+          {currencyMask(metrics?.totalAmountMoved)}
         </Text>
       </Card>
     </View>

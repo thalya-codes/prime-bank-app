@@ -1,6 +1,7 @@
 import { Avatar, MenuDropDown } from "@/components";
 import { Logo } from "@/components/Logo";
 import { useAuth } from "@/hooks/useAuth";
+import useGeneralInfos from "@/store/generalInfosStore";
 import { FontAwesome } from "@expo/vector-icons";
 import { Text } from "@react-navigation/elements";
 import { useRouter } from "expo-router";

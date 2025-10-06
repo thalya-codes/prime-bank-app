@@ -101,11 +101,11 @@ export function HomePage() {
           <Text className='text-sm font-nunito-regular text-brand-600'>
             {currentDate}
           </Text>
-          <View className=' items-center'>
-            <Text className=' pt-2 text-lg font-nunito-regular text-brand-600 font-bold'>
+          <View className='items-center '>
+            <Text className='pt-2 text-lg font-bold font-nunito-regular text-brand-600'>
               Numero da conta:
             </Text>
-            <Text className=' pt-2 text-lg font-nunito-regular text-brand-600 font-bold'>
+            <Text className='pt-2 text-lg font-bold font-nunito-regular text-brand-600'>
               {bankAccount?.bankAccountNumber}{" "}
             </Text>
             <TouchableOpacity onPress={handleCopyAccountNumber}>

@@ -1,7 +1,7 @@
 import { HomePage } from "@/pages";
 import { SafeAreaView } from "react-native";
 
-export default async function HomeScreen() {
+export default function HomeScreen() {
 
   return (
     <SafeAreaView className='flex-1'>
