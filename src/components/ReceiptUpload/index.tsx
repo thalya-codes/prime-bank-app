@@ -1,7 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
-import { useState } from "react";
 import { Alert, Image, Text, TouchableOpacity, View } from "react-native";
 import { Toast } from "toastify-react-native";
 
@@ -9,10 +8,10 @@ import Card from "../Card";
 
 interface ReceiptUploadProps {
   onFileSelected?: (file: any) => void;
+  selectedFile: any;
 }
 
-export function ReceiptUpload({ onFileSelected }: ReceiptUploadProps) {
-  const [selectedFile, setSelectedFile] = useState<any>(null);
+export function ReceiptUpload({ onFileSelected, selectedFile }: ReceiptUploadProps) {
 
   const pickImageFromGallery = async () => {
     try {
@@ -41,7 +40,6 @@ export function ReceiptUpload({ onFileSelected }: ReceiptUploadProps) {
           type: result.assets[0].type || "image",
           name: result.assets[0].fileName || "image.jpg",
         };
-        setSelectedFile(file);
         onFileSelected?.(file);
 
         Toast.show({
@@ -84,7 +82,6 @@ export function ReceiptUpload({ onFileSelected }: ReceiptUploadProps) {
           type: result.assets[0].type || "image",
           name: result.assets[0].fileName || "photo.jpg",
         };
-        setSelectedFile(file);
         onFileSelected?.(file);
 
         Toast.show({
@@ -116,7 +113,6 @@ export function ReceiptUpload({ onFileSelected }: ReceiptUploadProps) {
           name: result.assets[0].name,
           size: result.assets[0].size,
         };
-        setSelectedFile(file);
         onFileSelected?.(file);
 
         Toast.show({
@@ -135,7 +131,6 @@ export function ReceiptUpload({ onFileSelected }: ReceiptUploadProps) {
   };
 
   const removeFile = () => {
-    setSelectedFile(null);
     onFileSelected?.(null);
     Toast.show({
       autoHide: true,

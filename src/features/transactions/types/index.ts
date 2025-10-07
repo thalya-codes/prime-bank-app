@@ -30,7 +30,7 @@ export interface CreateTransactionData {
   toAccountId: string;
   amount: number;
   type: TransactionType;
-  anexo?: string;
+  anexo?: string | null;
 }
 
 // Novo tipo para o formato correto da API

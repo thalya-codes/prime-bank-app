@@ -1,3 +1,4 @@
+import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useMemo, useRef, useState } from "react";
 import {
   ScrollView,
@@ -6,7 +7,6 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
 
 import { Card } from "@/components";
 import { IAnalyticsResponseKpis, useGetAnalytics } from "@/features/analytics/queries";
@@ -262,7 +262,7 @@ function SummaryView({ metrics }: { metrics: IAnalyticsResponseKpis }) {
       </Card>
       <Card className='border border-[#D4DAE3]'>
         <Text className='text-sm text-gray-500'>Transações realizadas</Text>
-        <Text className='mt-2 text-3xl text-red-600 font-nunito-bold'>
+        <Text className='mt-2 text-3xl text-blue-600 font-nunito-bold'>
           {currencyMask(metrics?.totalAmountMoved)}
         </Text>
       </Card>

@@ -29,7 +29,6 @@ interface TransactionOption {
 const TRANSACTION_TYPES: TransactionOption[] = [
   { value: "receita", label: "Receita" },
   { value: "despesa", label: "Despesa" },
-  { value: "transferencia", label: "Transferência" },
 ];
 
 export function HomePage() {
@@ -38,7 +37,7 @@ export function HomePage() {
     ""
   );
   const [isSelectOpen, setIsSelectOpen] = useState<boolean>(false);
-  const [selectedReceipt, setSelectedReceipt] = useState<any>(null);
+  const [selectedReceipt, setSelectedReceipt] = useState<string | null>(null);
   const [buttonLayout, setButtonLayout] = useState<{
     x: number;
     y: number;
@@ -87,8 +86,8 @@ export function HomePage() {
   };
 
   const handleReceiptSelected = (file: any) => {
-    setSelectedReceipt(file);
     if (file) {
+      setSelectedReceipt(file);
     }
   };
 
@@ -176,7 +175,8 @@ export function HomePage() {
     const transactionData = {
       fromAccountNumber: accountNumber,
       toAccountNumber: accountNumber,
-      amount: Number(amount),
+      amount: Number(amount), 
+      anexo: selectedReceipt
     };
 
     createTransactionMutation.mutate(transactionData, {
@@ -389,7 +389,7 @@ export function HomePage() {
 
         {/* Upload de recibo */}
         <View className="mt-6">
-          <ReceiptUpload onFileSelected={handleReceiptSelected} />
+          <ReceiptUpload onFileSelected={handleReceiptSelected} selectedFile={selectedReceipt} />
         </View>
       </View>
     </ScrollView>

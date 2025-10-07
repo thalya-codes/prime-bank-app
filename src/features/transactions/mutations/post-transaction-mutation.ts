@@ -2,13 +2,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { api } from "@/services/api";
 import { transactionQueries } from "../queries";
-import { TransactionApiPayload } from "../types";
+import { CreateTransactionData } from "../types";
 
 export const useCreateTransactionMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: TransactionApiPayload) => {
+    mutationFn: async (data: CreateTransactionData) => {
       try {
         const response = await api.post("/transactions", data);
         return response.data;

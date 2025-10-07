@@ -9,11 +9,11 @@ import {
   formatMonthDate,
 } from "@/utils/masks";
 
-type TransactionTypeKey = "received" | "sent";
+type TransactionTypeKey = "received" | "sended";
 
 const transactionType: Record<TransactionTypeKey, string> = {
   received: "Recebido",
-  sent: "Enviado",
+  sended: "Enviado",
 };
 
 function TransactionItem({
