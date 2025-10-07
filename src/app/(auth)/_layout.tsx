@@ -73,20 +73,6 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen
-            name='home'
-            options={{
-              title: "Home",
-              headerShown: true,
-            }}
-          />
-          <Stack.Screen
-            name='transactions'
-            options={{
-              title: "Transações",
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
             name='forgot-password'
             options={{
               title: "Esqueci a Senha",
