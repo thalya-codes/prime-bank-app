@@ -32,6 +32,12 @@ export interface IAnalyticsResponse {
         percentage: string; // em formato "66.67%"
       };
     };
+    monthlyFlowData: {
+      label: string;
+      income: number;
+      expense: number;
+      monthStart: string;
+    }[];
   };
 }
 
