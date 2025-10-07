@@ -1,30 +1,34 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Alert } from "react-native";
 
 import { api } from "@/services/api";
 import { transactionQueries } from "../queries";
-import { TransactionFormData } from "../types";
+import { TransactionApiPayload } from "../types";
 
 export const useCreateTransactionMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: TransactionFormData) => {
-      const response = await api.post("/transactions", {
-        ...data,
-      });
-      return response.data;
+    mutationFn: async (data: TransactionApiPayload) => {
+      try {
+        const response = await api.post("/transactions", data);
+        return response.data;
+      } catch (error: any) {
+        console.error("Erro na requisição:", error);
+        if (error.response) {
+          console.error("Status:", error.response.status);
+          console.error("Data:", error.response.data);
+          console.error("Headers:", error.response.headers);
+        }
+        throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: transactionQueries.all() });
-      Alert.alert("Sucesso", "Transação realizada com sucesso!");
+      // Removido o Alert - usando apenas Toast na HomePage
     },
-    onError: error => {
+    onError: (error: any) => {
       console.error("Erro ao criar transação:", error);
-      Alert.alert(
-        "Erro",
-        "Não foi possível realizar a transação. Tente novamente."
-      );
+      // Removido o Alert - usando apenas Toast na HomePage
     },
   });
 };

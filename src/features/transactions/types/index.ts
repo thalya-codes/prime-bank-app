@@ -1,3 +1,5 @@
+export type TransactionType = "receita" | "despesa" | "transferencia";
+
 export interface TransactionsData {
   id: string;
   amount: number;
@@ -10,6 +12,7 @@ export interface TransactionFormData {
   fromAccountId: string;
   toAccountId: string;
   amount: number;
+  type: TransactionType;
   anexo?: string;
 }
 
@@ -17,7 +20,13 @@ export interface CreateTransactionData {
   fromAccountId: string;
   toAccountId: string;
   amount: number;
+  type: TransactionType;
   anexo?: string;
 }
 
-export type TransactionType = "receita" | "despesa" | "transferencia";
+// Novo tipo para o formato correto da API
+export interface TransactionApiPayload {
+  fromAccountNumber: string;
+  toAccountNumber: string;
+  amount: number;
+}

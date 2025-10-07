@@ -1,10 +1,15 @@
+import { ReceiptUpload } from "@/components";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
 import { InputField } from "@/components/Input/InputField";
 import { useGetBankAccount } from "@/features/bankAccount/queries";
+import { useCreateTransactionMutation } from "@/features/transactions/mutations";
+import { TransactionType } from "@/features/transactions/types";
 import { useGetUser } from "@/features/user/queries";
 import { useDropdownAnimation } from "@/hooks";
 import useGeneralInfos from "@/store/generalInfosStore";
+import useAuthStore from "@/store/useAuthStore";
+import { currencyToNumbers } from "@/utils/masks";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { useEffect, useState } from "react";
@@ -16,12 +21,12 @@ import {
   View,
 } from "react-native";
 import { Toast } from "toastify-react-native";
-interface TransactionType {
-  value: string;
+interface TransactionOption {
+  value: TransactionType;
   label: string;
 }
 
-const TRANSACTION_TYPES: TransactionType[] = [
+const TRANSACTION_TYPES: TransactionOption[] = [
   { value: "receita", label: "Receita" },
   { value: "despesa", label: "Despesa" },
   { value: "transferencia", label: "Transferência" },
@@ -30,8 +35,11 @@ const TRANSACTION_TYPES: TransactionType[] = [
 export function HomePage() {
   const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(true);
   const [transactionValue, setTransactionValue] = useState<string>("");
-  const [transactionType, setTransactionType] = useState<string>("");
+  const [transactionType, setTransactionType] = useState<TransactionType | "">(
+    ""
+  );
   const [isSelectOpen, setIsSelectOpen] = useState<boolean>(false);
+  const [selectedReceipt, setSelectedReceipt] = useState<any>(null);
   const [buttonLayout, setButtonLayout] = useState<{
     x: number;
     y: number;
@@ -43,6 +51,8 @@ export function HomePage() {
   const { data: user } = useGetUser();
   const { data: bankAccount } = useGetBankAccount();
   const { setName } = useGeneralInfos();
+  const { uid } = useAuthStore();
+  const createTransactionMutation = useCreateTransactionMutation();
   const currentDate = new Date().toLocaleDateString("pt-BR", {
     weekday: "long",
     day: "numeric",
@@ -64,7 +74,7 @@ export function HomePage() {
     }
   };
 
-  const handleSelectOption = (value: string) => {
+  const handleSelectOption = (value: TransactionType) => {
     setTransactionType(value);
     close();
     setIsSelectOpen(false);
@@ -72,6 +82,12 @@ export function HomePage() {
 
   const handleValueChange = (value: string) => {
     setTransactionValue(value);
+  };
+
+  const handleReceiptSelected = (file: any) => {
+    setSelectedReceipt(file);
+    if (file) {
+    }
   };
 
   const handleTransactionSubmit = () => {
@@ -84,17 +100,105 @@ export function HomePage() {
       return;
     }
 
-    // TODO: Implement transaction submission logic here
-    Toast.show({
-      autoHide: true,
-      text1: "Transação realizada com sucesso!",
-      type: "success",
+    if (!transactionType) {
+      Toast.show({
+        autoHide: true,
+        text1: "Selecione o tipo de transação",
+        type: "error",
+      });
+      return;
+    }
+
+    if (!bankAccount?.id) {
+      Toast.show({
+        autoHide: true,
+        text1: "Conta bancária não encontrada",
+        type: "error",
+      });
+      return;
+    }
+
+    const amount = currencyToNumbers(transactionValue);
+    if (!amount || amount <= 0) {
+      Toast.show({
+        autoHide: true,
+        text1: "O valor deve ser maior que zero",
+        type: "error",
+      });
+      return;
+    }
+
+    if (!uid) {
+      Toast.show({
+        autoHide: true,
+        text1: "Usuário não autenticado",
+        type: "error",
+      });
+      return;
+    }
+
+    const accountId = bankAccount.id;
+
+    // Validar se accountId é uma string válida
+    if (!accountId || typeof accountId !== "string") {
+      Toast.show({
+        autoHide: true,
+        text1: "ID da conta bancária inválido",
+        type: "error",
+      });
+      return;
+    }
+
+    // Validar se o tipo de transação é válido
+    if (!["receita", "despesa", "transferencia"].includes(transactionType)) {
+      Toast.show({
+        autoHide: true,
+        text1: "Tipo de transação inválido",
+        type: "error",
+      });
+      return;
+    }
+
+    // Usar o número da conta bancária, não o ID
+    const accountNumber = bankAccount.bankAccountNumber;
+
+    if (!accountNumber) {
+      Toast.show({
+        autoHide: true,
+        text1: "Número da conta bancária não encontrado",
+        type: "error",
+      });
+      return;
+    }
+
+    const transactionData = {
+      fromAccountNumber: accountNumber,
+      toAccountNumber: accountNumber,
+      amount: Number(amount),
+    };
+
+    createTransactionMutation.mutate(transactionData, {
+      onSuccess: () => {
+        Toast.show({
+          autoHide: true,
+          text1: "Transação realizada com sucesso!",
+          type: "success",
+        });
+
+        setTransactionValue("");
+        setTransactionType("");
+        setSelectedReceipt(null);
+      },
+      onError: (error: any) => {
+        Toast.show({
+          autoHide: true,
+          text1: "Erro ao criar transação",
+          text2: error.response?.data?.message || "Tente novamente",
+          type: "error",
+        });
+      },
     });
-
-    // Reset the form
-    setTransactionValue("");
   };
-
   const handleCopyAccountNumber = async () => {
     try {
       await Clipboard.setStringAsync(String(bankAccount?.bankAccountNumber));
@@ -277,6 +381,11 @@ export function HomePage() {
             </View>
           </View>
         </Card>
+
+        {/* Upload de recibo */}
+        <View className="mt-6">
+          <ReceiptUpload onFileSelected={handleReceiptSelected} />
+        </View>
       </View>
     </ScrollView>
   );

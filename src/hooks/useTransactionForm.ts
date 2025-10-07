@@ -54,6 +54,7 @@ export const useTransactionForm = () => {
       fromAccountId: uid, // Conta do usuário logado
       toAccountId: uid, // Para receita/despesa, pode ser a mesma conta ou uma conta sistema
       amount: numericValue,
+      type: selectedTransactionType as TransactionType,
       anexo: undefined, // Opcional
     };
 
