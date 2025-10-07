@@ -9,7 +9,7 @@ import { useGetUser } from "@/features/user/queries";
 import { useDropdownAnimation } from "@/hooks";
 import useGeneralInfos from "@/store/generalInfosStore";
 import useAuthStore from "@/store/useAuthStore";
-import { currencyToNumbers } from "@/utils/masks";
+import { currencyMask, currencyToNumbers } from "@/utils/masks";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { useEffect, useState } from "react";
@@ -34,7 +34,6 @@ const TRANSACTION_TYPES: TransactionOption[] = [
 
 export function HomePage() {
   const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(true);
-  const [transactionValue, setTransactionValue] = useState<string>("");
   const [transactionType, setTransactionType] = useState<TransactionType | "">(
     ""
   );
@@ -48,6 +47,7 @@ export function HomePage() {
   } | null>(null);
 
   const { animatedHeight, open, close } = useDropdownAnimation(0, 150);
+  const [transactionValue, setTransactionValue] = useState<number>(0.00);
   const { data: user } = useGetUser();
   const { data: bankAccount } = useGetBankAccount();
   const { setName } = useGeneralInfos();
@@ -81,7 +81,9 @@ export function HomePage() {
   };
 
   const handleValueChange = (value: string) => {
-    setTransactionValue(value);
+    const numericValue = value.replace(/\D/g, '');
+
+    setTransactionValue(Number(numericValue) / 100);
   };
 
   const handleReceiptSelected = (file: any) => {
@@ -91,7 +93,7 @@ export function HomePage() {
   };
 
   const handleTransactionSubmit = () => {
-    if (!transactionValue || transactionValue === "0,00") {
+    if (!transactionValue || transactionValue === 0.00) {
       Toast.show({
         autoHide: true,
         text1: "Por favor, insira um valor válido",
@@ -118,7 +120,7 @@ export function HomePage() {
       return;
     }
 
-    const amount = currencyToNumbers(transactionValue);
+    const amount = currencyToNumbers(transactionValue.toString());
     if (!amount || amount <= 0) {
       Toast.show({
         autoHide: true,
@@ -185,7 +187,7 @@ export function HomePage() {
           type: "success",
         });
 
-        setTransactionValue("");
+        setTransactionValue(0.00);
         setTransactionType("");
         setSelectedReceipt(null);
       },
@@ -198,6 +200,9 @@ export function HomePage() {
         });
       },
     });
+
+    // Reset the form
+    setTransactionValue(0.00);
   };
   const handleCopyAccountNumber = async () => {
     try {
@@ -258,7 +263,7 @@ export function HomePage() {
                 Saldo disponível ——
               </Text>
               <Text className="text-3xl font-nunito-bold text-neutral-0">
-                {isBalanceVisible ? `R$ ${bankAccount?.balance}` : "R$ ****,**"}
+                {isBalanceVisible ? `${currencyMask(bankAccount?.balance || 0.00)}` : "R$ ****"}
               </Text>
             </View>
             <TouchableOpacity onPress={toggleBalanceVisibility}>
@@ -293,14 +298,14 @@ export function HomePage() {
                 <TouchableOpacity
                   onPress={toggleSelectDropdown}
                   onLayout={e => setButtonLayout(e.nativeEvent.layout)}
-                  className="bg-white border rounded-md border-neutral-300 px-3 py-3"
+                  className="px-3 py-3 bg-white border rounded-md border-neutral-300"
                 >
                   <View className="flex-row items-center justify-between">
                     <Text className="text-base font-nunito-regular text-neutral-700">
                       {transactionType
                         ? TRANSACTION_TYPES.find(
-                            t => t.value === transactionType
-                          )?.label
+                          t => t.value === transactionType
+                        )?.label
                         : "Selecione o tipo"}
                     </Text>
                     <Ionicons
@@ -355,12 +360,12 @@ export function HomePage() {
             {/* Campo Valor */}
             <View className="mb-8">
               <Text className="mb-3 text-base font-nunito-medium text-neutral-900">
-                Valor(R$)
+                Valor (R$)
               </Text>
               <View className="bg-white border rounded-md border-neutral-300">
                 <InputField
-                  placeholder="0,00"
-                  value={transactionValue}
+                  placeholder="R$ 0,00"
+                  value={currencyMask(transactionValue)}
                   onChangeText={handleValueChange}
                   keyboardType="numeric"
                   className="px-3 py-3 text-base font-nunito-regular"
