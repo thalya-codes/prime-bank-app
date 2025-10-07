@@ -3,11 +3,18 @@ import Card from "@/components/Card";
 import { InputField } from "@/components/Input/InputField";
 import { useGetBankAccount } from "@/features/bankAccount/queries";
 import { useGetUser } from "@/features/user/queries";
+import { useDropdownAnimation } from "@/hooks";
 import useGeneralInfos from "@/store/generalInfosStore";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { useEffect, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  Animated,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Toast } from "toastify-react-native";
 interface TransactionType {
   value: string;
@@ -23,6 +30,16 @@ const TRANSACTION_TYPES: TransactionType[] = [
 export function HomePage() {
   const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(true);
   const [transactionValue, setTransactionValue] = useState<string>("");
+  const [transactionType, setTransactionType] = useState<string>("");
+  const [isSelectOpen, setIsSelectOpen] = useState<boolean>(false);
+  const [buttonLayout, setButtonLayout] = useState<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  } | null>(null);
+
+  const { animatedHeight, open, close } = useDropdownAnimation(0, 150);
   const { data: user } = useGetUser();
   const { data: bankAccount } = useGetBankAccount();
   const { setName } = useGeneralInfos();
@@ -35,6 +52,22 @@ export function HomePage() {
 
   const toggleBalanceVisibility = () => {
     setIsBalanceVisible(!isBalanceVisible);
+  };
+
+  const toggleSelectDropdown = () => {
+    if (isSelectOpen) {
+      close();
+      setIsSelectOpen(false);
+    } else {
+      open();
+      setIsSelectOpen(true);
+    }
+  };
+
+  const handleSelectOption = (value: string) => {
+    setTransactionType(value);
+    close();
+    setIsSelectOpen(false);
   };
 
   const handleValueChange = (value: string) => {
@@ -147,6 +180,74 @@ export function HomePage() {
           </View>
 
           <View className="flex-1" style={{ overflow: "visible" }}>
+            {/* Campo Tipo de Transação */}
+            <View className="mb-6" style={{ zIndex: 10 }}>
+              <Text className="mb-3 text-base font-nunito-medium text-neutral-900">
+                Tipo de transação
+              </Text>
+              <View className="relative">
+                <TouchableOpacity
+                  onPress={toggleSelectDropdown}
+                  onLayout={e => setButtonLayout(e.nativeEvent.layout)}
+                  className="bg-white border rounded-md border-neutral-300 px-3 py-3"
+                >
+                  <View className="flex-row items-center justify-between">
+                    <Text className="text-base font-nunito-regular text-neutral-700">
+                      {transactionType
+                        ? TRANSACTION_TYPES.find(
+                            t => t.value === transactionType
+                          )?.label
+                        : "Selecione o tipo"}
+                    </Text>
+                    <Ionicons
+                      name={isSelectOpen ? "chevron-up" : "chevron-down"}
+                      size={20}
+                      color="#666"
+                    />
+                  </View>
+                </TouchableOpacity>
+
+                {isSelectOpen && buttonLayout && (
+                  <Animated.View
+                    style={{
+                      height: animatedHeight,
+                      overflow: "hidden",
+                      position: "absolute",
+                      top: buttonLayout.height + 4,
+                      left: 0,
+                      right: 0,
+                      zIndex: 9999,
+                      elevation: 10,
+                      backgroundColor: "white",
+                      borderRadius: 8,
+                      shadowColor: "#000",
+                      shadowOffset: { width: 0, height: 4 },
+                      shadowOpacity: 0.4,
+                      shadowRadius: 8,
+                    }}
+                  >
+                    <ScrollView
+                      style={{ backgroundColor: "white" }}
+                      showsVerticalScrollIndicator={false}
+                    >
+                      {TRANSACTION_TYPES.map((type, index) => (
+                        <TouchableOpacity
+                          key={type.value}
+                          onPress={() => handleSelectOption(type.value)}
+                          className="flex-row items-center gap-2 p-3 bg-white border-b border-gray-200 active:bg-gray-50"
+                          style={{ backgroundColor: "white" }}
+                        >
+                          <Text className="text-base font-nunito-regular text-neutral-900">
+                            {type.label}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </ScrollView>
+                  </Animated.View>
+                )}
+              </View>
+            </View>
+
             {/* Campo Valor */}
             <View className="mb-8">
               <Text className="mb-3 text-base font-nunito-medium text-neutral-900">
