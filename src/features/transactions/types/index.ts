@@ -1,8 +1,17 @@
-export interface TransactionsData {
+export type Transaction = {
   id: string;
   amount: number;
   type: string;
   createdAt: string;
+};
+
+export interface TransactionsData {
+  data: Transaction[];
+  pagination: {
+    hasMore: boolean;
+    itemsPerPage: number;
+    nextCursorId: any;
+  };
 }
 
 export interface TransactionFormData {

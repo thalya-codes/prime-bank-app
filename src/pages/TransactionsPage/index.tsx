@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Alert, FlatList, Text, TouchableOpacity, View } from "react-native";
 
 import { Card } from "@/components";
-import { transactionQueries, TransactionsData } from "@/features/transactions";
+import { Transaction, transactionQueries } from "@/features/transactions";
 import { useDeleteTransactionMutation } from "@/features/transactions/mutations/delete-transaction-mutation";
 import { useEditTransactionMutation } from "@/features/transactions/mutations/put-transaction-mutation";
 import { useQuery } from "@tanstack/react-query";
@@ -14,69 +14,72 @@ import {
   TransactionEdit,
   TransactionItem,
 } from "./components";
-import { FilterOptions, FilterType } from "./types";
-
-const filterType = Object.values(FilterType).map((item) => ({
-  label: item.charAt(0).toUpperCase() + item.slice(1),
-  value: item,
-}));
+import { FilterOptions } from "./types";
 
 export function TransactionsPage() {
   const [refreshing, setRefreshing] = useState(false);
 
   // Estado para filtragem
   const [filters, setFilters] = useState<FilterOptions>({
-    startDate: null,
-    endDate: null,
-    category: undefined,
-    type: FilterType.All,
+    max: 0,
+    min: 0,
   });
   const [showFilters, setShowFilters] = useState(false);
-
+  const [debouncedFilter, setDebouncedFilter] = useState({ max: 0, min: 0 });
   // Estado para o modal de editar transação
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [modalVisible, setModalVisible] = useState(false);
   const [currentTransaction, setCurrentTransaction] =
-    useState<TransactionsData | null>(null);
+    useState<Transaction | null>(null);
 
-    const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const {
     data: transactionData,
     isLoading,
     isPlaceholderData,
+    isFetching,
   } = useQuery(
     transactionQueries.list({
       itemsPerPage: itemsPerPage,
-      type: filters.type === FilterType.All ? undefined : filters.type,
-      category: filters.category,
+      minAmount: debouncedFilter.min === 0 ? undefined : debouncedFilter.min,
+      maxAmount: debouncedFilter.max === 0 ? undefined : debouncedFilter.max,
     })
+  );
+  const { data: transactionDataDetail } = useQuery(
+    transactionQueries.detail(currentTransaction?.id)
   );
   const { mutateAsync: editTransaction } = useEditTransactionMutation();
   const { mutateAsync: deleteTransactionById } = useDeleteTransactionMutation();
 
   const loadMoreTransactions = () => {
-    if (!isPlaceholderData) {
+    if (!isPlaceholderData && transactionData?.pagination.hasMore) {
       setItemsPerPage((prev) => prev + 5);
     }
   };
 
   const handleRefresh = () => {
+    if (!transactionData?.pagination?.hasMore) return;
     setRefreshing(true);
     setItemsPerPage(10);
   };
 
+  const handleApplyFilters = () => {
+    setShowFilters(false);
+    setDebouncedFilter(filters);
+  };
+
   const resetFilters = () => {
-    setFilters({
-      startDate: null,
-      endDate: null,
-      category: "",
-      type: FilterType.All,
-    });
+    const resetedFilters = {
+      min: 0,
+      max: 0,
+    };
+    setFilters(resetedFilters);
+    setDebouncedFilter(resetedFilters);
     setShowFilters(false);
   };
 
-  const openEditTransactionModal = (transaction: TransactionsData) => {
+  const openEditTransactionModal = (transaction: Transaction) => {
     setCurrentTransaction({ ...transaction });
     setErrors({});
     setModalVisible(true);
@@ -85,20 +88,8 @@ export function TransactionsPage() {
   const validateTransactionForm = (): boolean => {
     const newErrors: { [key: string]: string } = {};
 
-    if (!currentTransaction?.description?.trim()) {
-      newErrors.description = "Descrição é obrigatória";
-    }
-
     if (!currentTransaction?.amount || currentTransaction.amount <= 0) {
       newErrors.amount = "Valor deve ser maior que zero";
-    }
-
-    if (!currentTransaction?.category) {
-      newErrors.category = "Categoria é obrigatória";
-    }
-
-    if (!currentTransaction?.date) {
-      newErrors.date = "Data é obrigatória";
     }
 
     setErrors(newErrors);
@@ -125,6 +116,14 @@ export function TransactionsPage() {
     }
   };
 
+  const handleFilters = (value: string, type: string) => {
+    const numericValue = value.replace(/\D/g, "");
+    setFilters((prev: any) => ({
+      ...prev,
+      [type]: Number(numericValue) / 100,
+    }));
+  };
+
   const deleteTransaction = async (id: string) => {
     Alert.alert(
       "Confirmar exclusão",
@@ -144,16 +143,14 @@ export function TransactionsPage() {
   };
 
   const handleAmountChange = (text: string) => {
-    const numeric = text.replace(/\D/g, "");
-    const numericValue = parseFloat(numeric) / 100;
-
-    setCurrentTransaction((prev) => ({
+    const numericValue = text.replace(/\D/g, "");
+    setCurrentTransaction((prev: any) => ({
       ...prev,
-      amount: isNaN(numericValue) ? 0 : numericValue,
+      amount: Number(numericValue) / 100,
     }));
   };
 
-  const renderTransaction = ({ item }: { item: TransactionsData }) => (
+  const renderTransaction = ({ item }: { item: Transaction }) => (
     <TransactionItem
       item={item}
       openEditTransactionModal={openEditTransactionModal}
@@ -162,7 +159,7 @@ export function TransactionsPage() {
   );
 
   const renderFooter = () => {
-    if (!isLoading) return null;
+    if (!isLoading || !isFetching) return null;
 
     return <FooterList />;
   };
@@ -175,10 +172,11 @@ export function TransactionsPage() {
       <FilterPanel
         showFilters={showFilters}
         setShowFilters={setShowFilters}
-        filterType={filterType}
+        setApplyFilters={handleApplyFilters}
         filters={filters}
-        setFilters={setFilters}
+        handleFilters={handleFilters}
         resetFilters={resetFilters}
+        errors={errors}
       />
 
       {/* Lista de transações */}
@@ -193,7 +191,7 @@ export function TransactionsPage() {
           </TouchableOpacity>
         </View>
         <FlatList
-          data={transactionData}
+          data={transactionData?.data}
           renderItem={renderTransaction}
           keyExtractor={(item) => item.id}
           contentContainerStyle={{ padding: 2 }}
@@ -213,8 +211,7 @@ export function TransactionsPage() {
       <TransactionEdit
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
-        currentTransaction={currentTransaction}
-        setCurrentTransaction={setCurrentTransaction}
+        transactionDetail={currentTransaction}
         errors={errors}
         handleAmountChange={handleAmountChange}
         saveTransaction={saveTransaction}

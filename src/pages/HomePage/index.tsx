@@ -4,6 +4,7 @@ import { InputField } from "@/components/Input/InputField";
 import { useGetBankAccount } from "@/features/bankAccount/queries";
 import { useGetUser } from "@/features/user/queries";
 import useGeneralInfos from "@/store/generalInfosStore";
+import { currencyMask } from "@/utils/masks";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { useEffect, useState } from "react";
@@ -22,7 +23,7 @@ const TRANSACTION_TYPES: TransactionType[] = [
 
 export function HomePage() {
   const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(true);
-  const [transactionValue, setTransactionValue] = useState<string>("");
+  const [transactionValue, setTransactionValue] = useState<number>(0.00);
   const { data: user } = useGetUser();
   const { data: bankAccount } = useGetBankAccount();
   const { setName } = useGeneralInfos();
@@ -38,11 +39,13 @@ export function HomePage() {
   };
 
   const handleValueChange = (value: string) => {
-    setTransactionValue(value);
+    const numericValue = value.replace(/\D/g, '');
+
+    setTransactionValue(Number(numericValue) / 100);
   };
 
   const handleTransactionSubmit = () => {
-    if (!transactionValue || transactionValue === "0,00") {
+    if (!transactionValue || transactionValue === 0.00) {
       Toast.show({
         autoHide: true,
         text1: "Por favor, insira um valor válido",
@@ -59,7 +62,7 @@ export function HomePage() {
     });
 
     // Reset the form
-    setTransactionValue("");
+    setTransactionValue(0.00);
   };
 
   const handleCopyAccountNumber = async () => {
@@ -121,7 +124,7 @@ export function HomePage() {
                 Saldo disponível ——
               </Text>
               <Text className="text-3xl font-nunito-bold text-neutral-0">
-                {isBalanceVisible ? `R$ ${bankAccount?.balance}` : "R$ ****,**"}
+                {isBalanceVisible ? `${currencyMask(bankAccount?.balance || 0.00)}` : "R$ ****"}
               </Text>
             </View>
             <TouchableOpacity onPress={toggleBalanceVisibility}>
@@ -150,12 +153,12 @@ export function HomePage() {
             {/* Campo Valor */}
             <View className="mb-8">
               <Text className="mb-3 text-base font-nunito-medium text-neutral-900">
-                Valor(R$)
+                Valor (R$)
               </Text>
               <View className="bg-white border rounded-md border-neutral-300">
                 <InputField
-                  placeholder="0,00"
-                  value={transactionValue}
+                  placeholder="R$ 0,00"
+                  value={currencyMask(transactionValue)}
                   onChangeText={handleValueChange}
                   keyboardType="numeric"
                   className="px-3 py-3 text-base font-nunito-regular"

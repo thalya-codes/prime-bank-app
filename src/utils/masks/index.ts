@@ -1,3 +1,8 @@
+type FirestoreTimestamp = {
+  _seconds: number;
+  _nanoseconds: number;
+};
+
 export function phoneMask(value: string) {
   const cleanedValue = value.replace(/\D/g, "");
 
@@ -17,6 +22,12 @@ export function currencyMask(
     style: "currency",
     currency: currency,
   }).format(amount);
+}
+
+export function firestoreToZulu(timestamp: FirestoreTimestamp): Date {
+  return new Date(
+    timestamp._seconds * 1000 + timestamp._nanoseconds / 1e6
+  );
 }
 
 export const formatDate = (date: Date) => {
