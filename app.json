@@ -21,7 +21,6 @@
         "monochromeImage": "./src/assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false,
       "package": "com.techchallenge.primebankapp",
       "googleServicesFile": "google-services.json"
     },
@@ -31,6 +30,12 @@
     },
     "plugins": [
       "expo-router",
+      [
+        "expo-document-picker",
+        {
+          "iCloudContainerEnvironment": "Production"
+        }
+      ],
       [
         "expo-splash-screen",
         {
@@ -67,4 +72,3 @@
     }
   }
 }
-

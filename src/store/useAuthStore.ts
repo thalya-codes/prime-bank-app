@@ -5,6 +5,7 @@ import { createWithEqualityFn } from "zustand/traditional";
 interface Authorization {
   email?: string;
   token?: string;
+  uid?: string;
 }
 
 interface AuthStoreState extends Authorization {
@@ -14,6 +15,7 @@ interface AuthStoreState extends Authorization {
 const INITIAL_STATE: Authorization = {
   email: undefined,
   token: undefined,
+  uid: undefined,
 };
 
 const useAuthStore = createWithEqualityFn<AuthStoreState>()(

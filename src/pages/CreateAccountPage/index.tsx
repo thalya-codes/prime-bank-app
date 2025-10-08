@@ -50,7 +50,7 @@ enum CREATE_ACCOUNT_STEPS {
 export function CreateAccountPage() {
   const router = useRouter();
   const [step, setStep] = useState(CREATE_ACCOUNT_STEPS.PERSONAL_INFOS);
-  const { createAccount, handleAuthError } = useAuth();
+  const { createNewUser, handleAuthError } = useAuth();
 
   const {
     control,
@@ -77,9 +77,9 @@ export function CreateAccountPage() {
     "telephone",
   ];
 
-  const onSubmit = async ({ email, password }: ICreateAccountFields) => {
+  const onSubmit = async (data: ICreateAccountFields) => {
     try {
-      await createAccount({ email, password });
+      await createNewUser(data);
       const token = await getToken(process.env.EXPO_PUBLIC_TOKEN_KEY!);
       console.log({ key: process.env.EXPO_PUBLIC_TOKEN_KEY, token });
       reset();

@@ -18,6 +18,7 @@ const Card = ({
   isOutlined = false,
   children,
   className,
+  style,
 }: ICard) => {
   const isStrongGreenVariant = color === "strong-green";
 
@@ -29,6 +30,7 @@ const Card = ({
         isOutlined && !isStrongGreenVariant && cardOutlineVariants[color],
         className
       )}
+      style={style}
     >
       {children}
     </View>

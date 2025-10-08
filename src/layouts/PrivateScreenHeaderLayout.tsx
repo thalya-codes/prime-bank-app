@@ -1,21 +1,19 @@
 import { Avatar, MenuDropDown } from "@/components";
 import { Logo } from "@/components/Logo";
 import { useAuth } from "@/hooks/useAuth";
-import useAuthStore from "@/store/useAuthStore";
+import useGeneralInfos from "@/store/generalInfosStore";
 import { FontAwesome } from "@expo/vector-icons";
 import { Text } from "@react-navigation/elements";
 import { useRouter } from "expo-router";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Toast } from "toastify-react-native";
-import { shallow } from "zustand/shallow";
 
 export const PrivateScreenHeaderLayout = () => {
   const router = useRouter();
   const { logout, handleAuthError } = useAuth();
-  const { email } = useAuthStore(
-    (state) => ({ email: state.email }), shallow
-  );
+  const { name } = useGeneralInfos();
+
   const signOut = async () => {
     try {
       await logout();
@@ -31,7 +29,7 @@ export const PrivateScreenHeaderLayout = () => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView edges={Platform.OS === 'android' ? ['top'] : []}>
       <View className='flex-row items-center justify-between pl-1 pr-4 bg-white border-b border-gray-200'>
         <View className='flex-row items-center gap-2 px-4 py-3'>
           <Logo size='xs' />
@@ -52,10 +50,10 @@ export const PrivateScreenHeaderLayout = () => {
           ]}
           maxHeight={40}
         >
-          <Avatar name={email ?? "Usuário Desconhecido"} />
+          <Avatar name={name ?? "Usuário Desconhecido"} />
         </MenuDropDown>
       </View>
-    </SafeAreaView>
+      </SafeAreaView>
   );
 };
 

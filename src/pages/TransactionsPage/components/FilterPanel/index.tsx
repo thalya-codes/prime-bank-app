@@ -1,22 +1,16 @@
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { Platform, Text, TouchableOpacity, View } from "react-native";
+import { Text, TextInput, View } from "react-native";
 
-import { BottomSheet, Button, Select } from "@/components";
-import { formatDate } from "@/utils/masks";
+import { BottomSheet, Button } from "@/components";
+import { currencyMask } from "@/utils/masks";
 
 function FilterPanel({
   showFilters,
   setShowFilters,
-  filterType,
+  setApplyFilters,
   filters,
-  setFilters,
-  filterCategory,
-  setSelectedDateField,
-  setShowDatePicker,
+  handleFilters,
   resetFilters,
-  showDatePicker,
-  selectedDateField,
-  handleDateChange,
+  errors,
 }: any) {
   return (
     <BottomSheet visible={showFilters} setVisible={setShowFilters}>
@@ -25,70 +19,38 @@ function FilterPanel({
           Filtros avançados
         </Text>
 
-        <View className="mb-6">
-          <Text className="text-sm font-medium mb-4 text-gray-600">Tipo</Text>
-          <Select
-            data={filterType}
-            onChange={(value) =>
-              setFilters((prev: any) => ({ ...prev, type: value }))
-            }
-            value={filters.type}
-            placeholder="Todos os tipos"
-          />
-        </View>
-
-        <View className="mb-6">
-          <Text className="text-sm font-medium mb-4 text-gray-600">
-            Categoria
-          </Text>
-          <Select
-            data={filterCategory}
-            onChange={(value) =>
-              setFilters((prev: any) => ({ ...prev, category: value }))
-            }
-            value={filters.category}
-            placeholder="Todos as categorias"
-          />
-        </View>
-
-        <View className="mb-6 flex-row justify-between">
-          <View className="flex-1 mr-2">
+        <View className="flex-row gap-2 justify-between">
+          <View className="flex-1 mb-6">
             <Text className="text-sm font-medium mb-4 text-gray-600">
-              Data inicial
+              Valor Mínimo(R$)
             </Text>
-            <TouchableOpacity
-              className="p-3 flex-row justify-between items-center bg-white border border-gray-300"
-              onPress={() => {
-                setSelectedDateField("startDate");
-                setShowDatePicker(true);
-              }}
-            >
-              <Text>
-                {filters.startDate
-                  ? formatDate(filters.startDate)
-                  : "Selecionar"}
-              </Text>
-            </TouchableOpacity>
+            <TextInput
+              className={`border ${errors.min ? "border-red-500" : "border-gray-300"} p-3 flex-row justify-between items-center bg-white `}
+              placeholder="R$ 0,00"
+              keyboardType="numeric"
+              value={currencyMask(filters?.min)}
+              onChangeText={(value) => handleFilters(value, "min")}
+            />
+            {errors.min && (
+              <Text className="text-red-500 text-xs mt-1">{errors.min}</Text>
+            )}
           </View>
-
-          <View className="flex-1 ml-2">
+          <View className="flex-1 mb-6">
             <Text className="text-sm font-medium mb-4 text-gray-600">
-              Data final
+              Valor Máximo(R$)
             </Text>
-            <TouchableOpacity
-              className="p-3 flex-row justify-between items-center bg-white border border-gray-300"
-              onPress={() => {
-                setSelectedDateField("endDate");
-                setShowDatePicker(true);
-              }}
-            >
-              <Text>
-                {filters.endDate ? formatDate(filters.endDate) : "Selecionar"}
-              </Text>
-            </TouchableOpacity>
+            <TextInput
+              className={`border ${errors.max ? "border-red-500" : "border-gray-300"} p-3 flex-row justify-between items-center bg-white `}
+              placeholder="R$ 0,00"
+              keyboardType="numeric"
+              value={currencyMask(filters.max)}
+              onChangeText={(value) => handleFilters(value, "max")}
+            />
+            {errors.max && (
+              <Text className="text-red-500 text-xs mt-1">{errors.max}</Text>
+            )}
           </View>
         </View>
-
         <View className="flex-row gap-2 justify-between">
           <Button
             variant="secondary"
@@ -99,18 +61,9 @@ function FilterPanel({
           <Button
             isFullWidth={false}
             text="Aplicar filtros"
-            onPress={() => setShowFilters(false)}
+            onPress={setApplyFilters}
           />
         </View>
-
-        {showDatePicker && selectedDateField && (
-          <DateTimePicker
-            value={filters[selectedDateField] || new Date()}
-            mode="date"
-            display={Platform.OS === "ios" ? "spinner" : "default"}
-            onChange={handleDateChange}
-          />
-        )}
       </View>
     </BottomSheet>
   );
