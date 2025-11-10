@@ -1,4 +1,4 @@
-export type TransactionType = 'receita' | 'despesa' | 'transferencia';
+import { TransactionType } from "@/features/transactions";
 
 export interface TransactionValidationData {
   amount: number;
@@ -30,7 +30,7 @@ export class TransactionValidations {
       return "Selecione o tipo de transação";
     }
 
-    const validTypes: TransactionType[] = ['receita', 'despesa', 'transferencia'];
+    const validTypes: TransactionType[] = ['income', 'expense', 'transfer'];
     if (!validTypes.includes(type as TransactionType)) {
       return "Tipo de transação inválido";
     }
@@ -100,6 +100,37 @@ export class TransactionValidations {
       if (typeError) return typeError;
     }
 
+    return null;
+  }
+
+  static validateEditAmount(amount: number | undefined | null): string | null {
+    if (!amount || amount <= 0) {
+      return "Valor deve ser maior que zero";
+    }
+    return null;
+  }
+
+  static validateTransactionId(id: string): void {
+    if (!id) {
+      throw new Error("Transaction ID is required");
+    }
+  }
+
+  static validateFormFields(
+    transactionType: string | undefined, 
+    transactionValue: string | undefined, 
+    userId: string | undefined
+  ): string | null {
+    if (!transactionType || !transactionValue || !userId) {
+      return "Preencha todos os campos obrigatórios";
+    }
+    return null;
+  }
+
+  static validatePositiveValue(value: number): string | null {
+    if (value <= 0) {
+      return "O valor deve ser maior que zero";
+    }
     return null;
   }
 }

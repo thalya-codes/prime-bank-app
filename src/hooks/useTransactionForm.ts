@@ -8,6 +8,7 @@ import {
 } from "@/features/transactions/types";
 import useAuthStore from "@/store/useAuthStore";
 import { currencyMasks, currencyToNumbers } from "@/utils/masks";
+import { TransactionValidations } from "@/utils/validations";
 
 export const useTransactionForm = () => {
   const [selectedTransactionType, setSelectedTransactionType] = useState<
@@ -36,15 +37,23 @@ export const useTransactionForm = () => {
   }, [createTransactionMutation.isSuccess, resetForm]);
 
   const handleTransactionSubmit = useCallback(() => {
-    if (!selectedTransactionType || !transactionValue || !uid) {
-      Alert.alert("Erro", "Preencha todos os campos obrigatórios");
+    const fieldsError = TransactionValidations.validateFormFields(
+      selectedTransactionType, 
+      transactionValue, 
+      uid
+    );
+    
+    if (fieldsError) {
+      Alert.alert("Erro", fieldsError);
       return;
     }
 
     const numericValue = currencyToNumbers(transactionValue);
 
-    if (numericValue <= 0) {
-      Alert.alert("Erro", "O valor deve ser maior que zero");
+    const valueError = TransactionValidations.validatePositiveValue(numericValue);
+    
+    if (valueError) {
+      Alert.alert("Erro", valueError);
       return;
     }
 

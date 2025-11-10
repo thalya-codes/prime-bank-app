@@ -9,6 +9,7 @@ import { useGetUser } from "@/features/user/queries";
 import { useDropdownAnimation } from "@/hooks";
 import useGeneralInfos from "@/store/generalInfosStore";
 import useAuthStore from "@/store/useAuthStore";
+import { buildTransactionData, extractErrorMessage } from "@/utils/helpers";
 import { currencyMask, currencyToNumbers } from "@/utils/masks";
 import { TransactionValidations } from "@/utils/validations";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
@@ -28,8 +29,9 @@ interface TransactionOption {
 }
 
 const TRANSACTION_TYPES: TransactionOption[] = [
-  { value: "receita", label: "Receita" },
-  { value: "despesa", label: "Despesa" },
+  { value: "income", label: "Receita" },
+  { value: "expense", label: "Despesa" },
+  { value: "transfer", label: "Transferência" },
 ];
 
 export function HomePage() {
@@ -81,15 +83,20 @@ export function HomePage() {
   };
 
   const handleValueChange = (value: string) => {
-    const numericValue = value.replace(/\D/g, '');
-
-    setTransactionValue(Number(numericValue) / 100);
+    const numericValue = currencyToNumbers(value);
+    setTransactionValue(numericValue);
   };
 
   const handleReceiptSelected = (file: any) => {
     if (file) {
       setSelectedReceipt(file);
     }
+  };
+
+  const resetTransactionForm = () => {
+    setTransactionValue(0.00);
+    setTransactionType("");
+    setSelectedReceipt(null);
   };
 
   const handleTransactionSubmit = () => {
@@ -114,12 +121,7 @@ export function HomePage() {
       return;
     }
 
-    const transactionData = {
-      fromAccountNumber: accountNumber,
-      toAccountNumber: accountNumber,
-      amount: Number(amount), 
-      anexo: selectedReceipt
-    };
+    const transactionData = buildTransactionData(accountNumber, amount, selectedReceipt);
 
     createTransactionMutation.mutate(transactionData, {
       onSuccess: () => {
@@ -128,23 +130,19 @@ export function HomePage() {
           text1: "Transação realizada com sucesso!",
           type: "success",
         });
-
-        setTransactionValue(0.00);
-        setTransactionType("");
-        setSelectedReceipt(null);
+        resetTransactionForm();
       },
       onError: (error: any) => {
         Toast.show({
           autoHide: true,
           text1: "Erro ao criar transação",
-          text2: error.response?.data?.message || "Tente novamente",
+          text2: extractErrorMessage(error),
           type: "error",
         });
       },
     });
 
-    // Reset the form
-    setTransactionValue(0.00);
+    resetTransactionForm();
   };
   const handleCopyAccountNumber = async () => {
     try {

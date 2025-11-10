@@ -1,4 +1,4 @@
-export type TransactionType = "receita" | "despesa" | "transferencia";
+export type TransactionType = "income" | "expense" | "transfer";
 
 export type Transaction = {
   id: string;

@@ -6,6 +6,8 @@ import { Card } from "@/components";
 import { Transaction, transactionQueries } from "@/features/transactions";
 import { useDeleteTransactionMutation } from "@/features/transactions/mutations/delete-transaction-mutation";
 import { useEditTransactionMutation } from "@/features/transactions/mutations/put-transaction-mutation";
+import { currencyToNumbers } from "@/utils/masks";
+import { TransactionValidations } from "@/utils/validations";
 import { useQuery } from "@tanstack/react-query";
 import {
   EmptyList,
@@ -47,7 +49,7 @@ export function TransactionsPage() {
     })
   );
   const { data: transactionDataDetail } = useQuery(
-    transactionQueries.detail(currentTransaction?.id)
+    transactionQueries.detail(currentTransaction?.id || "")
   );
   const { mutateAsync: editTransaction } = useEditTransactionMutation();
   const { mutateAsync: deleteTransactionById } = useDeleteTransactionMutation();
@@ -88,8 +90,9 @@ export function TransactionsPage() {
   const validateTransactionForm = (): boolean => {
     const newErrors: { [key: string]: string } = {};
 
-    if (!currentTransaction?.amount || currentTransaction.amount <= 0) {
-      newErrors.amount = "Valor deve ser maior que zero";
+    const amountError = TransactionValidations.validateEditAmount(currentTransaction?.amount);
+    if (amountError) {
+      newErrors.amount = amountError;
     }
 
     setErrors(newErrors);
@@ -117,10 +120,10 @@ export function TransactionsPage() {
   };
 
   const handleFilters = (value: string, type: string) => {
-    const numericValue = value.replace(/\D/g, "");
+    const numericValue = currencyToNumbers(value);
     setFilters((prev: any) => ({
       ...prev,
-      [type]: Number(numericValue) / 100,
+      [type]: numericValue,
     }));
   };
 
@@ -143,10 +146,10 @@ export function TransactionsPage() {
   };
 
   const handleAmountChange = (text: string) => {
-    const numericValue = text.replace(/\D/g, "");
+    const numericValue = currencyToNumbers(text);
     setCurrentTransaction((prev: any) => ({
       ...prev,
-      amount: Number(numericValue) / 100,
+      amount: numericValue,
     }));
   };
 
