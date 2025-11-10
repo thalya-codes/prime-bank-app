@@ -1,4 +1,4 @@
-import { TransactionType } from "@/features/transactions/types";
+import { TransactionType } from "@/presentation/features/transactions/types";
 
 export interface TransactionOption {
   value: TransactionType;

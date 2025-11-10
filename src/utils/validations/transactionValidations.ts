@@ -1,4 +1,4 @@
-import { TransactionType } from "@/features/transactions";
+import { TransactionType } from "@/presentation/features/transactions";
 
 export interface TransactionValidationData {
   amount: number;

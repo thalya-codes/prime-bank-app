@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import useAuthStore from "@/store/useAuthStore";
+import useAuthStore from "@/presentation/store/useAuthStore";
 import { getAuth, onAuthStateChanged } from "@react-native-firebase/auth";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createContext, ReactNode, useEffect, useState } from "react";

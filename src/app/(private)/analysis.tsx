@@ -1,4 +1,4 @@
-import { AnalysisPage } from "@/pages";
+import { AnalysisPage } from "@/presentation/pages";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AnalysisScreen() {
