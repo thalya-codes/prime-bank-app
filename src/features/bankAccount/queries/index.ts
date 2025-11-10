@@ -1,5 +1,4 @@
-import { api } from "@/services/api";
-
+import { BankAccountService } from "@/services/bankAccountService";
 import { useQuery } from "@tanstack/react-query";
 
 interface IBankAccountResponse {
@@ -14,10 +13,7 @@ interface IBankAccountResponse {
 export const useGetBankAccount = () => {
   return useQuery({
     queryKey: ["bank-account"],
-    queryFn: async (): Promise<IBankAccountResponse> => {
-      const user = await api.get(`bankAccount`);
-      return user.data;
-    },
+    queryFn: (): Promise<IBankAccountResponse> => BankAccountService.getBankAccount(),
   });
 };
 

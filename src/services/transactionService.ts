@@ -1,5 +1,5 @@
 import { api } from './api';
-import { generateSearchParams } from '@/hooks/generateSearchParams';
+import { generateSearchParams } from '@/utils/helpers';
 
 export interface TransactionFilters {
   minAmount?: number;

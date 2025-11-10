@@ -1,4 +1,4 @@
-import { api } from "@/services/api";
+import { AnalyticsService } from "@/services/analyticsService";
 import { useQuery } from "@tanstack/react-query";
 
 export interface IAnalyticsResponseKpis {
@@ -44,10 +44,7 @@ export interface IAnalyticsResponse {
 export const useGetAnalytics = () => {
   return useQuery({
     queryKey: ["analytics"],
-    queryFn: async (): Promise<IAnalyticsResponse> => {
-      const user = await api.get(`analytics`);
-      return user.data;
-    },
+    queryFn: (): Promise<IAnalyticsResponse> => AnalyticsService.getAnalytics(),
   });
 };
 

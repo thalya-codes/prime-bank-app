@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 
 import { ICreateAccountFields } from "@/pages/CreateAccountPage/interfaces";
-import { api } from "@/services/api";
+import { UserService } from "@/services/userService";
 
 export type TCreateUser = Omit<ICreateAccountFields, "confirmPassword">;
 
@@ -15,7 +15,7 @@ export interface ICreateUserResponse {
 export const useCreateUserMutation = () => {
   return useMutation({
     mutationFn: async (data: TCreateUser): Promise<ICreateUserResponse[]> => {
-      return api.post(`users`, data);
+      return UserService.create(data);
     },
   });
 };

@@ -2,6 +2,7 @@ import { ReceiptUpload } from "@/components";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
 import { InputField } from "@/components/Input/InputField";
+import { TRANSACTION_TYPES } from "@/constants/transactionTypes";
 import { useGetBankAccount } from "@/features/bankAccount/queries";
 import { useCreateTransactionMutation } from "@/features/transactions/mutations";
 import { TransactionType } from "@/features/transactions/types";
@@ -9,11 +10,10 @@ import { useGetUser } from "@/features/user/queries";
 import { useDropdownAnimation } from "@/hooks";
 import useGeneralInfos from "@/store/generalInfosStore";
 import useAuthStore from "@/store/useAuthStore";
-import { buildTransactionData, extractErrorMessage } from "@/utils/helpers";
+import { buildTransactionData, copyToClipboard, extractErrorMessage, showErrorToast, showSuccessToast } from "@/utils/helpers";
 import { currencyMask, currencyToNumbers } from "@/utils/masks";
 import { TransactionValidations } from "@/utils/validations";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
-import * as Clipboard from "expo-clipboard";
 import { useEffect, useState } from "react";
 import {
   Animated,
@@ -22,17 +22,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Toast } from "toastify-react-native";
-interface TransactionOption {
-  value: TransactionType;
-  label: string;
-}
-
-const TRANSACTION_TYPES: TransactionOption[] = [
-  { value: "income", label: "Receita" },
-  { value: "expense", label: "Despesa" },
-  { value: "transfer", label: "Transferência" },
-];
 
 export function HomePage() {
   const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(true);
@@ -113,11 +102,7 @@ export function HomePage() {
     });
 
     if (validationError) {
-      Toast.show({
-        autoHide: true,
-        text1: validationError,
-        type: "error",
-      });
+      showErrorToast(validationError);
       return;
     }
 
@@ -125,40 +110,22 @@ export function HomePage() {
 
     createTransactionMutation.mutate(transactionData, {
       onSuccess: () => {
-        Toast.show({
-          autoHide: true,
-          text1: "Transação realizada com sucesso!",
-          type: "success",
-        });
+        showSuccessToast("Transação realizada com sucesso!");
         resetTransactionForm();
       },
       onError: (error: any) => {
-        Toast.show({
-          autoHide: true,
-          text1: "Erro ao criar transação",
-          text2: extractErrorMessage(error),
-          type: "error",
-        });
+        showErrorToast("Erro ao criar transação", extractErrorMessage(error));
       },
     });
 
     resetTransactionForm();
   };
   const handleCopyAccountNumber = async () => {
-    try {
-      await Clipboard.setStringAsync(String(bankAccount?.bankAccountNumber));
-      Toast.show({
-        autoHide: true,
-        text1: "Número da conta copiado",
-        type: "success",
-      });
-    } catch {
-      Toast.show({
-        autoHide: true,
-        text1: "Não foi possível copiar o número da conta.",
-        type: "error",
-      });
-    }
+    await copyToClipboard(
+      String(bankAccount?.bankAccountNumber),
+      "Número da conta copiado",
+      "Não foi possível copiar o número da conta."
+    );
   };
 
   useEffect(() => {

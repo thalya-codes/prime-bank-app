@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import { Alert } from "react-native";
 
 import { useCreateTransactionMutation } from "@/features/transactions/mutations";
 import {
@@ -7,6 +6,7 @@ import {
   TransactionType,
 } from "@/features/transactions/types";
 import useAuthStore from "@/store/useAuthStore";
+import { showErrorToast } from "@/utils/helpers";
 import { currencyMasks, currencyToNumbers } from "@/utils/masks";
 import { TransactionValidations } from "@/utils/validations";
 
@@ -44,7 +44,7 @@ export const useTransactionForm = () => {
     );
     
     if (fieldsError) {
-      Alert.alert("Erro", fieldsError);
+      showErrorToast("Erro", fieldsError);
       return;
     }
 
@@ -53,7 +53,7 @@ export const useTransactionForm = () => {
     const valueError = TransactionValidations.validatePositiveValue(numericValue);
     
     if (valueError) {
-      Alert.alert("Erro", valueError);
+      showErrorToast("Erro", valueError);
       return;
     }
 

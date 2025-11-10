@@ -6,6 +6,7 @@ import { Card } from "@/components";
 import { Transaction, transactionQueries } from "@/features/transactions";
 import { useDeleteTransactionMutation } from "@/features/transactions/mutations/delete-transaction-mutation";
 import { useEditTransactionMutation } from "@/features/transactions/mutations/put-transaction-mutation";
+import { showSuccessToast } from "@/utils/helpers";
 import { currencyToNumbers } from "@/utils/masks";
 import { TransactionValidations } from "@/utils/validations";
 import { useQuery } from "@tanstack/react-query";
@@ -106,9 +107,8 @@ export function TransactionsPage() {
 
     try {
       if (currentTransaction?.id) {
-        // Atualização de transação existente
         await editTransaction(currentTransaction);
-        Alert.alert("Sucesso", "Transação atualizada com sucesso!");
+        showSuccessToast("Transação atualizada com sucesso!");
       }
 
       setModalVisible(false);
@@ -138,7 +138,7 @@ export function TransactionsPage() {
           style: "destructive",
           onPress: async () => {
             await deleteTransactionById(id);
-            Alert.alert("Sucesso", "Transação excluída com sucesso!");
+            showSuccessToast("Transação excluída com sucesso!");
           },
         },
       ]

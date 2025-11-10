@@ -1,4 +1,4 @@
-import { api } from "@/services/api";
+import { UserService } from "@/services/userService";
 import { useQuery } from "@tanstack/react-query";
 
 interface IUser {
@@ -16,16 +16,12 @@ interface IUser {
 }
 
 export async function fetchUser(): Promise<IUser> {
-  const user = await api.get(`user`);
-  return user.data;
+  return await UserService.getUser();
 }
 
 export const useGetUser = () => {
   return useQuery({
     queryKey: ["user"],
-    queryFn: async () => {
-      const user = await api.get(`user`);
-      return user.data;
-    },
+    queryFn: fetchUser,
   });
 };
