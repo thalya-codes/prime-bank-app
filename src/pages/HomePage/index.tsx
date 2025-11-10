@@ -10,6 +10,7 @@ import { useDropdownAnimation } from "@/hooks";
 import useGeneralInfos from "@/store/generalInfosStore";
 import useAuthStore from "@/store/useAuthStore";
 import { currencyMask, currencyToNumbers } from "@/utils/masks";
+import { TransactionValidations } from "@/utils/validations";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { useEffect, useState } from "react";
@@ -92,81 +93,22 @@ export function HomePage() {
   };
 
   const handleTransactionSubmit = () => {
-    if (!transactionValue || transactionValue === 0.00) {
-      Toast.show({
-        autoHide: true,
-        text1: "Por favor, insira um valor válido",
-        type: "error",
-      });
-      return;
-    }
-
-    if (!transactionType) {
-      Toast.show({
-        autoHide: true,
-        text1: "Selecione o tipo de transação",
-        type: "error",
-      });
-      return;
-    }
-
-    if (!bankAccount?.id) {
-      Toast.show({
-        autoHide: true,
-        text1: "Conta bancária não encontrada",
-        type: "error",
-      });
-      return;
-    }
-
     const amount = currencyToNumbers(transactionValue.toString());
-    if (!amount || amount <= 0) {
+    const accountNumber = bankAccount?.bankAccountNumber;
+    const accountId = bankAccount?.id;
+
+    const validationError = TransactionValidations.validateCreateTransaction({
+      amount: amount || 0,
+      type: transactionType,
+      accountNumber: accountNumber || "",
+      bankAccountId: accountId,
+      userId: uid,
+    });
+
+    if (validationError) {
       Toast.show({
         autoHide: true,
-        text1: "O valor deve ser maior que zero",
-        type: "error",
-      });
-      return;
-    }
-
-    if (!uid) {
-      Toast.show({
-        autoHide: true,
-        text1: "Usuário não autenticado",
-        type: "error",
-      });
-      return;
-    }
-
-    const accountId = bankAccount.id;
-
-    // Validar se accountId é uma string válida
-    if (!accountId || typeof accountId !== "string") {
-      Toast.show({
-        autoHide: true,
-        text1: "ID da conta bancária inválido",
-        type: "error",
-      });
-      return;
-    }
-
-    // Validar se o tipo de transação é válido
-    if (!["receita", "despesa", "transferencia"].includes(transactionType)) {
-      Toast.show({
-        autoHide: true,
-        text1: "Tipo de transação inválido",
-        type: "error",
-      });
-      return;
-    }
-
-    // Usar o número da conta bancária, não o ID
-    const accountNumber = bankAccount.bankAccountNumber;
-
-    if (!accountNumber) {
-      Toast.show({
-        autoHide: true,
-        text1: "Número da conta bancária não encontrado",
+        text1: validationError,
         type: "error",
       });
       return;

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { api } from "@/services/api";
+import { TransactionService } from "@/services/transactionService";
 import { transactionQueries } from "../queries";
 import { Transaction } from "../types";
 
@@ -9,9 +9,7 @@ export const useEditTransactionMutation = () => {
 
   return useMutation({
     mutationFn: async (data: Transaction) => {
-      return api.put(`/transactions/${data.id}`, { 
-        ...data,
-      });
+      return await TransactionService.update(data.id, { ...data });
     },
     onSettled: () =>
       queryClient.invalidateQueries({ queryKey: transactionQueries.all() }),

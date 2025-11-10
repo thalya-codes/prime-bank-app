@@ -1,9 +1,7 @@
 import { keepPreviousData, queryOptions } from "@tanstack/react-query";
 
-import { generateSearchParams } from "@/hooks/generateSearchParams";
-import { api } from "@/services/api";
+import { TransactionService } from "@/services/transactionService";
 import { TransactionsFilters } from "@/store/transactionsStore";
-import { Transaction, TransactionsData } from "../types";
 
 export const transactionQueries = {
   all: () => ["transactions"],
@@ -26,15 +24,10 @@ export const transactionQueries = {
 };
 
 async function fetchTransactionsList(filters: TransactionsFilters) {
-  const params = generateSearchParams(filters);
-
-  const response = await api.get<TransactionsData>(`/transactions?${params}`);
-
-  return response.data;
+  return await TransactionService.getAll(filters);
 }
 
 async function fetchTransactionDetails(id: string | undefined) {
-  const { data } = await api.get<Transaction>(`/transactions/${id}`);
-
-  return data;
+  if (!id) throw new Error("Transaction ID is required");
+  return await TransactionService.getById(id);
 }

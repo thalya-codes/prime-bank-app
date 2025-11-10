@@ -1,6 +1,5 @@
+import { TransactionService } from "@/services/transactionService";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
-import { api } from "@/services/api";
 import { transactionQueries } from "../queries";
 
 export const useDeleteTransactionMutation = () => {
@@ -8,7 +7,7 @@ export const useDeleteTransactionMutation = () => {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      return api.delete(`/transactions/${id}`);
+      return await TransactionService.delete(id);
     },
     onSettled: () =>
       queryClient.invalidateQueries({ queryKey: transactionQueries.all() }),
