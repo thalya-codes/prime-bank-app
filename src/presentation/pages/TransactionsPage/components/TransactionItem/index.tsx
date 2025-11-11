@@ -21,6 +21,7 @@ function TransactionItem({
   openEditTransactionModal,
   deleteTransaction,
 }: any) {
+
   return (
     <Card className="p-5 mb-3 shadow-sm">
       <View className="flex-row justify-between items-center mb-8">

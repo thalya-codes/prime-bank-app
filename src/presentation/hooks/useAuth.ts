@@ -1,6 +1,5 @@
 import {
-  TCreateUser,
-  useCreateUserMutation,
+  useCreateUserMutation
 } from "@/presentation/features/user/mutations/create-user-mutation";
 import { deleteToken, saveToken } from "@/utils/auth/secureStore";
 import { handleAuthError } from "@/utils/handleAuthErrors";
@@ -9,6 +8,7 @@ import {
   getIdToken,
   signInWithEmailAndPassword,
   signOut,
+  updatePassword,
 } from "@react-native-firebase/auth";
 
 export interface ICredentials {
@@ -19,17 +19,15 @@ export interface ICredentials {
 export function useAuth() {
   const { mutateAsync: createNewUser } = useCreateUserMutation();
 
-
-
   const signIn = async ({ email, password }: ICredentials) => {
     const res = await signInWithEmailAndPassword(getAuth(), email, password);
     const token = await getIdToken(res.user);
     await saveToken(process.env.EXPO_PUBLIC_TOKEN_KEY!, token);
   };
 
-  // const resetPassword = async (newPassword: string) => {
-  //   await updatePassword(getAuth().currentUser!, newPassword);
-  // };
+  const resetPassword = async (newPassword: string) => {
+    await updatePassword(getAuth().currentUser!, newPassword);
+  };
 
   const logout = async () => {
     await signOut(getAuth());
@@ -40,7 +38,7 @@ export function useAuth() {
     signIn,
     createNewUser,
     logout,
-    // resetPassword,
+    resetPassword,
     handleAuthError,
   };
 }

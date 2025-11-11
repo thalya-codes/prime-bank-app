@@ -51,8 +51,9 @@ export const PersonalInfosStep = ({
               <InputIcon name='envelope-o' />
 
               <InputField
-                placeholder='email@email.com'
+                placeholder='Digite seu email'
                 keyboardType='email-address'
+                autoCapitalize='none'
                 onChangeText={onChange}
                 {...field}
               />

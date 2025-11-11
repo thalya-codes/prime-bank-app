@@ -1,4 +1,5 @@
 import { TransactionType } from "@/presentation/features/transactions";
+import { firestoreToZulu } from "@/utils/masks";
 
 export class Transaction {
   constructor(
@@ -7,8 +8,10 @@ export class Transaction {
     public readonly toAccountNumber: string,
     public readonly amount: number,
     public readonly type: TransactionType,
-    public readonly createdAt: Date,
-    public readonly updatedAt?: Date,
+    public readonly createdAt: {
+      _seconds: number;
+      _nanoseconds: number;
+    },
     public readonly anexo?: string
   ) {}
 
@@ -32,7 +35,7 @@ export class Transaction {
   }
 
   formattedDate(): string {
-    return this.createdAt.toLocaleDateString('pt-BR', {
+    return firestoreToZulu(this.createdAt).toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
@@ -40,7 +43,7 @@ export class Transaction {
   }
 
   formattedDateTime(): string {
-    return this.createdAt.toLocaleString('pt-BR', {
+    return firestoreToZulu(this.createdAt).toLocaleString('pt-BR', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',

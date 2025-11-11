@@ -1,5 +1,6 @@
+import { BankAccount } from "../entities";
 
 export interface IBankAccountRepository {
-  getBankAccount(): Promise<any>;
+  getBankAccount(): Promise<BankAccount>;
 }
 

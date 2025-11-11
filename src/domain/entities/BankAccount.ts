@@ -4,8 +4,10 @@ export class BankAccount {
     public readonly userId: string,
     public readonly bankAccountNumber: string,
     public readonly balance: number,
-    public readonly createdAt: Date,
-    public readonly updatedAt?: Date,
+    public readonly createdAt: {
+      _seconds: number;
+      _nanoseconds: number;
+    },
     public readonly name?: string
   ) {}
 

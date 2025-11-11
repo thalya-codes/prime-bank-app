@@ -96,7 +96,13 @@ export function LoginPage() {
             <FormFieldLabel>Email</FormFieldLabel>
             <InputRoot>
               <InputIcon name='envelope-o' />
-              <InputField onChangeText={onChange} {...field} />
+              <InputField
+                placeholder='Digite seu email'
+                keyboardType='email-address'
+                autoCapitalize='none'
+                onChangeText={onChange}
+                {...field}
+              />
             </InputRoot>
             {errors?.email && (
               <FormFieldMessage isError>

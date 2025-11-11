@@ -1,12 +1,9 @@
-import { api } from './api';
+import { Transaction } from '@/domain/entities';
+import { ITransactionRepository, TransactionFilters } from '@/domain/repositories';
+import { PaginatedResponse } from '@/domain/types';
+import { api } from '@/infrastructure/http/api';
 import { generateSearchParams } from '@/utils/helpers';
-
-export interface TransactionFilters {
-  minAmount?: number;
-  maxAmount?: number;
-  itemsPerPage?: number;
-  month?: string;
-}
+import { TransactionMapper } from '../mappers';
 
 export class TransactionService {
   static async create(data: any): Promise<any> {
@@ -14,15 +11,19 @@ export class TransactionService {
     return response.data;
   }
 
-  static async getAll(filters: TransactionFilters = {}): Promise<any> {
-    const params = generateSearchParams(filters);
+  static async getAll(filters: TransactionFilters = {}): Promise<PaginatedResponse<Transaction>> {
+    const params = generateSearchParams(filters as any);
     const response = await api.get(`/transactions?${params}`);
-    return response.data;
+    
+    return {
+      data: TransactionMapper.toDomainList(response.data.data),
+      pagination: response.data.pagination
+    };
   }
 
-  static async getById(id: string): Promise<any> {
+  static async getById(id: string): Promise<Transaction> {
     const response = await api.get(`/transactions/${id}`);
-    return response.data;
+    return TransactionMapper.toDomain(response.data);
   }
 
   static async update(id: string, data: any): Promise<any> {
@@ -35,4 +36,6 @@ export class TransactionService {
     return response.data;
   }
 }
+
+const _: ITransactionRepository = TransactionService;
 

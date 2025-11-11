@@ -8,7 +8,6 @@ export const api = axios.create({
   },
 });
 
-// Interceptor para adicionar o token em todas as requisições
 api.interceptors.request.use(
   config => {
     const { token } = useAuthStore.getState();

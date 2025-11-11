@@ -1,4 +1,4 @@
-import { api } from "@/data/repositories/api";
+import { api } from "@/infrastructure/http/api";
 import useAuthStore from "@/presentation/store/useAuthStore";
 import * as SecureStore from "expo-secure-store";
 
