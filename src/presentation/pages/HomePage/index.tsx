@@ -129,7 +129,9 @@ export function HomePage() {
   };
 
   useEffect(() => {
-    setName(user?.fullName);
+    if (user?.fullName) {
+      setName(user.fullName);
+    }
   }, [setName, user?.fullName]);
   
   return (

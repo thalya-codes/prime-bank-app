@@ -1,7 +1,7 @@
 import { Avatar, MenuDropDown } from "@/presentation/components";
 import { Logo } from "@/presentation/components/Logo";
+import { useGetUser } from "@/presentation/features/user/queries";
 import { useAuth } from "@/presentation/hooks/useAuth";
-import useGeneralInfos from "@/presentation/store/generalInfosStore";
 import { FontAwesome } from "@expo/vector-icons";
 import { Text } from "@react-navigation/elements";
 import { useRouter } from "expo-router";
@@ -12,7 +12,7 @@ import { Toast } from "toastify-react-native";
 export const PrivateScreenHeaderLayout = () => {
   const router = useRouter();
   const { logout, handleAuthError } = useAuth();
-  const { name } = useGeneralInfos();
+  const { data: user } = useGetUser();
 
   const signOut = async () => {
     try {
@@ -50,7 +50,7 @@ export const PrivateScreenHeaderLayout = () => {
           ]}
           maxHeight={40}
         >
-          <Avatar name={name ?? "Usuário Desconhecido"} />
+          <Avatar name={user?.fullName ?? "Usuário Desconhecido"} />
         </MenuDropDown>
       </View>
       </SafeAreaView>

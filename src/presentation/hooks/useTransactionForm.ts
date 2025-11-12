@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
+import { useGetBankAccount } from "@/presentation/features/bankAccount/queries";
 import { useCreateTransactionMutation } from "@/presentation/features/transactions/mutations";
 import {
   CreateTransactionData,
@@ -17,6 +18,7 @@ export const useTransactionForm = () => {
   const [transactionValue, setTransactionValue] = useState<string>("");
 
   const { uid } = useAuthStore();
+  const { data: bankAccount } = useGetBankAccount();
   const createTransactionMutation = useCreateTransactionMutation();
 
   const handleValueChange = useCallback((value: string) => {
@@ -54,6 +56,18 @@ export const useTransactionForm = () => {
     
     if (valueError) {
       showErrorToast("Erro", valueError);
+      return;
+    }
+
+    if (selectedTransactionType === "expense" && bankAccount) {
+      if (!bankAccount.hasSufficientBalance(numericValue)) {
+        showErrorToast("Saldo insuficiente", "Você não tem saldo suficiente para esta transação");
+        return;
+      }
+    }
+
+    if (!uid) {
+      showErrorToast("Erro", "Usuário não identificado");
       return;
     }
 

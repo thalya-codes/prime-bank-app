@@ -1,5 +1,6 @@
-import { TransactionType } from "@/presentation/features/transactions";
 import { firestoreToZulu } from "@/utils/masks";
+
+export type TransactionMovement = "received" | "sended";
 
 export class Transaction {
   constructor(
@@ -7,7 +8,7 @@ export class Transaction {
     public readonly fromAccountNumber: string,
     public readonly toAccountNumber: string,
     public readonly amount: number,
-    public readonly type: TransactionType,
+    public readonly type: TransactionMovement,
     public readonly createdAt: {
       _seconds: number;
       _nanoseconds: number;
@@ -15,16 +16,12 @@ export class Transaction {
     public readonly anexo?: string
   ) {}
 
-  isExpense(): boolean {
-    return this.type === 'income';
+  isReceived(): boolean {
+    return this.type === 'received';
   }
 
-  isIncome(): boolean {
-    return this.type === 'expense';
-  }
-
-  isTransfer(): boolean {
-    return this.type === 'transfer';
+  isSended(): boolean {
+    return this.type === 'sended';
   }
 
   formattedAmount(): string {
@@ -56,6 +53,10 @@ export class Transaction {
     return firestoreToZulu(this.createdAt).toLocaleString('pt-BR', {
       month: 'long',
     });
+  }
+
+  hasAttachment(): boolean {
+    return !!this.anexo;
   }
 }
 
