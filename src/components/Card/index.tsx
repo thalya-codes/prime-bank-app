@@ -25,7 +25,7 @@ const Card = ({
   return (
     <View
       className={cn(
-        "px-5 py-7 rounded-lg shadow-slate-50 shadow-md ",
+        "px-5 py-7 rounded-lg shadow-slate-50 shadow-md h-max",
         cardColorVariants[color],
         isOutlined && !isStrongGreenVariant && cardOutlineVariants[color],
         className
@@ -37,4 +37,5 @@ const Card = ({
   );
 };
 
-export default Card
+export default Card;
+

@@ -1,3 +1,4 @@
+import { BiometricSwitch } from "@/components/BiometricSwitch";
 import Button from "@/components/Button";
 import { CardHighlight } from "@/components/CardHighlight";
 import { FormFieldLabel } from "@/components/FormField/FormFieldLabel";
@@ -7,7 +8,6 @@ import { InputField, InputIcon, InputRoot } from "@/components/Input";
 import { InputPassword } from "@/components/InputPassword";
 import { ICredentials, useAuth } from "@/hooks/useAuth";
 import { PublicScreenLayout } from "@/layouts/PublicScreenLayout";
-import { getToken } from "@/utils/auth/secureStore";
 import { emailSchema } from "@/utils/validations";
 import { AntDesign } from "@expo/vector-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -43,8 +43,7 @@ export function LoginPage() {
   const onLogin = async (credentials: ICredentials) => {
     try {
       await signIn(credentials);
-      const token = await getToken(process.env.EXPO_PUBLIC_TOKEN_KEY!);
-      console.log({ key: process.env.EXPO_PUBLIC_TOKEN_KEY, token });
+
       router.push("/home");
     } catch (error) {
       const errorMessage = handleAuthError(error);
@@ -115,6 +114,8 @@ export function LoginPage() {
           error={errors?.password}
         />
       </FormFieldRoot>
+
+      <BiometricSwitch />
 
       <Button text='Entrar' className='gap-2' onPress={handleSubmit(onLogin)}>
         <AntDesign name='arrowright' size={20} color={"#fff"} />
