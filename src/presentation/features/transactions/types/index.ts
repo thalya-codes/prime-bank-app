@@ -1,21 +1,5 @@
 export type TransactionType = "income" | "expense" | "transfer";
 
-export type Transaction = {
-  id: string;
-  amount: number;
-  type: string;
-  createdAt: string;
-};
-
-export interface TransactionsData {
-  data: Transaction[];
-  pagination: {
-    hasMore: boolean;
-    itemsPerPage: number;
-    nextCursorId: any;
-  };
-}
-
 export interface TransactionFormData {
   id?: string;
   fromAccountId: string;

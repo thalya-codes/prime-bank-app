@@ -145,7 +145,7 @@ export function HomePage() {
           className="py-4 mb-6 border border-brand-400 shadow-black/30 "
         >
           <Text className="mb-1 text-lg font-nunito-medium text-brand-700">
-            Olá, {user?.fullName}!👋
+            Olá, {user?.firstName}!👋
           </Text>
           <Text className="text-sm font-nunito-regular text-brand-600">
             {currentDate}
@@ -155,7 +155,7 @@ export function HomePage() {
               Numero da conta:
             </Text>
             <Text className="pt-2 text-lg font-bold font-nunito-regular text-brand-600">
-              {bankAccount?.bankAccountNumber}{" "}
+              {bankAccount?.formattedAccountNumber()}{" "}
             </Text>
             <TouchableOpacity onPress={handleCopyAccountNumber}>
               <FontAwesome name="paste" size={20} color={"#249695"} />
@@ -171,7 +171,7 @@ export function HomePage() {
                 Saldo disponível ——
               </Text>
               <Text className="text-3xl font-nunito-bold text-neutral-0">
-                {isBalanceVisible ? `${currencyMask(bankAccount?.balance || 0.00)}` : "R$ ****"}
+                {isBalanceVisible ? (bankAccount?.formattedBalance() || "R$ 0,00") : "R$ ****"}
               </Text>
             </View>
             <TouchableOpacity onPress={toggleBalanceVisibility}>

@@ -51,5 +51,11 @@ export class Transaction {
       minute: '2-digit',
     });
   }
+
+  formattedMonth(): string {
+    return firestoreToZulu(this.createdAt).toLocaleString('pt-BR', {
+      month: 'long',
+    });
+  }
 }
 

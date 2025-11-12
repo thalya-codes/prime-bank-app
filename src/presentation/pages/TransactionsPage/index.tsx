@@ -2,8 +2,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Alert, FlatList, Text, TouchableOpacity, View } from "react-native";
 
+import { Transaction } from "@/domain/entities";
 import { Card } from "@/presentation/components";
-import { Transaction, transactionQueries } from "@/presentation/features/transactions";
+import { transactionQueries } from "@/presentation/features/transactions";
 import { useDeleteTransactionMutation } from "@/presentation/features/transactions/mutations/delete-transaction-mutation";
 import { useEditTransactionMutation } from "@/presentation/features/transactions/mutations/put-transaction-mutation";
 import { showSuccessToast } from "@/utils/helpers";
@@ -83,7 +84,7 @@ export function TransactionsPage() {
   };
 
   const openEditTransactionModal = (transaction: Transaction) => {
-    setCurrentTransaction({ ...transaction });
+    setCurrentTransaction(transaction);
     setErrors({});
     setModalVisible(true);
   };
@@ -147,10 +148,18 @@ export function TransactionsPage() {
 
   const handleAmountChange = (text: string) => {
     const numericValue = currencyToNumbers(text);
-    setCurrentTransaction((prev: any) => ({
-      ...prev,
-      amount: numericValue,
-    }));
+    setCurrentTransaction((prev) => {
+      if (!prev) return null;
+      return new Transaction(
+        prev.id,
+        prev.fromAccountNumber,
+        prev.toAccountNumber,
+        numericValue,
+        prev.type,
+        prev.createdAt,
+        prev.anexo
+      );
+    });
   };
 
   const renderTransaction = ({ item }: { item: Transaction }) => (

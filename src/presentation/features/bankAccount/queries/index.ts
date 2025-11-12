@@ -1,19 +1,11 @@
 import { BankAccountService } from "@/data/repositories/bankAccountService";
+import { BankAccount } from "@/domain/entities";
 import { useQuery } from "@tanstack/react-query";
-
-interface IBankAccountResponse {
-  associatedUser: string;
-  balance: number;
-  createdAt: string;
-  id: string;
-  name: string;
-  bankAccountNumber: string;
-}
 
 export const useGetBankAccount = () => {
   return useQuery({
     queryKey: ["bank-account"],
-    queryFn: (): Promise<IBankAccountResponse> => BankAccountService.getBankAccount(),
+    queryFn: (): Promise<BankAccount> => BankAccountService.getBankAccount(),
   });
 };
 

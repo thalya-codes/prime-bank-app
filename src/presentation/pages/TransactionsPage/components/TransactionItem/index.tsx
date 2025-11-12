@@ -1,13 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 
+import { Transaction } from "@/domain/entities";
 import { Badge, Card, MenuDropDown } from "@/presentation/components";
-import {
-  currencyMask,
-  firestoreToZulu,
-  formatDateTime,
-  formatMonthDate,
-} from "@/utils/masks";
 
 type TransactionTypeKey = "received" | "sended";
 
@@ -16,11 +11,17 @@ const transactionType: Record<TransactionTypeKey, string> = {
   sended: "Enviado",
 };
 
+interface TransactionItemProps {
+  item: Transaction;
+  openEditTransactionModal: (transaction: Transaction) => void;
+  deleteTransaction: (id: string) => void;
+}
+
 function TransactionItem({
   item,
   openEditTransactionModal,
   deleteTransaction,
-}: any) {
+}: TransactionItemProps) {
 
   return (
     <Card className="p-5 mb-3 shadow-sm">
@@ -63,12 +64,12 @@ function TransactionItem({
         style={{ zIndex: -1 }}
       >
         <Text className="text-sm text-gray-600">
-          {formatDateTime(firestoreToZulu(item.createdAt))}
+          {item.formattedDateTime()}
         </Text>
         <View className="flex justify-between items-center">
           <Badge color="bg-gray-200 mb-2">
             <Text className="text-l font-nunito-semi-bold mx-2">
-              {formatMonthDate(firestoreToZulu(item.createdAt))}
+              {item.formattedMonth()}
             </Text>
           </Badge>
 
@@ -76,7 +77,7 @@ function TransactionItem({
             className={`text-lg font-bold ${item.type === "received" ? "text-green-600" : "text-red-600"}`}
           >
             {item.type === "received" ? "+" : "-"}
-            {currencyMask(item.amount)}
+            {item.formattedAmount().replace('R$ ', '')}
           </Text>
         </View>
       </View>
