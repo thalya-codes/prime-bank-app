@@ -30,32 +30,6 @@ export function firestoreToZulu(timestamp: FirestoreTimestamp): Date {
   );
 }
 
-export const formatDate = (date: Date) => {
-  return date.toLocaleDateString("pt-BR");
-};
-
-export const formatMonthDate = (date: Date) => {
-  return date.toLocaleString("pt-BR", { month: "long" });
-};
-
-export const formatDateTime = (zuluDate: Date) => {
-  const date = new Date(zuluDate);
-
-  const pad = (n: number) => n.toString().padStart(2, "0");
-
-  const day = pad(date.getDate());
-  const month = pad(date.getMonth() + 1);
-  const year = date.getFullYear();
-
-  const hours = pad(date.getHours());
-  const minutes = pad(date.getMinutes());
-  const seconds = pad(date.getSeconds());
-
-  const formatted = `${day}/${month}/${year},\n ${hours}:${minutes}:${seconds}`;
-
-  return formatted;
-};
-
 export function currencyMasks(value: string): string {
   const cleanedValue = value.replace(/\D/g, "");
 
@@ -66,10 +40,6 @@ export function currencyMasks(value: string): string {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
-}
-
-export function removeCurrencyMasks(value: string): string {
-  return value.replace(/\D/g, "");
 }
 
 export function currencyToNumbers(value: string): number {

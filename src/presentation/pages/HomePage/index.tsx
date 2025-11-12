@@ -8,13 +8,12 @@ import { useCreateTransactionMutation } from "@/presentation/features/transactio
 import { TransactionType } from "@/presentation/features/transactions/types";
 import { useGetUser } from "@/presentation/features/user/queries";
 import { useDropdownAnimation } from "@/presentation/hooks";
-import useGeneralInfos from "@/presentation/store/generalInfosStore";
 import useAuthStore from "@/presentation/store/useAuthStore";
 import { buildTransactionData, copyToClipboard, extractErrorMessage, showErrorToast, showSuccessToast } from "@/utils/helpers";
 import { currencyMask, currencyToNumbers } from "@/utils/masks";
 import { TransactionValidations } from "@/utils/validations";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Animated,
   ScrollView,
@@ -41,7 +40,6 @@ export function HomePage() {
   const [transactionValue, setTransactionValue] = useState<number>(0.00);
   const { data: user } = useGetUser();
   const { data: bankAccount } = useGetBankAccount();
-  const { setName } = useGeneralInfos();
   const { uid } = useAuthStore();
   const createTransactionMutation = useCreateTransactionMutation();
   const currentDate = new Date().toLocaleDateString("pt-BR", {
@@ -128,11 +126,6 @@ export function HomePage() {
     );
   };
 
-  useEffect(() => {
-    if (user?.fullName) {
-      setName(user.fullName);
-    }
-  }, [setName, user?.fullName]);
   
   return (
     <ScrollView

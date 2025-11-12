@@ -4,6 +4,7 @@ import { FormFieldMessage } from "@/presentation/components/FormField/FormFieldM
 import { FormFieldRoot } from "@/presentation/components/FormField/FormFieldRoot";
 import { InputField, InputIcon, InputRoot } from "@/presentation/components/Input";
 import { PublicScreenLayout } from "@/presentation/layouts/PublicScreenLayout";
+import { phoneMask } from "@/utils/masks";
 import { Controller } from "react-hook-form";
 import { IPersonalInfosStep } from "../interfaces";
 
@@ -77,8 +78,8 @@ export const PersonalInfosStep = ({
               <InputIcon name='phone' />
               <InputField
                 keyboardType='number-pad'
-                placeholder='00 000000000'
-                onChangeText={onChange}
+                placeholder='(00) 00000-0000'
+                onChangeText={(text) => onChange(phoneMask(text))}
                 value={value}
                 {...field}
               />
