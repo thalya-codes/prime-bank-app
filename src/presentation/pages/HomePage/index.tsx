@@ -1,8 +1,8 @@
-import { TRANSACTION_TYPES } from "@/constants/transactionTypes";
 import { ReceiptUpload } from "@/presentation/components";
 import Button from "@/presentation/components/Button";
 import Card from "@/presentation/components/Card";
 import { InputField } from "@/presentation/components/Input/InputField";
+import { TRANSACTION_TYPES } from "@/presentation/constants/transactionTypes";
 import { useGetBankAccount } from "@/presentation/features/bankAccount/queries";
 import { useCreateTransactionMutation } from "@/presentation/features/transactions/mutations";
 import { TransactionType } from "@/presentation/features/transactions/types";

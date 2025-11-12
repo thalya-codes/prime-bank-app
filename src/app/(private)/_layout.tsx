@@ -1,6 +1,6 @@
-import { queryClient } from "@/infrastructure/http/query-client";
+import { queryClient } from "@/infrastructure/query/query-client";
 import { PrivateScreenHeaderLayout } from "@/presentation/layouts/PrivateScreenHeaderLayout";
-import { AuthProvider } from "@/providers/AuthProvider";
+import { AuthProvider } from "@/presentation/providers/AuthProvider";
 import {
   Inter_400Regular,
   Inter_500Medium,

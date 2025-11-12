@@ -1,5 +1,5 @@
-import { queryClient } from "@/infrastructure/http/query-client";
-import { AuthProvider } from "@/providers/AuthProvider";
+import { queryClient } from "@/infrastructure/query/query-client";
+import { AuthProvider } from "@/presentation/providers/AuthProvider";
 import {
   Inter_400Regular,
   Inter_500Medium,
