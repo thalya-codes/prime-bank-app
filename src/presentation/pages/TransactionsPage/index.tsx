@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Alert, FlatList, Text, TouchableOpacity, View } from "react-native";
 
 import { Transaction } from "@/domain/entities";
-import { Card } from "@/presentation/components";
+import { Card, TransactionsSkeleton, } from "@/presentation/components";
 import { transactionQueries } from "@/presentation/features/transactions";
 import { useDeleteTransactionMutation } from "@/presentation/features/transactions/mutations/delete-transaction-mutation";
 import { useEditTransactionMutation } from "@/presentation/features/transactions/mutations/put-transaction-mutation";
@@ -55,6 +55,8 @@ export function TransactionsPage() {
   );
   const { mutateAsync: editTransaction } = useEditTransactionMutation();
   const { mutateAsync: deleteTransactionById } = useDeleteTransactionMutation();
+  const shouldShowTransactionsSkeleton =
+    !transactionData && (isLoading || isFetching);
 
   const loadMoreTransactions = () => {
     if (!isPlaceholderData && transactionData?.pagination.hasMore) {
@@ -177,6 +179,16 @@ export function TransactionsPage() {
   };
 
   const renderEmptyList = () => <EmptyList filters={filters} />;
+
+  if (shouldShowTransactionsSkeleton) {
+    return (
+      <View className="flex-1 bg-gray-100">
+        <View className="px-5 pt-5 pb-6">
+          <TransactionsSkeleton />
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View className="flex-1 bg-gray-100">

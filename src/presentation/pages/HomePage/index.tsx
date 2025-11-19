@@ -1,4 +1,4 @@
-import { ReceiptUpload } from "@/presentation/components";
+import { HomeSkeleton, ReceiptUpload } from "@/presentation/components";
 import Button from "@/presentation/components/Button";
 import Card from "@/presentation/components/Card";
 import { InputField } from "@/presentation/components/Input/InputField";
@@ -38,8 +38,8 @@ export function HomePage() {
 
   const { animatedHeight, open, close } = useDropdownAnimation(0, 150);
   const [transactionValue, setTransactionValue] = useState<number>(0.00);
-  const { data: user } = useGetUser();
-  const { data: bankAccount } = useGetBankAccount();
+  const { data: user, isLoading: isUserLoading, isFetching: isUserFetching } = useGetUser();
+  const { data: bankAccount, isLoading: isBankAccountLoading, isFetching: isBankAccountFetching } = useGetBankAccount();
   const { uid } = useAuthStore();
   const createTransactionMutation = useCreateTransactionMutation();
   const currentDate = new Date().toLocaleDateString("pt-BR", {
@@ -48,6 +48,9 @@ export function HomePage() {
     month: "long",
     year: "numeric",
   });
+  const isHomeSkeletonVisible =
+    (!user && (isUserLoading || isUserFetching)) ||
+    (!bankAccount && (isBankAccountLoading || isBankAccountFetching));
 
   const toggleBalanceVisibility = () => {
     setIsBalanceVisible(!isBalanceVisible);
@@ -126,7 +129,20 @@ export function HomePage() {
     );
   };
 
-  
+  if (isHomeSkeletonVisible) {
+    return (
+      <ScrollView
+        className="flex-1 bg-neutral-50"
+        contentContainerStyle={{ flexGrow: 1 }}
+        showsVerticalScrollIndicator={false}
+      >
+        <View className="px-4 py-6 pb-12">
+          <HomeSkeleton />
+        </View>
+      </ScrollView>
+    );
+  }
+
   return (
     <ScrollView
       className="flex-1 bg-neutral-50"

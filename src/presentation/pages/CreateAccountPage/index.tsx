@@ -80,8 +80,7 @@ export function CreateAccountPage() {
   const onSubmit = async (data: ICreateAccountFields) => {
     try {
       await createNewUser(data);
-      const token = await getToken(process.env.EXPO_PUBLIC_TOKEN_KEY!);
-      console.log({ key: process.env.EXPO_PUBLIC_TOKEN_KEY, token });
+      await getToken(process.env.EXPO_PUBLIC_TOKEN_KEY!);
       reset();
       router.push("/login");
     } catch (error) {

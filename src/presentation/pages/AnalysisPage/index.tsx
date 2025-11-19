@@ -8,7 +8,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 
-import { Card } from "@/presentation/components";
+import { AnalysisSkeleton, Card } from "@/presentation/components";
 import { IAnalyticsResponseKpis, useGetAnalytics } from "@/presentation/features/analytics/queries";
 import { MonthlyBarChart, TransactionPieChart } from "@/presentation/features/transactions/components";
 import { currencyMask } from "@/utils/masks";
@@ -18,7 +18,6 @@ import {
   MOCK_TRANSACTIONS,
   TransactionMovement,
 } from "../TransactionsPage/data";
-
 
 type AnalysisMode = "summary" | "detailed";
 
@@ -54,17 +53,16 @@ const MODE_LABEL: Record<AnalysisMode, string> = {
   detailed: "Detalhado",
 };
 
-/* const PIE_COLORS: Record<TransactionMovement, string> = {
-  deposit: "#16A34A",
-  payment: "#DC2626",
-  transfer: "#2563EB",
-}; */
-
 export function AnalysisPage() {
   const [mode, setMode] = useState<AnalysisMode>("summary");
   const { width } = useWindowDimensions();
 
-  const { data, refetch } = useGetAnalytics();
+  const {
+    data,
+    refetch,
+    isLoading: isAnalyticsLoading,
+    isFetching: isAnalyticsFetching,
+  } = useGetAnalytics();
   const hasFocusedRef = useRef(false);
 
   useFocusEffect(
@@ -76,14 +74,12 @@ export function AnalysisPage() {
       }
     }, [refetch])
   );
-  /*   const {
-      data: transactionsData,
-      isLoading: isLoadingTransactionsList,
-    } = useQuery(transactionQueries.list()); */
 
   const chartWidth = Math.max(Math.min(width - 80, 360), 220);
 
   const transactions = useMemo(() => MOCK_TRANSACTIONS.slice(), []);
+  const shouldShowAnalysisSkeleton =
+    !data && (isAnalyticsLoading || isAnalyticsFetching);
 
   const summaryMetrics = useMemo<SummaryMetrics>(() => {
     return transactions.reduce<SummaryMetrics>(
@@ -194,7 +190,14 @@ export function AnalysisPage() {
     ];
   }, [summaryMetrics.totalExpense, summaryMetrics.totalIncome]);
 
-  /*  console.warn('HEY', data?.kpis) */
+  if (shouldShowAnalysisSkeleton) {
+    return (
+      <View className='flex-1 px-5 pt-5 pb-8 bg-gray-100'>
+        <AnalysisSkeleton />
+      </View>
+    );
+  }
+
   return (
     <View className='flex-1 px-5 pt-5 pb-8 bg-gray-100'>
       <Card className='border border-[#D4DAE3]'>

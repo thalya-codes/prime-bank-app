@@ -43,8 +43,7 @@ export function LoginPage() {
   const onLogin = async (credentials: ICredentials) => {
     try {
       await signIn(credentials);
-      const token = await getToken(process.env.EXPO_PUBLIC_TOKEN_KEY!);
-      console.log({ key: process.env.EXPO_PUBLIC_TOKEN_KEY, token });
+      await getToken(process.env.EXPO_PUBLIC_TOKEN_KEY!);
       router.push("/home");
     } catch (error) {
       const errorMessage = handleAuthError(error);
