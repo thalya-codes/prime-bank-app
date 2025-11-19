@@ -2,6 +2,7 @@ import { ReceiptUpload } from "@/components";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
 import { InputField } from "@/components/Input/InputField";
+import { HomeSkeleton } from "@/components/Skeletons";
 import { useGetBankAccount } from "@/features/bankAccount/queries";
 import { useCreateTransactionMutation } from "@/features/transactions/mutations";
 import { TransactionType } from "@/features/transactions/types";
@@ -47,8 +48,18 @@ export function HomePage() {
 
   const { animatedHeight, open, close } = useDropdownAnimation(0, 150);
   const [transactionValue, setTransactionValue] = useState<number>(0.00);
-  const { data: user } = useGetUser();
-  const { data: bankAccount } = useGetBankAccount();
+  const {
+    data: user,
+    isLoading: isUserLoading,
+    isFetching: isUserFetching,
+  } = useGetUser();
+
+  const {
+    data: bankAccount,
+    isLoading: isBankAccountLoading,
+    isFetching: isBankAccountFetching,
+  } = useGetBankAccount();
+
   const { setName } = useGeneralInfos();
   const { uid } = useAuthStore();
   const createTransactionMutation = useCreateTransactionMutation();
@@ -58,6 +69,9 @@ export function HomePage() {
     month: "long",
     year: "numeric",
   });
+  const isHomeSkeletonVisible =
+    (!user && (isUserLoading || isUserFetching)) ||
+    (!bankAccount && (isBankAccountLoading || isBankAccountFetching));
 
   const toggleBalanceVisibility = () => {
     setIsBalanceVisible(!isBalanceVisible);
@@ -175,7 +189,7 @@ export function HomePage() {
     const transactionData = {
       fromAccountNumber: accountNumber,
       toAccountNumber: accountNumber,
-      amount: Number(amount), 
+      amount: Number(amount),
       anexo: selectedReceipt
     };
 
@@ -224,6 +238,21 @@ export function HomePage() {
   useEffect(() => {
     setName(user?.fullName);
   }, [setName, user?.fullName]);
+
+  if (isHomeSkeletonVisible) {
+    return (
+      <ScrollView
+        className="flex-1 bg-neutral-50"
+        contentContainerStyle={{ flexGrow: 1 }}
+        showsVerticalScrollIndicator={false}
+      >
+        <View className="px-4 py-6 pb-12">
+          <HomeSkeleton />
+        </View>
+      </ScrollView>
+    );
+  }
+
   return (
     <ScrollView
       className="flex-1 bg-neutral-50"
