@@ -1,4 +1,4 @@
-import { TransactionsPage } from "@/pages";
+import { TransactionsPage } from "@/presentation/pages";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function TransactionsScreen() {

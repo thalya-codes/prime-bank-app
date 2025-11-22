@@ -30,3 +30,5 @@ export const emailSchema = yup.object({
     )
     .required("O Campo é obrigatório!"),
 });
+
+export * from './transactionValidations';
