@@ -1,8 +1,10 @@
+import { useCreateUserMutation } from "@/features/user/mutations/create-user-mutation";
+import { useBiometricAuthStore } from "@/store/useBiometricAuthStore";
 import {
-  TCreateUser,
-  useCreateUserMutation,
-} from "@/features/user/mutations/create-user-mutation";
-import { deleteToken, saveToken } from "@/utils/auth/secureStore";
+  deleteBiometricPreference,
+  deleteToken,
+  saveToken,
+} from "@/utils/auth/secureStore";
 import { handleAuthError } from "@/utils/handleAuthErrors";
 import {
   getAuth,
@@ -19,7 +21,7 @@ export interface ICredentials {
 export function useAuth() {
   const { mutateAsync: createNewUser } = useCreateUserMutation();
 
-
+  const { setEnableBiometric } = useBiometricAuthStore();
 
   const signIn = async ({ email, password }: ICredentials) => {
     const res = await signInWithEmailAndPassword(getAuth(), email, password);
@@ -34,6 +36,9 @@ export function useAuth() {
   const logout = async () => {
     await signOut(getAuth());
     await deleteToken(process.env.EXPO_PUBLIC_TOKEN_KEY!);
+    await deleteBiometricPreference();
+
+    setEnableBiometric(false);
   };
 
   return {
@@ -44,3 +49,4 @@ export function useAuth() {
     handleAuthError,
   };
 }
+
