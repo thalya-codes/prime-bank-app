@@ -1,6 +1,7 @@
 import { Button } from "@/components";
 import { BiometricSwitch } from "@/components/BiometricSwitch";
 import { CardHighlight } from "@/components/CardHighlight";
+import { useAuth } from "@/hooks/useAuth";
 import { PublicScreenLayout } from "@/layouts/PublicScreenLayout";
 import { AuthContext } from "@/providers/AuthProvider";
 import { useBiometricAuthStore } from "@/store/useBiometricAuthStore";
@@ -14,7 +15,7 @@ export const WelcomeBackPage = () => {
   const { user } = useContext(AuthContext);
   const router = useRouter();
 
-  const { onBiometricLogin } = useBiometricAuthStore();
+  const { onBiometricLogin } = useAuth();
   const { setEnableBiometric } = useBiometricAuthStore();
 
   const onLoginWithEmailAndPassword = async () => {
