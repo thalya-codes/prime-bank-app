@@ -14,7 +14,7 @@ import auth, {
   signOut,
 } from "@react-native-firebase/auth";
 import * as LocalAuthentication from "expo-local-authentication";
-import { useRouter } from "expo-router";
+import { usePathname, useRouter } from "expo-router";
 import { Toast } from "toastify-react-native";
 export interface ICredentials {
   email: string;
@@ -25,6 +25,7 @@ export function useAuth() {
   const { mutateAsync: createNewUser } = useCreateUserMutation();
 
   const {
+    enableBiometric,
     setEnableBiometric,
     isBiometricSetted,
     setShowDrawerUnconfiguredBiometrics,
@@ -33,6 +34,8 @@ export function useAuth() {
   } = useBiometricAuthStore();
 
   const router = useRouter();
+
+  const pathname = usePathname();
 
   const signIn = async ({ email, password }: ICredentials) => {
     const res = await signInWithEmailAndPassword(getAuth(), email, password);
@@ -79,6 +82,20 @@ export function useAuth() {
     }
   };
 
+  const processBiometricDisableFlow = async () => {
+    if (pathname !== "/welcome-back") return;
+    if (enableBiometric) return;
+
+    Toast.info(
+      "Biometria desativada. Você precisará fazer login com email e senha."
+    );
+
+    setTimeout(() => {
+      Toast.hide();
+      router.push("/login");
+    }, 3000);
+  };
+
   const verifyDeviceBiometricSupport = async () => {
     const hasSupport = await LocalAuthentication.hasHardwareAsync();
     setHasBiometricsSupport(hasSupport);
@@ -99,6 +116,7 @@ export function useAuth() {
     onBiometricLogin,
     verifyIfBiometricIsSetted,
     verifyDeviceBiometricSupport,
+    processBiometricDisableFlow
   };
 }
 
