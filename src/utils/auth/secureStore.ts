@@ -55,6 +55,12 @@ export function getBiometricPreference() {
     process.env.EXPO_PUBLIC_BIOMETRICS_STORE_KEY as string
   );
 
-  return biometricPreference;
+  return JSON.parse(biometricPreference!) || false;
+}
+
+export async function deleteBiometricPreference() {
+  await SecureStore.deleteItemAsync(
+    process.env.EXPO_PUBLIC_BIOMETRICS_STORE_KEY as string
+  );
 }
 
