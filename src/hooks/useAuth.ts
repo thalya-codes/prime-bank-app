@@ -1,4 +1,5 @@
 import { useCreateUserMutation } from "@/features/user/mutations/create-user-mutation";
+import useAuthStore from "@/store/useAuthStore";
 import { useBiometricAuthStore } from "@/store/useBiometricAuthStore";
 import {
   deleteBiometricPreference,
@@ -6,13 +7,15 @@ import {
   saveToken,
 } from "@/utils/auth/secureStore";
 import { handleAuthError } from "@/utils/handleAuthErrors";
-import {
+import auth, {
   getAuth,
   getIdToken,
   signInWithEmailAndPassword,
   signOut,
 } from "@react-native-firebase/auth";
-
+import * as LocalAuthentication from "expo-local-authentication";
+import { useRouter } from "expo-router";
+import { Toast } from "toastify-react-native";
 export interface ICredentials {
   email: string;
   password: string;
@@ -21,7 +24,15 @@ export interface ICredentials {
 export function useAuth() {
   const { mutateAsync: createNewUser } = useCreateUserMutation();
 
-  const { setEnableBiometric } = useBiometricAuthStore();
+  const {
+    setEnableBiometric,
+    isBiometricSetted,
+    setShowDrawerUnconfiguredBiometrics,
+    setHasBiometricsSupport,
+    setIsBiometricSetted,
+  } = useBiometricAuthStore();
+
+  const router = useRouter();
 
   const signIn = async ({ email, password }: ICredentials) => {
     const res = await signInWithEmailAndPassword(getAuth(), email, password);
@@ -41,12 +52,51 @@ export function useAuth() {
     setEnableBiometric(false);
   };
 
+  const onBiometricLogin = async () => {
+    try {
+      if (!isBiometricSetted) return setShowDrawerUnconfiguredBiometrics(true);
+
+      const user = auth().currentUser;
+      const idTokenResult = await user?.getIdTokenResult(true);
+
+      useAuthStore.getState().setCredentials({
+        email: user?.email ?? undefined,
+        uid: user?.uid,
+        token: idTokenResult?.token,
+        isAuthenticated: true,
+      });
+
+      await LocalAuthentication.authenticateAsync({
+        biometricsSecurityLevel: "strong",
+        promptMessage: "Use sua Biometria para entrar",
+      });
+
+      router.push("/(private)/home");
+    } catch {
+      Toast.error(`Falha ao realizar login com biometria.`);
+    }
+  };
+
+  const verifyDeviceBiometricSupport = async () => {
+    const hasSupport = await LocalAuthentication.hasHardwareAsync();
+    setHasBiometricsSupport(hasSupport);
+  };
+
+  const verifyIfBiometricIsSetted = async () => {
+    const isSetted = await LocalAuthentication.isEnrolledAsync();
+    console.log("isSetted", isSetted);
+    setIsBiometricSetted(isSetted);
+  };
+
   return {
     signIn,
     createNewUser,
     logout,
     // resetPassword,
     handleAuthError,
+    onBiometricLogin,
+    verifyIfBiometricIsSetted,
+    verifyDeviceBiometricSupport
   };
 }
 

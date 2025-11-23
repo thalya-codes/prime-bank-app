@@ -1,16 +1,13 @@
-import { useBiometricAuth } from "@/hooks/useBiometricAuth";
-import { useBiometricAuthStore } from "@/store/useBiometricAuthStore";
-import { saveBiometricPreference } from "@/utils/auth/secureStore";
 import { Switch, View } from "react-native";
 import { FormFieldLabel } from "../FormField/FormFieldLabel";
+import { useBiometricAuthStore } from "@/store/useBiometricAuthStore";
 
 export const BiometricSwitch = () => {
-  const { enableBiometric, setEnableBiometric } = useBiometricAuthStore();
+  const { enableBiometric, setEnableBiometric, isBiometricSetted } =
+    useBiometricAuthStore();
 
-  const { isBiometricSetted } = useBiometricAuth();
   const toggleEnableBiometrics = () => {
     setEnableBiometric(!enableBiometric);
-    saveBiometricPreference(!enableBiometric);
   };
 
   return (

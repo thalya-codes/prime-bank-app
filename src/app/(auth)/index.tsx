@@ -1,3 +1,4 @@
+import { useAuth } from "@/hooks/useAuth";
 import { useBiometricAuthStore } from "@/store/useBiometricAuthStore";
 import { getBiometricPreference, getToken } from "@/utils/auth/secureStore";
 import { useRouter } from "expo-router";
@@ -7,6 +8,12 @@ export default function AuthIndex() {
   const router = useRouter();
   const isBiometricLoginEnabled = getBiometricPreference();
   const { setEnableBiometric } = useBiometricAuthStore();
+  const { verifyIfBiometricIsSetted, verifyDeviceBiometricSupport } = useAuth();
+
+  useEffect(() => {
+    verifyDeviceBiometricSupport();
+    verifyIfBiometricIsSetted();
+  }, []);
 
   useEffect(() => {
     setEnableBiometric(isBiometricLoginEnabled);

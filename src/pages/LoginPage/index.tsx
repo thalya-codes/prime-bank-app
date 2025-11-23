@@ -8,12 +8,14 @@ import { FormFieldRoot } from "@/components/FormField/FormFieldRoot";
 import { InputField, InputIcon, InputRoot } from "@/components/Input";
 import { InputPassword } from "@/components/InputPassword";
 import { ICredentials, useAuth } from "@/hooks/useAuth";
-import { useBiometricAuth } from "@/hooks/useBiometricAuth";
 import { PublicScreenLayout } from "@/layouts/PublicScreenLayout";
+import { useBiometricAuthStore } from "@/store/useBiometricAuthStore";
+import { saveBiometricPreference } from "@/utils/auth/secureStore";
 import { emailSchema } from "@/utils/validations";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "expo-router";
+import { Dispatch, SetStateAction } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Text, TouchableOpacity, View } from "react-native";
 // import Toast from "react-native-toast-message";
@@ -46,13 +48,13 @@ export function LoginPage() {
     setShowDrawerUnconfiguredBiometrics,
     showDrawerUnconfiguredBiometrics,
     isBiometricSetted,
-    defineUserBiometricPreference,
-  } = useBiometricAuth();
+    enableBiometric,
+  } = useBiometricAuthStore();
 
   const onLogin = async (credentials: ICredentials) => {
     try {
       await signIn(credentials);
-      defineUserBiometricPreference();
+      saveBiometricPreference(enableBiometric);
       router.push("/home");
     } catch (error) {
       const errorMessage = handleAuthError(error);
@@ -138,7 +140,11 @@ export function LoginPage() {
 
             <BottomSheet
               visible={showDrawerUnconfiguredBiometrics}
-              setVisible={setShowDrawerUnconfiguredBiometrics}
+              setVisible={
+                setShowDrawerUnconfiguredBiometrics as Dispatch<
+                  SetStateAction<boolean>
+                >
+              }
             >
               <View className='mt-10 gap-5'>
                 <Text className='font-inter-bold text-center text-2xl'>
