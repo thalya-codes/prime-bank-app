@@ -66,12 +66,14 @@ export function useAuth() {
         isAuthenticated: true,
       });
 
-      await LocalAuthentication.authenticateAsync({
+      const authResult = await LocalAuthentication.authenticateAsync({
         biometricsSecurityLevel: "strong",
         promptMessage: "Use sua Biometria para entrar",
       });
 
-      router.push("/(private)/home");
+      if (authResult.success) {
+        router.push("/(private)/home");
+      }
     } catch {
       Toast.error(`Falha ao realizar login com biometria.`);
     }
@@ -96,7 +98,7 @@ export function useAuth() {
     handleAuthError,
     onBiometricLogin,
     verifyIfBiometricIsSetted,
-    verifyDeviceBiometricSupport
+    verifyDeviceBiometricSupport,
   };
 }
 
