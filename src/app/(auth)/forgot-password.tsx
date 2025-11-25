@@ -1,4 +1,4 @@
-import { ResetPasswordPage } from "@/pages";
+import { ResetPasswordPage } from "@/presentation/pages";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ForgotPasswordScreen() {

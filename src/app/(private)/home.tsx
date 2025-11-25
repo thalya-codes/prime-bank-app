@@ -1,4 +1,4 @@
-import { HomePage } from "@/pages";
+import { HomePage } from "@/presentation/pages";
 import { SafeAreaView } from "react-native";
 
 export default function HomeScreen() {

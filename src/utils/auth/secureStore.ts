@@ -1,5 +1,5 @@
-import { api } from "@/services/api";
-import useAuthStore from "@/store/useAuthStore";
+import { api } from "@/infrastructure/http/api";
+import useAuthStore from "@/presentation/store/useAuthStore";
 import * as SecureStore from "expo-secure-store";
 
 export async function saveToken(key: string, token: string) {

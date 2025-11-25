@@ -1,4 +1,4 @@
-import { CreateAccountPage } from "@/pages/CreateAccountPage";
+import { CreateAccountPage } from "@/presentation/pages/CreateAccountPage";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CreatAccountScreen() {

@@ -1,7 +1,7 @@
 import {
   FirebaseAuthErrorCodes,
   FirebaseAuthErrorMessages,
-} from "@/enums/FireBaseAuthErrorCodes";
+} from "@/infrastructure/enums/FireBaseAuthErrorCodes";
 
 export const handleAuthError = (error: any) => {
   const {

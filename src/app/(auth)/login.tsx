@@ -1,4 +1,4 @@
-import { LoginPage } from "@/pages";
+import { LoginPage } from "@/presentation/pages";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginScreen() {

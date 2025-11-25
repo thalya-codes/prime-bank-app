@@ -1,5 +1,5 @@
-import { useAuth } from "@/hooks/useAuth";
-import { useBiometricAuthStore } from "@/store/useBiometricAuthStore";
+import { useAuth } from "@/presentation/hooks/useAuth";
+import { useBiometricAuthStore } from "@/presentation/store/useBiometricAuthStore";
 import { getBiometricPreference, getToken } from "@/utils/auth/secureStore";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect } from "react";

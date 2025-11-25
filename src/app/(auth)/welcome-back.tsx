@@ -1,4 +1,4 @@
-import { WelcomeBackPage } from "@/pages/WelcomeBackPage";
+import { WelcomeBackPage } from "@/presentation/pages/WelcomeBackPage";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function WelcomeBackScreen() {
