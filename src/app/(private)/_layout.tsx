@@ -1,6 +1,7 @@
 import { queryClient } from "@/infrastructure/query/query-client";
 import { PrivateScreenHeaderLayout } from "@/presentation/layouts/PrivateScreenHeaderLayout";
 import { AuthProvider } from "@/presentation/providers/AuthProvider";
+import useAuthStore from "@/presentation/store/useAuthStore";
 import {
   Inter_400Regular,
   Inter_500Medium,
@@ -19,12 +20,14 @@ import {
 } from "@expo-google-fonts/nunito";
 import { FontAwesome } from "@expo/vector-icons";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { Tabs } from "expo-router";
+import { Tabs, usePathname, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { Text } from "react-native";
+import { AppState, Text } from "react-native";
+import { CaptureProtection } from "react-native-capture-protection";
 import ToastManager from "toastify-react-native";
 import "../styles/global.css";
+import { getBiometricPreference } from "@/utils/auth/secureStore";
 
 if (__DEV__) {
   require("../../../Reactotron");
@@ -34,6 +37,8 @@ if (__DEV__) {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const { setShowOverlayPrivacyScreen } =
+    useAuthStore();
   const [nunitoLoaded] = useFontsNunito({
     Nunito_300Light,
     Nunito_400Regular,
@@ -51,6 +56,28 @@ export default function RootLayout() {
   });
 
   const fontsLoaded = nunitoLoaded && interLoaded;
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    AppState.addEventListener("blur", () => {
+     if(getBiometricPreference()) router.navigate("/(auth)/welcome-back");
+     else router.navigate('/(auth)/login');
+
+      CaptureProtection.prevent({
+        screenshot: true,
+        record: true,
+        appSwitcher: true,
+      });
+      setShowOverlayPrivacyScreen(true);
+    });
+
+    AppState.addEventListener("focus", () => {
+      setShowOverlayPrivacyScreen(false);
+
+      CaptureProtection.allow();
+    });
+  }, [pathname, router, setShowOverlayPrivacyScreen]);
 
   useEffect(() => {
     if (fontsLoaded) {
@@ -66,6 +93,7 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
+      {/* <UserInactivityProvider> */}
       <QueryClientProvider client={queryClient}>
         <Tabs
           screenOptions={{
@@ -75,6 +103,7 @@ export default function RootLayout() {
             header: () => <PrivateScreenHeaderLayout />,
           }}
         >
+          <Tabs.Screen name='privacy-overlay' />
           <Tabs.Screen
             name='home'
             options={{
@@ -119,6 +148,7 @@ export default function RootLayout() {
         </Tabs>
         <ToastManager />
       </QueryClientProvider>
+      {/* </UserInactivityProvider> */}
     </AuthProvider>
   );
 }

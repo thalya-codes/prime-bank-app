@@ -14,6 +14,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { View } from "react-native";
 
 interface IAuthContext {
   user: FirebaseAuthTypes.User | undefined;
@@ -25,7 +26,7 @@ export const AuthContext = createContext({} as IAuthContext);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState<FirebaseAuthTypes.User>();
-
+  const { showOverlayPrivacyScreen } = useAuthStore();
   const queryClient = new QueryClient();
 
   // Handle user state changes
@@ -40,6 +41,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     return subscriber; // unsubscribe on unmount
   }, []);
+
+  if (showOverlayPrivacyScreen) return <View className='text-3xl mt-10' />;
 
   return (
     <QueryClientProvider client={queryClient}>

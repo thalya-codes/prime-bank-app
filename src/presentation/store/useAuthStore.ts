@@ -12,6 +12,7 @@ type States = {
   enableBiometric: boolean;
   isBiometricSetted: boolean;
   showDrawerUnconfiguredBiometrics: boolean;
+  showOverlayPrivacyScreen: boolean;
 };
 
 interface Actions {
@@ -21,6 +22,7 @@ interface Actions {
   setShowDrawerUnconfiguredBiometrics: (value: boolean) => void;
   setCredentials: any;
   signOut: () => void;
+  setShowOverlayPrivacyScreen: (value: boolean) => void;
 }
 
 const INITIAL_STATE: States = {
@@ -31,6 +33,7 @@ const INITIAL_STATE: States = {
   enableBiometric: false,
   isBiometricSetted: false,
   showDrawerUnconfiguredBiometrics: false,
+  showOverlayPrivacyScreen: false,
 };
 
 const useAuthStore = createWithEqualityFn<States & Actions>()(
@@ -68,6 +71,9 @@ const useAuthStore = createWithEqualityFn<States & Actions>()(
         },
         setEnableBiometric: (value: boolean) => {
           set({ enableBiometric: value }, false, "set-enable-biometric");
+        },
+        setShowOverlayPrivacyScreen: (value: boolean) => {
+          set({ showOverlayPrivacyScreen: value }, false, "set-enable-biometric");
         },
       }),
 
