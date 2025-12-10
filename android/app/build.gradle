@@ -89,6 +89,7 @@ android {
 
     namespace 'com.techchallenge.primebankapp'
     defaultConfig {
+		missingDimensionStrategy "react-native-capture-protection", "fullMediaCapture"
         applicationId 'com.techchallenge.primebankapp'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
