@@ -3,7 +3,11 @@ import { User } from "@/domain/entities";
 import { useQuery } from "@tanstack/react-query";
 
 export async function fetchUser(): Promise<User> {
-  return await UserService.getUser();
+  try {
+    return await UserService.getUser();
+  } catch (error) {
+    throw error;
+  }
 }
 
 export const useGetUser = () => {
@@ -12,3 +16,4 @@ export const useGetUser = () => {
     queryFn: fetchUser,
   });
 };
+
