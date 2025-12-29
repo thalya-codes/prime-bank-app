@@ -9,11 +9,17 @@ import { TransactionType } from "@/presentation/features/transactions/types";
 import { useGetUser } from "@/presentation/features/user/queries";
 import { useDropdownAnimation } from "@/presentation/hooks";
 import useAuthStore from "@/presentation/store/useAuthStore";
-import { buildTransactionData, copyToClipboard, extractErrorMessage, showErrorToast, showSuccessToast } from "@/utils/helpers";
+import {
+  buildTransactionData,
+  copyToClipboard,
+  extractErrorMessage,
+  showErrorToast,
+  showSuccessToast,
+} from "@/utils/helpers";
 import { currencyMask, currencyToNumbers } from "@/utils/masks";
 import { TransactionValidations } from "@/utils/validations";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Animated,
   ScrollView,
@@ -37,9 +43,21 @@ export function HomePage() {
   } | null>(null);
 
   const { animatedHeight, open, close } = useDropdownAnimation(0, 150);
-  const [transactionValue, setTransactionValue] = useState<number>(0.00);
-  const { data: user, isLoading: isUserLoading, isFetching: isUserFetching } = useGetUser();
-  const { data: bankAccount, isLoading: isBankAccountLoading, isFetching: isBankAccountFetching } = useGetBankAccount();
+  const [transactionValue, setTransactionValue] = useState<number>(0.0);
+  const {
+    data: user,
+    isLoading: isUserLoading,
+    isFetching: isUserFetching,
+    isLoadingError: isUserLoadingError,
+    refetch: refetchUser,
+  } = useGetUser();
+  const {
+    data: bankAccount,
+    isLoading: isBankAccountLoading,
+    isFetching: isBankAccountFetching,
+    refetch: refetchBankAccount,
+    isLoadingError: isBankAccountLoadingError,
+  } = useGetBankAccount();
   const { uid } = useAuthStore();
   const createTransactionMutation = useCreateTransactionMutation();
   const currentDate = new Date().toLocaleDateString("pt-BR", {
@@ -84,7 +102,7 @@ export function HomePage() {
   };
 
   const resetTransactionForm = () => {
-    setTransactionValue(0.00);
+    setTransactionValue(0.0);
     setTransactionType("");
     setSelectedReceipt(null);
   };
@@ -107,7 +125,11 @@ export function HomePage() {
       return;
     }
 
-    const transactionData = buildTransactionData(accountNumber, amount, selectedReceipt);
+    const transactionData = buildTransactionData(
+      accountNumber,
+      amount,
+      selectedReceipt
+    );
 
     createTransactionMutation.mutate(transactionData, {
       onSuccess: () => {
@@ -129,14 +151,22 @@ export function HomePage() {
     );
   };
 
+  useEffect(() => {
+    if (isUserLoadingError) refetchUser();
+  }, [isUserLoadingError, refetchUser]);
+
+  useEffect(() => {
+    if (isBankAccountLoadingError) refetchBankAccount();
+  }, [isBankAccountLoadingError, refetchBankAccount]);
+
   if (isHomeSkeletonVisible) {
     return (
       <ScrollView
-        className="flex-1 bg-neutral-50"
+        className='flex-1 bg-neutral-50'
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}
       >
-        <View className="px-4 py-6 pb-12">
+        <View className='px-4 py-6 pb-12'>
           <HomeSkeleton />
         </View>
       </ScrollView>
@@ -145,51 +175,53 @@ export function HomePage() {
 
   return (
     <ScrollView
-      className="flex-1 bg-neutral-50"
+      className='flex-1 bg-neutral-50'
       contentContainerStyle={{ flexGrow: 1 }}
       showsVerticalScrollIndicator={false}
     >
-      <View className="px-4 py-6 pb-12">
+      <View className='px-4 py-6 pb-12'>
         {/* Header com saudação */}
         <Card
-          color="light-green"
-          className="py-4 mb-6 border border-brand-400 shadow-black/30 "
+          color='light-green'
+          className='py-4 mb-6 border border-brand-400 shadow-black/30 '
         >
-          <Text className="mb-1 text-lg font-nunito-medium text-brand-700">
+          <Text className='mb-1 text-lg font-nunito-medium text-brand-700'>
             Olá, {user?.firstName}!👋
           </Text>
-          <Text className="text-sm font-nunito-regular text-brand-600">
+          <Text className='text-sm font-nunito-regular text-brand-600'>
             {currentDate}
           </Text>
-          <View className="items-center ">
-            <Text className="pt-2 text-lg font-bold font-nunito-regular text-brand-600">
+          <View className='items-center '>
+            <Text className='pt-2 text-lg font-bold font-nunito-regular text-brand-600'>
               Numero da conta:
             </Text>
-            <Text className="pt-2 text-lg font-bold font-nunito-regular text-brand-600">
+            <Text className='pt-2 text-lg font-bold font-nunito-regular text-brand-600'>
               {bankAccount?.formattedAccountNumber()}{" "}
             </Text>
             <TouchableOpacity onPress={handleCopyAccountNumber}>
-              <FontAwesome name="paste" size={20} color={"#249695"} />
+              <FontAwesome name='paste' size={20} color={"#249695"} />
             </TouchableOpacity>
           </View>
         </Card>
 
         {/* Card do saldo */}
-        <Card color="strong-green" className="mb-6 shadow-black/30">
-          <View className="flex-row items-center justify-between">
+        <Card color='strong-green' className='mb-6 shadow-black/30'>
+          <View className='flex-row items-center justify-between'>
             <View>
-              <Text className="mb-2 text-sm font-nunito-regular text-neutral-0">
+              <Text className='mb-2 text-sm font-nunito-regular text-neutral-0'>
                 Saldo disponível ——
               </Text>
-              <Text className="text-3xl font-nunito-bold text-neutral-0">
-                {isBalanceVisible ? (bankAccount?.formattedBalance() || "R$ 0,00") : "R$ ****"}
+              <Text className='text-3xl font-nunito-bold text-neutral-0'>
+                {isBalanceVisible
+                  ? bankAccount?.formattedBalance() || "R$ 0,00"
+                  : "R$ ****"}
               </Text>
             </View>
             <TouchableOpacity onPress={toggleBalanceVisibility}>
               <Ionicons
                 name={isBalanceVisible ? "eye" : "eye-off"}
                 size={24}
-                color="white"
+                color='white'
               />
             </TouchableOpacity>
           </View>
@@ -197,40 +229,40 @@ export function HomePage() {
 
         {/* Seção Nova Transação */}
         <Card
-          className="shadow-black/20 py-3 min-h-[300px]"
+          className='shadow-black/20 py-3 min-h-[300px]'
           style={{ overflow: "visible" }}
         >
-          <View className="flex-row items-center mb-6">
-            <Ionicons name="add-sharp" size={24} color="#28B2AA" />
-            <Text className="ml-2 text-lg font-nunito-semi-bold text-neutral-900">
+          <View className='flex-row items-center mb-6'>
+            <Ionicons name='add-sharp' size={24} color='#28B2AA' />
+            <Text className='ml-2 text-lg font-nunito-semi-bold text-neutral-900'>
               Nova transação
             </Text>
           </View>
 
-          <View className="flex-1" style={{ overflow: "visible" }}>
+          <View className='flex-1' style={{ overflow: "visible" }}>
             {/* Campo Tipo de Transação */}
-            <View className="mb-6" style={{ zIndex: 10 }}>
-              <Text className="mb-3 text-base font-nunito-medium text-neutral-900">
+            <View className='mb-6' style={{ zIndex: 10 }}>
+              <Text className='mb-3 text-base font-nunito-medium text-neutral-900'>
                 Tipo de transação
               </Text>
-              <View className="relative">
+              <View className='relative'>
                 <TouchableOpacity
                   onPress={toggleSelectDropdown}
-                  onLayout={e => setButtonLayout(e.nativeEvent.layout)}
-                  className="px-3 py-3 bg-white border rounded-md border-neutral-300"
+                  onLayout={(e) => setButtonLayout(e.nativeEvent.layout)}
+                  className='px-3 py-3 bg-white border rounded-md border-neutral-300'
                 >
-                  <View className="flex-row items-center justify-between">
-                    <Text className="text-base font-nunito-regular text-neutral-700">
+                  <View className='flex-row items-center justify-between'>
+                    <Text className='text-base font-nunito-regular text-neutral-700'>
                       {transactionType
                         ? TRANSACTION_TYPES.find(
-                          t => t.value === transactionType
-                        )?.label
+                            (t) => t.value === transactionType
+                          )?.label
                         : "Selecione o tipo"}
                     </Text>
                     <Ionicons
                       name={isSelectOpen ? "chevron-up" : "chevron-down"}
                       size={20}
-                      color="#666"
+                      color='#666'
                     />
                   </View>
                 </TouchableOpacity>
@@ -262,10 +294,10 @@ export function HomePage() {
                         <TouchableOpacity
                           key={type.value}
                           onPress={() => handleSelectOption(type.value)}
-                          className="flex-row items-center gap-2 p-3 bg-white border-b border-gray-200 active:bg-gray-50"
+                          className='flex-row items-center gap-2 p-3 bg-white border-b border-gray-200 active:bg-gray-50'
                           style={{ backgroundColor: "white" }}
                         >
-                          <Text className="text-base font-nunito-regular text-neutral-900">
+                          <Text className='text-base font-nunito-regular text-neutral-900'>
                             {type.label}
                           </Text>
                         </TouchableOpacity>
@@ -277,40 +309,44 @@ export function HomePage() {
             </View>
 
             {/* Campo Valor */}
-            <View className="mb-8">
-              <Text className="mb-3 text-base font-nunito-medium text-neutral-900">
+            <View className='mb-8'>
+              <Text className='mb-3 text-base font-nunito-medium text-neutral-900'>
                 Valor (R$)
               </Text>
-              <View className="bg-white border rounded-md border-neutral-300">
+              <View className='bg-white border rounded-md border-neutral-300'>
                 <InputField
-                  placeholder="R$ 0,00"
+                  placeholder='R$ 0,00'
                   value={currencyMask(transactionValue)}
                   onChangeText={handleValueChange}
-                  keyboardType="numeric"
-                  className="px-3 py-3 text-base font-nunito-regular"
+                  keyboardType='numeric'
+                  className='px-3 py-3 text-base font-nunito-regular'
                 />
               </View>
             </View>
 
             {/* Botão Concluir */}
-            <View className="mt-auto">
+            <View className='mt-auto'>
               <Button
-                text="Concluir transação"
-                variant="primary"
+                text='Concluir transação'
+                variant='primary'
                 onPress={handleTransactionSubmit}
-                className="flex-row items-center justify-center"
+                className='flex-row items-center justify-center'
               >
-                <Ionicons name="checkmark" size={20} color="white" />
+                <Ionicons name='checkmark' size={20} color='white' />
               </Button>
             </View>
           </View>
         </Card>
 
         {/* Upload de recibo */}
-        <View className="mt-6">
-          <ReceiptUpload onFileSelected={handleReceiptSelected} selectedFile={selectedReceipt} />
+        <View className='mt-6'>
+          <ReceiptUpload
+            onFileSelected={handleReceiptSelected}
+            selectedFile={selectedReceipt}
+          />
         </View>
       </View>
     </ScrollView>
   );
 }
+
