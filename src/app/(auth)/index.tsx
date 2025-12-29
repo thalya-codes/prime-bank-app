@@ -1,5 +1,33 @@
-import { Redirect } from "expo-router";
+import { useAuth } from "@/presentation/hooks/useAuth";
+import { useBiometricAuthStore } from "@/presentation/store/useBiometricAuthStore";
+import { getBiometricPreference, getToken } from "@/utils/auth/secureStore";
+import { useRouter } from "expo-router";
+import { useCallback, useEffect } from "react";
 
 export default function AuthIndex() {
-  return <Redirect href="/login" />;
+  const router = useRouter();
+  const isBiometricLoginEnabled = getBiometricPreference();
+  const { setEnableBiometric } = useBiometricAuthStore();
+  const { verifyIfBiometricIsSetted, verifyDeviceBiometricSupport } = useAuth();
+
+  useEffect(() => {
+    verifyDeviceBiometricSupport();
+    verifyIfBiometricIsSetted();
+  }, []);
+
+  useEffect(() => {
+    setEnableBiometric(isBiometricLoginEnabled);
+  }, [isBiometricLoginEnabled, setEnableBiometric]);
+
+  const checkIfUserHasAValidToken = useCallback(async () => {
+    const token = await getToken(process.env.EXPO_PUBLIC_TOKEN_KEY!);
+
+    if (token && isBiometricLoginEnabled) router.push("/welcome-back");
+    else router.push("/login");
+  }, [isBiometricLoginEnabled, router]);
+
+  useEffect(() => {
+    checkIfUserHasAValidToken();
+  }, [checkIfUserHasAValidToken]);
 }
+

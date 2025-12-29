@@ -84,6 +84,12 @@ export default function RootLayout() {
               title: "Criar conta",
             }}
           />
+          <Stack.Screen
+            name='welcome-back'
+            options={{
+              title: "Bem vindo(a) de volta",
+            }}
+          />
         </Stack>
         <ToastManager />
       </QueryClientProvider>

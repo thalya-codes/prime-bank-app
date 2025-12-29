@@ -11,7 +11,10 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.techchallenge.prime-bank-app",
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to scan barcodes on event tickets."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -51,6 +54,12 @@
       "@react-native-firebase/app",
       "@react-native-firebase/auth",
       [
+        "react-native-capture-protection",
+        {
+          "captureType": "fullMediaCapture"
+        }
+      ],
+      [
         "expo-build-properties",
         {
           "ios": {
@@ -64,7 +73,14 @@
           "configureAndroidBackup": true,
           "faceIDPermission": "Allow $(PRODUCT_NAME) to access your Face ID biometric data."
         }
-      ]
+      ],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow $(PRODUCT_NAME) to use Face ID."
+        }
+      ],
+      "react-native-capture-protection"
     ],
     "experiments": {
       "typedRoutes": true,
@@ -72,3 +88,4 @@
     }
   }
 }
+

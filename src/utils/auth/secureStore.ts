@@ -34,8 +34,33 @@ export async function deleteToken(key: string) {
     await SecureStore.deleteItemAsync(key);
     useAuthStore.setState({ token: undefined });
     api.defaults.headers.common.Authorization = `Bearer ${undefined}`;
-    console.log("Token deleted successfully!");
   } catch (error) {
     console.error("Error deleting token:", error);
   }
 }
+
+export function saveBiometricPreference(value: boolean) {
+  try {
+    SecureStore.setItem(
+      process.env.EXPO_PUBLIC_BIOMETRICS_STORE_KEY as string,
+      String(value)
+    );
+  } catch (error) {
+    console.error("Error to saving biometric user preference:", error);
+  }
+}
+
+export function getBiometricPreference() {
+  const biometricPreference = SecureStore.getItem(
+    process.env.EXPO_PUBLIC_BIOMETRICS_STORE_KEY as string
+  );
+
+  return JSON.parse(biometricPreference!) || false;
+}
+
+export async function deleteBiometricPreference() {
+  await SecureStore.deleteItemAsync(
+    process.env.EXPO_PUBLIC_BIOMETRICS_STORE_KEY as string
+  );
+}
+

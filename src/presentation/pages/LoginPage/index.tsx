@@ -1,19 +1,27 @@
+import { BottomSheet } from "@/presentation/components";
+import { BiometricSwitch } from "@/presentation/components/BiometricSwitch";
 import Button from "@/presentation/components/Button";
 import { CardHighlight } from "@/presentation/components/CardHighlight";
 import { FormFieldLabel } from "@/presentation/components/FormField/FormFieldLabel";
 import { FormFieldMessage } from "@/presentation/components/FormField/FormFieldMessage";
 import { FormFieldRoot } from "@/presentation/components/FormField/FormFieldRoot";
-import { InputField, InputIcon, InputRoot } from "@/presentation/components/Input";
+import {
+  InputField,
+  InputIcon,
+  InputRoot,
+} from "@/presentation/components/Input";
 import { InputPassword } from "@/presentation/components/InputPassword";
 import { ICredentials, useAuth } from "@/presentation/hooks/useAuth";
 import { PublicScreenLayout } from "@/presentation/layouts/PublicScreenLayout";
-import { getToken } from "@/utils/auth/secureStore";
+import { useBiometricAuthStore } from "@/presentation/store/useBiometricAuthStore";
+import { saveBiometricPreference } from "@/utils/auth/secureStore";
 import { emailSchema } from "@/utils/validations";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "expo-router";
+import { Dispatch, SetStateAction } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 // import Toast from "react-native-toast-message";
 import { Toast } from "toastify-react-native";
 import * as yup from "yup";
@@ -40,10 +48,17 @@ export function LoginPage() {
     mode: "onBlur",
   });
 
+  const {
+    setShowDrawerUnconfiguredBiometrics,
+    showDrawerUnconfiguredBiometrics,
+    isBiometricSetted,
+    enableBiometric,
+  } = useBiometricAuthStore();
+
   const onLogin = async (credentials: ICredentials) => {
     try {
       await signIn(credentials);
-      await getToken(process.env.EXPO_PUBLIC_TOKEN_KEY!);
+      saveBiometricPreference(enableBiometric);
       router.push("/home");
     } catch (error) {
       const errorMessage = handleAuthError(error);
@@ -120,6 +135,44 @@ export function LoginPage() {
           error={errors?.password}
         />
       </FormFieldRoot>
+
+      <View className='flex-row items-center justify-between'>
+        <BiometricSwitch />
+
+        {!isBiometricSetted && (
+          <View>
+            <TouchableOpacity
+              onPress={() => setShowDrawerUnconfiguredBiometrics(true)}
+              className='self-end mr-2'
+            >
+              <FontAwesome name='info-circle' size={24} color={`#249695`} />
+            </TouchableOpacity>
+
+            <BottomSheet
+              visible={showDrawerUnconfiguredBiometrics}
+              setVisible={
+                setShowDrawerUnconfiguredBiometrics as Dispatch<
+                  SetStateAction<boolean>
+                >
+              }
+            >
+              <View className='mt-10 gap-5'>
+                <Text className='font-inter-bold text-center text-2xl'>
+                  Biometria não configurada.
+                </Text>
+                <Text className='text-xl font-inter-regular text-center'>
+                  Para fazer uso do login com biometria em seu próximo acesso,
+                  você precisa{" "}
+                  <Text className='font-inter-bold'>
+                    configurar esse recurso em seu dispositivo
+                  </Text>{" "}
+                  e em seguida habilitá-lo no app.
+                </Text>
+              </View>
+            </BottomSheet>
+          </View>
+        )}
+      </View>
 
       <Button text='Entrar' className='gap-2' onPress={handleSubmit(onLogin)}>
         <AntDesign name='arrowright' size={20} color={"#fff"} />
