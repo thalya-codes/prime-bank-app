@@ -38,7 +38,8 @@ if (__DEV__) {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const { setShowOverlayPrivacyScreen } = useAuthStore();
+  const { setShowOverlayPrivacyScreen, isAuthenticated, setIsAuthenticated } =
+    useAuthStore();
   const [nunitoLoaded] = useFontsNunito({
     Nunito_300Light,
     Nunito_400Regular,
@@ -60,15 +61,24 @@ export default function RootLayout() {
   const pathname = usePathname();
 
   const onAppInBackground = useCallback(() => {
-    if (getBiometricPreference()) router.navigate("/(auth)/welcome-back");
-    else router.navigate("/(auth)/login");
+    setIsAuthenticated(false);
     CaptureProtection.prevent({
       screenshot: true,
       record: true,
       appSwitcher: true,
     });
     setShowOverlayPrivacyScreen(true);
-  }, [router, setShowOverlayPrivacyScreen]);
+  }, [setIsAuthenticated, setShowOverlayPrivacyScreen]);
+
+  const onAppInForeground = useCallback(() => {
+    setShowOverlayPrivacyScreen(false);
+    CaptureProtection.allow();
+
+    if (!getBiometricPreference()) return router.navigate("/(auth)/login");
+
+    if (isAuthenticated) router.replace("/(private)/home");
+    else router.replace("/(auth)/welcome-back");
+  }, [isAuthenticated, router, setShowOverlayPrivacyScreen]);
 
   useEffect(() => {
     if (Constants.platform?.ios) {
@@ -76,18 +86,20 @@ export default function RootLayout() {
         if (nextAppState === "inactive" || nextAppState === "background") {
           onAppInBackground();
         } else {
-          setShowOverlayPrivacyScreen(false);
-          CaptureProtection.allow();
+          onAppInForeground();
         }
       });
     } else {
       AppState.addEventListener("blur", onAppInBackground);
-      AppState.addEventListener("focus", () => {
-        setShowOverlayPrivacyScreen(false);
-        CaptureProtection.allow();
-      });
+      AppState.addEventListener("focus", onAppInForeground);
     }
-  }, [onAppInBackground, pathname, router, setShowOverlayPrivacyScreen]);
+  }, [
+    onAppInBackground,
+    onAppInForeground,
+    pathname,
+    router,
+    setShowOverlayPrivacyScreen,
+  ]);
 
   useEffect(() => {
     if (fontsLoaded) {

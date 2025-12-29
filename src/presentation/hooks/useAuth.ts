@@ -1,6 +1,5 @@
 import { useCreateUserMutation } from "@/presentation/features/user/mutations/create-user-mutation";
 import useAuthStore from "@/presentation/store/useAuthStore";
-import { useBiometricAuthStore } from "@/presentation/store/useBiometricAuthStore";
 import {
   deleteBiometricPreference,
   deleteToken,
@@ -17,6 +16,7 @@ import auth, {
 import * as LocalAuthentication from "expo-local-authentication";
 import { usePathname, useRouter } from "expo-router";
 import { Toast } from "toastify-react-native";
+import { useBiometricAuthStore } from "../store/useBiometricAuthStore";
 export interface ICredentials {
   email: string;
   password: string;
@@ -60,23 +60,22 @@ export function useAuth() {
     try {
       if (!isBiometricSetted) return setShowDrawerUnconfiguredBiometrics(true);
 
-      const user = auth().currentUser;
-      const idTokenResult = await user?.getIdTokenResult(true);
-
-      useAuthStore.getState().setCredentials({
-        email: user?.email ?? undefined,
-        uid: user?.uid,
-        token: idTokenResult?.token,
-        isAuthenticated: true,
-      });
-
       const authResult = await LocalAuthentication.authenticateAsync({
         biometricsSecurityLevel: "strong",
         promptMessage: "Use sua Biometria para entrar",
       });
 
       if (authResult.success) {
-        router.push("/(private)/home");
+        const user = auth().currentUser;
+        const idTokenResult = await user?.getIdTokenResult(true);
+
+        useAuthStore.getState().setCredentials({
+          email: user?.email ?? undefined,
+          uid: user?.uid,
+          token: idTokenResult?.token,
+        });
+
+        router.replace("/(private)/home");
       }
     } catch {
       Toast.error(`Falha ao realizar login com biometria.`);
@@ -86,7 +85,6 @@ export function useAuth() {
   const processBiometricDisableFlow = async () => {
     if (pathname !== "/welcome-back") return;
     if (enableBiometric) return;
-
     Toast.info(
       "Biometria desativada. Você precisará fazer login com email e senha."
     );
@@ -117,7 +115,7 @@ export function useAuth() {
     onBiometricLogin,
     verifyIfBiometricIsSetted,
     verifyDeviceBiometricSupport,
-    processBiometricDisableFlow
+    processBiometricDisableFlow,
   };
 }
 

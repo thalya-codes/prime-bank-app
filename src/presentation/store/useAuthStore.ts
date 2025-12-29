@@ -7,7 +7,7 @@ type States = {
   email?: string;
   token?: string;
   uid?: string;
-
+  isAuthenticated: boolean;
   hasBiometricsSupport: boolean;
   enableBiometric: boolean;
   isBiometricSetted: boolean;
@@ -19,6 +19,7 @@ interface Actions {
   setHasBiometricsSupport: (value: boolean) => void;
   setEnableBiometric: (value: boolean) => void;
   setIsBiometricSetted: (value: boolean) => void;
+  setIsAuthenticated: (value: boolean) => void;
   setShowDrawerUnconfiguredBiometrics: (value: boolean) => void;
   setCredentials: any;
   signOut: () => void;
@@ -34,6 +35,7 @@ const INITIAL_STATE: States = {
   isBiometricSetted: false,
   showDrawerUnconfiguredBiometrics: false,
   showOverlayPrivacyScreen: false,
+  isAuthenticated: false,
 };
 
 const useAuthStore = createWithEqualityFn<States & Actions>()(
@@ -47,7 +49,13 @@ const useAuthStore = createWithEqualityFn<States & Actions>()(
         },
         setCredentials: (credentials: any) => {
           set(
-            { ...credentials, isAuthenticated: !!credentials.token },
+            { ...credentials },
+            false,
+            "set-credentials" // Ação para o DevTools
+          );
+
+          set(
+            { isAuthenticated: !!credentials?.token },
             false,
             "set-credentials" // Ação para o DevTools
           );
@@ -73,7 +81,15 @@ const useAuthStore = createWithEqualityFn<States & Actions>()(
           set({ enableBiometric: value }, false, "set-enable-biometric");
         },
         setShowOverlayPrivacyScreen: (value: boolean) => {
-          set({ showOverlayPrivacyScreen: value }, false, "set-enable-biometric");
+          set(
+            { showOverlayPrivacyScreen: value },
+            false,
+            "set-enable-biometric"
+          );
+        },
+
+        setIsAuthenticated: (value: boolean) => {
+          set({ isAuthenticated: value }, false, "setIsAuthenticated");
         },
       }),
 

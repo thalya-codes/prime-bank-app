@@ -3,12 +3,12 @@ import { BiometricSwitch } from "@/presentation/components/BiometricSwitch";
 import { CardHighlight } from "@/presentation/components/CardHighlight";
 import { useAuth } from "@/presentation/hooks/useAuth";
 import { PublicScreenLayout } from "@/presentation/layouts/PublicScreenLayout";
-import { useBiometricAuthStore } from "@/presentation/store/useBiometricAuthStore";
 import { AuthContext } from "@/presentation/providers/AuthProvider";
+import useAuthStore from "@/presentation/store/useAuthStore";
 import { deleteBiometricPreference } from "@/utils/auth/secureStore";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Text, View } from "react-native";
 
 export const WelcomeBackPage = () => {
@@ -16,13 +16,17 @@ export const WelcomeBackPage = () => {
   const router = useRouter();
 
   const { onBiometricLogin } = useAuth();
-  const { setEnableBiometric } = useBiometricAuthStore();
+  const { setEnableBiometric, setIsAuthenticated } = useAuthStore();
 
   const onLoginWithEmailAndPassword = async () => {
     await deleteBiometricPreference();
     setEnableBiometric(false);
-    router.push("/login");
+    router.replace("/login");
   };
+
+  useEffect(() => {
+    setIsAuthenticated(false);
+  }, [setIsAuthenticated]);
 
   return (
     <PublicScreenLayout
