@@ -16,7 +16,6 @@ import auth, {
 import * as LocalAuthentication from "expo-local-authentication";
 import { usePathname, useRouter } from "expo-router";
 import { Toast } from "toastify-react-native";
-import { useBiometricAuthStore } from "../store/useBiometricAuthStore";
 export interface ICredentials {
   email: string;
   password: string;
@@ -32,7 +31,7 @@ export function useAuth() {
     setShowDrawerUnconfiguredBiometrics,
     setHasBiometricsSupport,
     setIsBiometricSetted,
-  } = useBiometricAuthStore();
+  } = useAuthStore();
 
   const router = useRouter();
 
