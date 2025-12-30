@@ -124,7 +124,6 @@ export default function RootLayout() {
             header: () => <PrivateScreenHeaderLayout />,
           }}
         >
-          <Tabs.Screen name='privacy-overlay' />
           <Tabs.Screen
             name='home'
             options={{
