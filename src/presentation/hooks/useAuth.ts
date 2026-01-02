@@ -91,7 +91,7 @@ export function useAuth() {
 
     setTimeout(() => {
       Toast.hide();
-      router.push("/login");
+      router.replace("/login");
     }, 3000);
   };
 

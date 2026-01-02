@@ -59,7 +59,7 @@ export function LoginPage() {
     try {
       await signIn(credentials);
       saveBiometricPreference(enableBiometric);
-      router.push("/home");
+      router.replace("/home");
     } catch (error) {
       const errorMessage = handleAuthError(error);
       Toast.show({

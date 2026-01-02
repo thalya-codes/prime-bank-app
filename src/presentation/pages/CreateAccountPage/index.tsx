@@ -80,7 +80,7 @@ export function CreateAccountPage() {
     try {
       await createNewUser(data);
       reset();
-      router.push("/login");
+      router.replace("/login");
     } catch (error) {
       console.error(error);
       const errorMessage = handleAuthError(error);

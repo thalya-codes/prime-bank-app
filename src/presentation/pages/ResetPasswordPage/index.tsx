@@ -37,7 +37,7 @@ export function ResetPasswordPage() {
   }) => {
     try {
       resetPassword(password);
-      router.push("/login");
+      router.replace("/login");
     } catch (error) {
       const errorMessage = handleAuthError(error);
       Toast.show({
