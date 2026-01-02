@@ -8,11 +8,16 @@ import { useRouter } from "expo-router";
 import { Platform, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Toast } from "toastify-react-native";
+import { AvatarSkeleton } from "../components/Skeletons/AvatarSkeleton";
 
 export const PrivateScreenHeaderLayout = () => {
   const router = useRouter();
   const { logout, handleAuthError } = useAuth();
-  const { data: user } = useGetUser();
+  const {
+    data: user,
+    isLoading: isUserLoading,
+    isFetching: isUserFetching,
+  } = useGetUser();
 
   const signOut = async () => {
     try {
@@ -29,7 +34,7 @@ export const PrivateScreenHeaderLayout = () => {
   };
 
   return (
-    <SafeAreaView edges={Platform.OS === 'android' ? ['top'] : []}>
+    <SafeAreaView edges={Platform.OS === "android" ? ["top"] : []}>
       <View className='flex-row items-center justify-between pl-1 pr-4 bg-white border-b border-gray-200'>
         <View className='flex-row items-center gap-2 px-4 py-3'>
           <Logo size='xs' />
@@ -50,10 +55,15 @@ export const PrivateScreenHeaderLayout = () => {
           ]}
           maxHeight={40}
         >
-          <Avatar name={user?.fullName ?? "Usuário Desconhecido"} />
+          
+          {isUserLoading || isUserFetching ? (
+            <AvatarSkeleton isVisible={true} />
+          ) : (
+            <Avatar name={user?.fullName ?? "Usuário Desconhecido"} />
+          )}
         </MenuDropDown>
       </View>
-      </SafeAreaView>
+    </SafeAreaView>
   );
 };
 
