@@ -13,7 +13,7 @@ import {
 import { InputPassword } from "@/presentation/components/InputPassword";
 import { ICredentials, useAuth } from "@/presentation/hooks/useAuth";
 import { PublicScreenLayout } from "@/presentation/layouts/PublicScreenLayout";
-import { useBiometricAuthStore } from "@/presentation/store/useBiometricAuthStore";
+import useAuthStore from "@/presentation/store/useAuthStore";
 import { saveBiometricPreference } from "@/utils/auth/secureStore";
 import { emailSchema } from "@/utils/validations";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
@@ -53,7 +53,7 @@ export function LoginPage() {
     showDrawerUnconfiguredBiometrics,
     isBiometricSetted,
     enableBiometric,
-  } = useBiometricAuthStore();
+  } = useAuthStore();
 
   const onLogin = async (credentials: ICredentials) => {
     try {

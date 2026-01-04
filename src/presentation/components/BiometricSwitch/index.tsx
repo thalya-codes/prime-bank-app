@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useAuth } from "@/presentation/hooks/useAuth";
-import { useBiometricAuthStore } from "@/presentation/store/useBiometricAuthStore";
+import useAuthStore from "@/presentation/store/useAuthStore";
 import { useEffect } from "react";
 import { Switch, View } from "react-native";
 import { FormFieldLabel } from "../FormField/FormFieldLabel";
 
 export const BiometricSwitch = () => {
   const { enableBiometric, setEnableBiometric, isBiometricSetted } =
-    useBiometricAuthStore();
+    useAuthStore();
   const { processBiometricDisableFlow } = useAuth();
 
   const toggleEnableBiometrics = () => {
