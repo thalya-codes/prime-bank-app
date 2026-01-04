@@ -17,7 +17,7 @@ export const PrivateScreenHeaderLayout = () => {
   const signOut = async () => {
     try {
       await logout();
-      router.push("/login");
+      router.replace("/login");
     } catch (error) {
       const errorMessage = handleAuthError(error);
       Toast.show({
@@ -29,7 +29,7 @@ export const PrivateScreenHeaderLayout = () => {
   };
 
   return (
-    <SafeAreaView edges={Platform.OS === 'android' ? ['top'] : []}>
+    <SafeAreaView edges={Platform.OS === "android" ? ["top"] : []}>
       <View className='flex-row items-center justify-between pl-1 pr-4 bg-white border-b border-gray-200'>
         <View className='flex-row items-center gap-2 px-4 py-3'>
           <Logo size='xs' />
@@ -53,7 +53,7 @@ export const PrivateScreenHeaderLayout = () => {
           <Avatar name={user?.fullName ?? "Usuário Desconhecido"} />
         </MenuDropDown>
       </View>
-      </SafeAreaView>
+    </SafeAreaView>
   );
 };
 

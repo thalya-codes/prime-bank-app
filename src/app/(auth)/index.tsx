@@ -22,8 +22,8 @@ export default function AuthIndex() {
   const checkIfUserHasAValidToken = useCallback(async () => {
     const token = await getToken(process.env.EXPO_PUBLIC_TOKEN_KEY!);
 
-    if (token && isBiometricLoginEnabled) router.push("/welcome-back");
-    else router.push("/login");
+    if (token && isBiometricLoginEnabled) router.replace("/welcome-back");
+    else router.replace("/login");
   }, [isBiometricLoginEnabled, router]);
 
   useEffect(() => {

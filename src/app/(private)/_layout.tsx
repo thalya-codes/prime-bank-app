@@ -74,7 +74,7 @@ export default function RootLayout() {
     setShowOverlayPrivacyScreen(false);
     CaptureProtection.allow();
 
-    if (!getBiometricPreference()) return router.navigate("/(auth)/login");
+    if (!getBiometricPreference()) return router.replace("/(auth)/login");
 
     if (isAuthenticated) router.replace("/(private)/home");
     else router.replace("/(auth)/welcome-back");
