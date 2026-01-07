@@ -5,7 +5,7 @@ import { BankAccountMapper } from '../mappers';
 
 export class BankAccountService {
   static async getBankAccount(): Promise<BankAccount> {
-    const response = await api.get(`bankAccount`);
+    const response = await api.get(`bankAccount/user`);
     return BankAccountMapper.toDomain(response.data);
   }
 }
