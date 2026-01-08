@@ -16,7 +16,6 @@ export const PrivateScreenHeaderLayout = () => {
   const {
     data: user,
     isLoading: isUserLoading,
-    isFetching: isUserFetching,
   } = useGetUser();
 
   const signOut = async () => {
@@ -55,8 +54,7 @@ export const PrivateScreenHeaderLayout = () => {
           ]}
           maxHeight={40}
         >
-          
-          {isUserLoading || isUserFetching ? (
+          {isUserLoading ? (
             <AvatarSkeleton isVisible={true} />
           ) : (
             <Avatar name={user?.fullName ?? "Usuário Desconhecido"} />
