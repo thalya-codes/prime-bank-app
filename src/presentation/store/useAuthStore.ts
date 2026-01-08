@@ -1,5 +1,5 @@
-// import { create } from 'zustand'
-import { devtools, persist } from "zustand/middleware";
+import * as SecureStore from "expo-secure-store";
+import { createJSONStorage, devtools, persist, StateStorage } from "zustand/middleware";
 import { shallow } from "zustand/shallow";
 import { createWithEqualityFn } from "zustand/traditional";
 
@@ -36,6 +36,18 @@ const INITIAL_STATE: States = {
   showDrawerUnconfiguredBiometrics: false,
   showOverlayPrivacyScreen: false,
   isAuthenticated: false,
+};
+
+const secureStorage: StateStorage = {
+  getItem: async (name: string): Promise<string | null> => {
+    return (await SecureStore.getItemAsync(name)) || null;
+  },
+  setItem: async (name: string, value: string): Promise<void> => {
+    await SecureStore.setItemAsync(name, value);
+  },
+  removeItem: async (name: string): Promise<void> => {
+    await SecureStore.deleteItemAsync(name);
+  },
 };
 
 const useAuthStore = createWithEqualityFn<States & Actions>()(
@@ -93,7 +105,10 @@ const useAuthStore = createWithEqualityFn<States & Actions>()(
         },
       }),
 
-      { name: "pb-auth-store" }
+      {
+        name: "pb-auth-store",
+        storage: createJSONStorage(() => secureStorage),
+      }
     ),
     { name: "pb-auth-store" }
   ),
