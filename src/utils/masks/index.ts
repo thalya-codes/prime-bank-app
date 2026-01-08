@@ -25,24 +25,40 @@ export function currencyMask(
 }
 
 export function firestoreToZulu(timestamp: FirestoreTimestamp): Date {
-  return new Date(
-    timestamp._seconds * 1000 + timestamp._nanoseconds / 1e6
-  );
+  return new Date(timestamp._seconds * 1000 + timestamp._nanoseconds / 1e6);
 }
 
 export function currencyMasks(value: string): string {
+  if (!value) {
+    return value;
+  }
+
   const cleanedValue = value.replace(/\D/g, "");
 
-  if (!cleanedValue) return "";
-  const numberValue = parseInt(cleanedValue, 10) / 100;
+  if (!cleanedValue) {
+    console.log("Condição 2");
 
-  return numberValue.toLocaleString("pt-BR", {
+    return "";
+  }
+
+  const formattedValue = (Number(cleanedValue) / 100).toLocaleString("pt-BR", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
+
+  return formattedValue;
 }
 
 export function currencyToNumbers(value: string): number {
-  const cleanedValue = value.replace(/\D/g, "");
-  return parseInt(cleanedValue, 10) / 100;
+  const valueRemoved = value.replace(",", "");
+
+  const sizeSlice = valueRemoved.length - 2;
+  const newValue = [
+    valueRemoved.slice(0, sizeSlice),
+    ".",
+    valueRemoved.slice(sizeSlice),
+  ].join("");
+
+  return parseInt(newValue);
 }
+

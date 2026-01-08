@@ -95,8 +95,7 @@ export function HomePage() {
   };
 
   const handleValueChange = (value: string) => {
-    const numericValue = currencyToNumbers(value);
-    setTransactionValue(numericValue);
+    setTransactionValue(value);
   };
 
   const handleReceiptSelected = (file: any) => {
@@ -325,7 +324,7 @@ export function HomePage() {
               <View className='bg-white border rounded-md border-neutral-300'>
                 <InputField
                   placeholder='R$ 0,00'
-                  value={currencyMask(transactionValue)}
+                  value={currencyMasks(transactionValue)}
                   onChangeText={handleValueChange}
                   keyboardType='numeric'
                   className='px-3 py-3 text-base font-nunito-regular'
