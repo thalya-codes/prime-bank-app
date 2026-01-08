@@ -40,6 +40,7 @@ export function useAuth() {
   const signIn = async ({ email, password }: ICredentials) => {
     const res = await signInWithEmailAndPassword(getAuth(), email, password);
     const token = await getIdToken(res.user);
+    await deleteToken(process.env.EXPO_PUBLIC_TOKEN_KEY!)
     await saveToken(process.env.EXPO_PUBLIC_TOKEN_KEY!, token);
   };
 
