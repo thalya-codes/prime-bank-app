@@ -51,6 +51,7 @@ export function HomePage() {
     isFetching: isUserFetching,
     isLoadingError: isUserLoadingError,
     refetch: refetchUser,
+    isRefetching: isUserRefetching,
   } = useGetUser();
 
   const {
@@ -59,6 +60,7 @@ export function HomePage() {
     isFetching: isBankAccountFetching,
     refetch: refetchBankAccount,
     isLoadingError: isBankAccountLoadingError,
+    isRefetching: isBankAccountRefetching,
   } = useGetBankAccount();
   const { uid } = useAuthStore();
   const createTransactionMutation = useCreateTransactionMutation();
@@ -69,8 +71,11 @@ export function HomePage() {
     year: "numeric",
   });
   const isHomeSkeletonVisible =
-    (!user && (isUserLoading || isUserFetching || isUserFetching)) ||
-    (!bankAccount && (isBankAccountLoading || isBankAccountFetching));
+    (!user && (isUserLoading || isUserFetching || isUserRefetching)) ||
+    (!bankAccount &&
+      (isBankAccountLoading ||
+        isBankAccountFetching ||
+        isBankAccountRefetching));
 
   const toggleBalanceVisibility = () => {
     setIsBalanceVisible(!isBalanceVisible);
@@ -85,6 +90,11 @@ export function HomePage() {
       setIsSelectOpen(true);
     }
   };
+
+  useEffect(() => {
+    refetchUser();
+    refetchBankAccount();
+  }, [refetchBankAccount, refetchUser]);
 
   const handleSelectOption = (value: TransactionType) => {
     setTransactionType(value);
