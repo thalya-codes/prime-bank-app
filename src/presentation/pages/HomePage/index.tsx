@@ -16,7 +16,7 @@ import {
   showErrorToast,
   showSuccessToast,
 } from "@/utils/helpers";
-import { currencyMask, currencyToNumbers } from "@/utils/masks";
+import { currencyMasks, currencyToNumbers } from "@/utils/masks";
 import { TransactionValidations } from "@/utils/validations";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
@@ -44,19 +44,23 @@ export function HomePage() {
 
   const { animatedHeight, open, close } = useDropdownAnimation(0, 150);
   const [transactionValue, setTransactionValue] = useState<number>(0.0);
+  const [targetAccountNumber, setTargetAccountNumber] = useState<string>("");
   const {
     data: user,
     isLoading: isUserLoading,
     isFetching: isUserFetching,
     isLoadingError: isUserLoadingError,
     refetch: refetchUser,
+    isRefetching: isUserRefetching,
   } = useGetUser();
+
   const {
     data: bankAccount,
     isLoading: isBankAccountLoading,
     isFetching: isBankAccountFetching,
     refetch: refetchBankAccount,
     isLoadingError: isBankAccountLoadingError,
+    isRefetching: isBankAccountRefetching,
   } = useGetBankAccount();
   const { uid } = useAuthStore();
   const createTransactionMutation = useCreateTransactionMutation();
@@ -67,8 +71,11 @@ export function HomePage() {
     year: "numeric",
   });
   const isHomeSkeletonVisible =
-    (!user && (isUserLoading || isUserFetching)) ||
-    (!bankAccount && (isBankAccountLoading || isBankAccountFetching));
+    (!user && (isUserLoading || isUserFetching || isUserRefetching)) ||
+    (!bankAccount &&
+      (isBankAccountLoading ||
+        isBankAccountFetching ||
+        isBankAccountRefetching));
 
   const toggleBalanceVisibility = () => {
     setIsBalanceVisible(!isBalanceVisible);
@@ -84,6 +91,11 @@ export function HomePage() {
     }
   };
 
+  useEffect(() => {
+    refetchUser();
+    refetchBankAccount();
+  }, [refetchBankAccount, refetchUser]);
+
   const handleSelectOption = (value: TransactionType) => {
     setTransactionType(value);
     close();
@@ -91,8 +103,11 @@ export function HomePage() {
   };
 
   const handleValueChange = (value: string) => {
-    const numericValue = currencyToNumbers(value);
-    setTransactionValue(numericValue);
+    setTransactionValue(value);
+  };
+
+  const handleTargetAccountChange = (value: string) => {
+    setTargetAccountNumber(value);
   };
 
   const handleReceiptSelected = (file: any) => {
@@ -105,17 +120,20 @@ export function HomePage() {
     setTransactionValue(0.0);
     setTransactionType("");
     setSelectedReceipt(null);
+    setTargetAccountNumber("");
+    setTargetAccountNumber("");
   };
 
   const handleTransactionSubmit = () => {
     const amount = currencyToNumbers(transactionValue.toString());
-    const accountNumber = bankAccount?.bankAccountNumber;
+    const fromAccountNumber = bankAccount?.bankAccountNumber;
     const accountId = bankAccount?.id;
 
     const validationError = TransactionValidations.validateCreateTransaction({
       amount: amount || 0,
       type: transactionType,
-      accountNumber: accountNumber || "",
+      fromAccountNumber: fromAccountNumber || "",
+      toAccountNumber: targetAccountNumber,
       bankAccountId: accountId,
       userId: uid,
     });
@@ -126,14 +144,18 @@ export function HomePage() {
     }
 
     const transactionData = buildTransactionData(
-      accountNumber,
+      fromAccountNumber,
+      targetAccountNumber,
       amount,
-      selectedReceipt
+      selectedReceipt,
+      "others",
+      transactionType
     );
 
     createTransactionMutation.mutate(transactionData, {
-      onSuccess: () => {
+      onSuccess: async () => {
         showSuccessToast("Transação realizada com sucesso!");
+        await refetchBankAccount();
         resetTransactionForm();
       },
       onError: (error: any) => {
@@ -316,8 +338,23 @@ export function HomePage() {
               <View className='bg-white border rounded-md border-neutral-300'>
                 <InputField
                   placeholder='R$ 0,00'
-                  value={currencyMask(transactionValue)}
+                  value={currencyMasks(transactionValue)}
                   onChangeText={handleValueChange}
+                  keyboardType='numeric'
+                  className='px-3 py-3 text-base font-nunito-regular'
+                />
+              </View>
+            </View>
+
+            {/* Campo conta de destino */}
+            <View className='mb-8'>
+              <Text className='mb-3 text-base font-nunito-medium text-neutral-900'>
+                Conta de destino
+              </Text>
+              <View className='bg-white border rounded-md border-neutral-300'>
+                <InputField
+                  value={targetAccountNumber}
+                  onChangeText={handleTargetAccountChange}
                   keyboardType='numeric'
                   className='px-3 py-3 text-base font-nunito-regular'
                 />

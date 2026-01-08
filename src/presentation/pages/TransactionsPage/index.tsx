@@ -123,7 +123,7 @@ export function TransactionsPage() {
   };
 
   const handleFilters = (value: string, type: string) => {
-    const numericValue = currencyToNumbers(value);
+    const numericValue = value;
     setFilters((prev: any) => ({
       ...prev,
       [type]: numericValue,
