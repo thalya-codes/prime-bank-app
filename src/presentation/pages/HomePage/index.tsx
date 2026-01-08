@@ -51,7 +51,6 @@ export function HomePage() {
     isFetching: isUserFetching,
     isLoadingError: isUserLoadingError,
     refetch: refetchUser,
-    isRefetching: isUserRefetching,
   } = useGetUser();
 
   const {
@@ -60,7 +59,6 @@ export function HomePage() {
     isFetching: isBankAccountFetching,
     refetch: refetchBankAccount,
     isLoadingError: isBankAccountLoadingError,
-    isRefetching: isBankAccountRefetching,
   } = useGetBankAccount();
   const { uid } = useAuthStore();
   const createTransactionMutation = useCreateTransactionMutation();
@@ -71,7 +69,7 @@ export function HomePage() {
     year: "numeric",
   });
   const isHomeSkeletonVisible =
-    (!user && (isUserLoading || isUserFetching)) ||
+    (!user && (isUserLoading || isUserFetching || isUserFetching)) ||
     (!bankAccount && (isBankAccountLoading || isBankAccountFetching));
 
   const toggleBalanceVisibility = () => {
@@ -98,6 +96,10 @@ export function HomePage() {
     setTransactionValue(value);
   };
 
+  const handleTargetAccountChange = (value: string) => {
+    setTargetAccountNumber(value);
+  };
+
   const handleReceiptSelected = (file: any) => {
     if (file) {
       setSelectedReceipt(file);
@@ -108,6 +110,7 @@ export function HomePage() {
     setTransactionValue(0.0);
     setTransactionType("");
     setSelectedReceipt(null);
+    setTargetAccountNumber("");
     setTargetAccountNumber("");
   };
 
@@ -140,8 +143,9 @@ export function HomePage() {
     );
 
     createTransactionMutation.mutate(transactionData, {
-      onSuccess: () => {
+      onSuccess: async () => {
         showSuccessToast("Transação realizada com sucesso!");
+        await refetchBankAccount();
         resetTransactionForm();
       },
       onError: (error: any) => {
@@ -326,6 +330,21 @@ export function HomePage() {
                   placeholder='R$ 0,00'
                   value={currencyMasks(transactionValue)}
                   onChangeText={handleValueChange}
+                  keyboardType='numeric'
+                  className='px-3 py-3 text-base font-nunito-regular'
+                />
+              </View>
+            </View>
+
+            {/* Campo conta de destino */}
+            <View className='mb-8'>
+              <Text className='mb-3 text-base font-nunito-medium text-neutral-900'>
+                Conta de destino
+              </Text>
+              <View className='bg-white border rounded-md border-neutral-300'>
+                <InputField
+                  value={targetAccountNumber}
+                  onChangeText={handleTargetAccountChange}
                   keyboardType='numeric'
                   className='px-3 py-3 text-base font-nunito-regular'
                 />
