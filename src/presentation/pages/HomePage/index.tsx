@@ -16,7 +16,7 @@ import {
   showErrorToast,
   showSuccessToast,
 } from "@/utils/helpers";
-import { currencyMask, currencyToNumbers } from "@/utils/masks";
+import { currencyMasks, currencyToNumbers } from "@/utils/masks";
 import { TransactionValidations } from "@/utils/validations";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
@@ -44,19 +44,23 @@ export function HomePage() {
 
   const { animatedHeight, open, close } = useDropdownAnimation(0, 150);
   const [transactionValue, setTransactionValue] = useState<number>(0.0);
+  const [targetAccountNumber, setTargetAccountNumber] = useState<string>("");
   const {
     data: user,
     isLoading: isUserLoading,
     isFetching: isUserFetching,
     isLoadingError: isUserLoadingError,
     refetch: refetchUser,
+    isRefetching: isUserRefetching,
   } = useGetUser();
+
   const {
     data: bankAccount,
     isLoading: isBankAccountLoading,
     isFetching: isBankAccountFetching,
     refetch: refetchBankAccount,
     isLoadingError: isBankAccountLoadingError,
+    isRefetching: isBankAccountRefetching,
   } = useGetBankAccount();
   const { uid } = useAuthStore();
   const createTransactionMutation = useCreateTransactionMutation();
@@ -105,17 +109,19 @@ export function HomePage() {
     setTransactionValue(0.0);
     setTransactionType("");
     setSelectedReceipt(null);
+    setTargetAccountNumber("");
   };
 
   const handleTransactionSubmit = () => {
     const amount = currencyToNumbers(transactionValue.toString());
-    const accountNumber = bankAccount?.bankAccountNumber;
+    const fromAccountNumber = bankAccount?.bankAccountNumber;
     const accountId = bankAccount?.id;
 
     const validationError = TransactionValidations.validateCreateTransaction({
       amount: amount || 0,
       type: transactionType,
-      accountNumber: accountNumber || "",
+      fromAccountNumber: fromAccountNumber || "",
+      toAccountNumber: targetAccountNumber,
       bankAccountId: accountId,
       userId: uid,
     });
@@ -126,9 +132,12 @@ export function HomePage() {
     }
 
     const transactionData = buildTransactionData(
-      accountNumber,
+      fromAccountNumber,
+      targetAccountNumber,
       amount,
-      selectedReceipt
+      selectedReceipt,
+      "others",
+      transactionType
     );
 
     createTransactionMutation.mutate(transactionData, {

@@ -3,7 +3,8 @@ import { TransactionType } from "@/presentation/features/transactions";
 export interface TransactionValidationData {
   amount: number;
   type: string;
-  accountNumber: string;
+  fromAccountNumber: string;
+  toAccountNumber: string;
   bankAccountId?: string;
   userId?: string;
 }
@@ -30,7 +31,7 @@ export class TransactionValidations {
       return "Selecione o tipo de transação";
     }
 
-    const validTypes: TransactionType[] = ['income', 'expense', 'transfer'];
+    const validTypes: TransactionType[] = ["income", "expense", "transfer"];
     if (!validTypes.includes(type as TransactionType)) {
       return "Tipo de transação inválido";
     }
@@ -38,7 +39,9 @@ export class TransactionValidations {
     return null;
   }
 
-  static validateAccountNumber(accountNumber: string | undefined | null): string | null {
+  static validateAccountNumber(
+    accountNumber: string | undefined | null
+  ): string | null {
     if (!accountNumber || accountNumber === "") {
       return "Número da conta bancária não encontrado";
     }
@@ -46,7 +49,9 @@ export class TransactionValidations {
     return null;
   }
 
-  static validateBankAccountId(accountId: string | undefined | null): string | null {
+  static validateBankAccountId(
+    accountId: string | undefined | null
+  ): string | null {
     if (!accountId) {
       return "Conta bancária não encontrada";
     }
@@ -66,15 +71,24 @@ export class TransactionValidations {
     return null;
   }
 
-  static validateCreateTransaction(data: TransactionValidationData): string | null {
+  static validateCreateTransaction(
+    data: TransactionValidationData
+  ): string | null {
     const amountError = this.validateAmount(data.amount);
     if (amountError) return amountError;
 
     const typeError = this.validateType(data.type);
     if (typeError) return typeError;
 
-    const accountNumberError = this.validateAccountNumber(data.accountNumber);
+    const accountNumberError = this.validateAccountNumber(
+      data.fromAccountNumber
+    );
+    const toAccountNumberError = this.validateAccountNumber(
+      data.toAccountNumber
+    );
+
     if (accountNumberError) return accountNumberError;
+    if (toAccountNumberError) return accountNumberError;
 
     if (data.bankAccountId !== undefined) {
       const bankAccountError = this.validateBankAccountId(data.bankAccountId);
@@ -89,7 +103,9 @@ export class TransactionValidations {
     return null;
   }
 
-  static validateUpdateTransaction(data: Partial<TransactionValidationData>): string | null {
+  static validateUpdateTransaction(
+    data: Partial<TransactionValidationData>
+  ): string | null {
     if (data.amount !== undefined) {
       const amountError = this.validateAmount(data.amount);
       if (amountError) return amountError;
@@ -117,8 +133,8 @@ export class TransactionValidations {
   }
 
   static validateFormFields(
-    transactionType: string | undefined, 
-    transactionValue: string | undefined, 
+    transactionType: string | undefined,
+    transactionValue: string | undefined,
     userId: string | undefined
   ): string | null {
     if (!transactionType || !transactionValue || !userId) {
