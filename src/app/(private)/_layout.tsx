@@ -2,7 +2,6 @@ import { queryClient } from "@/infrastructure/query/query-client";
 import { PrivateScreenHeaderLayout } from "@/presentation/layouts/PrivateScreenHeaderLayout";
 import { AuthProvider } from "@/presentation/providers/AuthProvider";
 import useAuthStore from "@/presentation/store/useAuthStore";
-import { getBiometricPreference } from "@/utils/auth/secureStore";
 import {
   Inter_400Regular,
   Inter_500Medium,
@@ -61,7 +60,7 @@ export default function RootLayout() {
   const pathname = usePathname();
 
   const onAppInBackground = useCallback(() => {
-    setIsAuthenticated(false);
+    // setIsAuthenticated(false);
     CaptureProtection.prevent({
       screenshot: true,
       record: true,
@@ -74,10 +73,10 @@ export default function RootLayout() {
     setShowOverlayPrivacyScreen(false);
     CaptureProtection.allow();
 
-    if (!getBiometricPreference()) return router.replace("/(auth)/login");
+    // if (!getBiometricPreference()) return router.replace("/(auth)/login");
 
-    if (isAuthenticated) router.replace("/(private)/home");
-    else router.replace("/(auth)/welcome-back");
+    // if (isAuthenticated) router.replace("/(private)/home");
+    // else router.replace("/(auth)/welcome-back");
   }, [isAuthenticated, router, setShowOverlayPrivacyScreen]);
 
   useEffect(() => {
@@ -166,7 +165,11 @@ export default function RootLayout() {
             }}
           />
         </Tabs>
-        <ToastManager />
+        <ToastManager
+          width='100%'
+          height='100%'
+          style={{ backgroundColor: "transparent" }}
+        />
       </QueryClientProvider>
     </AuthProvider>
   );

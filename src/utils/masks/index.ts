@@ -29,36 +29,24 @@ export function firestoreToZulu(timestamp: FirestoreTimestamp): Date {
 }
 
 export function currencyMasks(value: string): string {
-  if (!value) {
-    return value;
-  }
+  const cleanedValue = value ? value.replace(/\D/g, "") : "";
+  const numberValue = Number(cleanedValue) / 100;
 
-  const cleanedValue = value.replace(/\D/g, "");
-
-  if (!cleanedValue) {
-    console.log("Condição 2");
-
-    return "";
-  }
-
-  const formattedValue = (Number(cleanedValue) / 100).toLocaleString("pt-BR", {
+  return numberValue.toLocaleString("pt-BR", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
-
-  return formattedValue;
 }
 
 export function currencyToNumbers(value: string): number {
-  const valueRemoved = value.replace(",", "");
-
-  const sizeSlice = valueRemoved.length - 2;
-  const newValue = [
-    valueRemoved.slice(0, sizeSlice),
-    ".",
-    valueRemoved.slice(sizeSlice),
-  ].join("");
-
-  return parseInt(newValue);
+  if (!value) return 0;
+  const cleanedValue = value.replace(/\D/g, "");
+  return Number(cleanedValue) / 100;
 }
 
+export function formatNumberToCurrency(value: number): string {
+  return value.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}

@@ -23,7 +23,7 @@ export const PublicScreenLayout = ({
   return (
     <KeyboardAvoidingView
       className='flex-col w-full px-6 gap-6'
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
       keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
     >
       <ScrollView

@@ -1,50 +1,57 @@
-# Welcome to your Expo app 👋
+# Prime Bank App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A modern, secure, and responsive banking application built with React Native (Expo).
 
-## Get started
+## 🚀 Features
 
-1. Install dependencies
+-   **Secure Authentication**: Biometric support and persistent login using SecureStore.
+-   **Financial Management**: View balance, track expenses/incomes, and upload receipts.
+-   **Transactions**: Create and manage transactions with currency validation and categorization.
+-   **Receipt Upload**: Upload images and PDF receipts for transactions.
+-   **Responsive UI**: Modern interface with smooth animations and toast notifications.
+-   **Offline First**: Optimistic updates and caching strategy.
 
-   ```bash
-   npm install
-   ```
+## 🛠 Tech Stack
 
-2. Start the app
+-   **Frontend**: React Native, Expo, TypeScript
+-   **Architecture**: Clean Architecture (Domain, Data, Presentation layers)
+-   **State Management**: Zustand (including persistence)
+-   **Data Fetching & Caching**: TanStack Query (React Query)
+-   **Styling**: NativeWind (TailwindCSS)
+-   **Validation**: Yup
+-   **Navigation**: Expo Router
 
-   ```bash
-   npx expo start
-   ```
+## 📂 Project Structure
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+src/
+├── app/              # Expo Router (Navigation)
+├── data/             # API services and data repositories
+├── domain/           # Business logic and entities
+├── infrastructure/   # External services adapters
+├── presentation/     # UI Components, Pages, Stores, and Hooks
+└── utils/            # Helper functions, masks, and validators
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## ⚡ Getting Started
 
-## Learn more
+1.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-To learn more about developing your project with Expo, look at the following resources:
+2.  **Run the app:**
+    ```bash
+    npx expo start
+    ```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+3.  **Run on Android/iOS:**
+    -   Press `a` for Android Emulator
+    -   Press `i` for iOS Simulator
 
-## Join the community
+## ✅ Code Quality & Best Practices
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+-   **Clean Architecture**: Separation of concerns between UI, Business Logic, and Data.
+-   **Atomic Design**: Components organized for reusability.
+-   **Type Safety**: Full TypeScript implementation.
+-   **Performance**: Memoization (`useCallback`, `useMemo`) and query caching.
