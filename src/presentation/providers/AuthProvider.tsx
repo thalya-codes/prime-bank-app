@@ -42,12 +42,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return subscriber; // unsubscribe on unmount
   }, []);
 
-  if (showOverlayPrivacyScreen) return <View className='text-3xl mt-10' />;
-
   return (
     <QueryClientProvider client={queryClient}>
       <AuthContext.Provider value={{ user, setUser, initializing }}>
         {children}
+        {showOverlayPrivacyScreen && (
+          <View className="absolute inset-0 bg-white z-50" />
+        )}
       </AuthContext.Provider>
     </QueryClientProvider>
   );

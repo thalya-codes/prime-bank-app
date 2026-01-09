@@ -16,7 +16,7 @@ import {
   showErrorToast,
   showSuccessToast,
 } from "@/utils/helpers";
-import { currencyMasks, currencyToNumbers } from "@/utils/masks";
+import { currencyToNumbers, formatNumberToCurrency } from "@/utils/masks";
 import { TransactionValidations } from "@/utils/validations";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
@@ -27,6 +27,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+
 
 export function HomePage() {
   const [isBalanceVisible, setIsBalanceVisible] = useState<boolean>(true);
@@ -103,7 +104,7 @@ export function HomePage() {
   };
 
   const handleValueChange = (value: string) => {
-    setTransactionValue(value);
+    setTransactionValue(currencyToNumbers(value));
   };
 
   const handleTargetAccountChange = (value: string) => {
@@ -111,9 +112,7 @@ export function HomePage() {
   };
 
   const handleReceiptSelected = (file: any) => {
-    if (file) {
-      setSelectedReceipt(file);
-    }
+    setSelectedReceipt(file);
   };
 
   const resetTransactionForm = () => {
@@ -125,7 +124,7 @@ export function HomePage() {
   };
 
   const handleTransactionSubmit = () => {
-    const amount = currencyToNumbers(transactionValue.toString());
+    const amount = transactionValue;
     const fromAccountNumber = bankAccount?.bankAccountNumber;
     const accountId = bankAccount?.id;
 
@@ -149,7 +148,7 @@ export function HomePage() {
       amount,
       selectedReceipt,
       "others",
-      transactionType
+      transactionType as TransactionType
     );
 
     createTransactionMutation.mutate(transactionData, {
@@ -277,8 +276,8 @@ export function HomePage() {
                     <Text className='text-base font-nunito-regular text-neutral-700'>
                       {transactionType
                         ? TRANSACTION_TYPES.find(
-                            (t) => t.value === transactionType
-                          )?.label
+                          (t) => t.value === transactionType
+                        )?.label
                         : "Selecione o tipo"}
                     </Text>
                     <Ionicons
@@ -338,7 +337,7 @@ export function HomePage() {
               <View className='bg-white border rounded-md border-neutral-300'>
                 <InputField
                   placeholder='R$ 0,00'
-                  value={currencyMasks(transactionValue)}
+                  value={formatNumberToCurrency(transactionValue)}
                   onChangeText={handleValueChange}
                   keyboardType='numeric'
                   className='px-3 py-3 text-base font-nunito-regular'
